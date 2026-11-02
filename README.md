@@ -36,8 +36,8 @@ goose build main.goose -O2 -o demo
 ```
 
 Use a Goose compiler with package `c_headers` support. TinyCC works without
-an external C compiler; native builds need GCC or Clang. Tested on Linux
-x86-64; ARM and Windows are unverified. The examples follow `main`; pin
+an external C compiler; native builds use GCC, Clang, or MSVC. CI covers Linux
+x86-64 and ARM64, macOS ARM64, and Windows x86-64. The examples follow `main`; pin
 imports to commits for reproducible builds. The goosimd dependency is experimental.
 
 ## Find bytes and patterns
