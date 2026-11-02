@@ -1,16 +1,20 @@
 use bstr::ByteSlice;
 use std::{env, fs, time::Instant};
 
+#[cfg(bench_external_barrier)]
 #[repr(C)]
 struct ByteSliceAbi { data: *const u8, len: i64 }
 extern "C" {
+    #[cfg(bench_external_barrier)]
     fn goostr_bench_opaque(s: ByteSliceAbi) -> i64;
     fn goostr_bench_setup() -> i64;
 }
 
 fn opaque(s: &[u8]) -> &[u8] {
-    // The separately compiled benchmark barrier returns its input's length.
+    #[cfg(bench_external_barrier)]
     let len = unsafe { goostr_bench_opaque(ByteSliceAbi { data: s.as_ptr(), len: s.len() as i64 }) };
+    #[cfg(not(bench_external_barrier))]
+    let len = std::hint::black_box(s).len();
     &s[..len as usize]
 }
 

@@ -6,7 +6,7 @@
 
 typedef struct { const uint8_t *data; int64_t len; } byte_slice;
 
-// Compiled separately, without LTO. Both runners call exactly this function.
+// Shared external-barrier control, compiled separately without LTO.
 int64_t goostr_bench_opaque(byte_slice s) { return s.len; }
 
 // Request the same foreground scheduling class in both runners. This reduces

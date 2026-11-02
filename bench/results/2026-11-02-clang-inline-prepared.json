@@ -1,0 +1,85 @@
+{
+  "environment": {
+    "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu": "AMD Ryzen 9 3950X 16-Core Processor",
+    "versions": {
+      "goose": "goose eadca40 (runtime 3025e5810379)",
+      "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+      "clang": "Ubuntu clang version 18.1.3 (1ubuntu1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin",
+      "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    },
+    "timestamp_utc": "2026-11-02T14:33:16.007590+00:00",
+    "goose_sha256": "afa5a6484f5ad754bd06517defa9a4229e82b4236293dfcc55602b8b6bcd786a",
+    "bstr_sha256": "e728f6fa4ad4badd758461ede1b1895b12eb5e7fad4565236142a2bed2b42583",
+    "bstr": "1.13.1",
+    "memchr": "2.8.3",
+    "goose_flags": [
+      "-O3"
+    ],
+    "cc": "clang",
+    "target": "runtime",
+    "rust_profile": "release",
+    "rust_opt_level": "3",
+    "barrier": "inline",
+    "suite": "substring",
+    "calibration_target_ms": 50,
+    "samples": 9,
+    "prebuilt_goose": false,
+    "warmup_passes": 1,
+    "scheduling": "CPU affinity [4]",
+    "checkout_sources": {
+      "goostr.goose": "34be1cb1dfc8249e790eee3d15fd46dc6e264dbbae83afc5b1afdf7c250bf9c6",
+      "search.goose": "81ad96c28f236e36aab08e3bf6f99292692fb44b912ab0bb20204b4eb74eb537",
+      "goostr.build": "19a5ad64f1cd9adc3e914a32156192e5bb4664ff216a7f923b4ed8693d5d4ab1",
+      "src/dispatch.h": "35c506ef3d7b62f783b7e35243794bf9c4e02b2ff455441959794d3511f64f7c",
+      "bench/search.goose": "be11b7271b09e7cca46752184bbe2e5472cef0f32e9cc34315cc266da681ab57",
+      "bench/search.build": "4f0bb9939d3e804fda5afb88486967ef2e5d72c3a1d0ec2370e952f5afd52aa6",
+      "bench/opaque.c": "8ec27300d64e671046ee90c6c1f1a3f41a3dfc0f95c1b255d87434be65dfbf49",
+      "bench/opaque.h": "3602d1340c2eb15f9ddd3a5b9d65d1d18dadaaa10db024488ef05e30755a4fb8",
+      "bench/compare.py": "49e4026cfb92b98138fee7db2c3bdcd66e88ba5b9c2a92db70c09214d60b1675",
+      "tests/oracle/src/bin/search-bench.rs": "6188b9699a4b53cf50fdcfae35b05b889d746afe83397497e3fc58818bb3dec1"
+    }
+  },
+  "results": [
+    {
+      "case": "near-periodic-miss",
+      "mode": "prepared-rfind",
+      "haystack": 1048576,
+      "needle": 116,
+      "sha256": "df21d9b8b49da12d1db3bfbba7d7b34843fd15d9e3682f366051311e1af8cc3f",
+      "expected": -1,
+      "goose_ns": 1040489.3859649122,
+      "bstr_ns": 794494.2162162162,
+      "ratio": 1.3096248716828294,
+      "iterations": {
+        "goose": 57,
+        "bstr": 74
+      },
+      "samples": {
+        "goose": [
+          1035278.298245614,
+          1032209.8596491228,
+          1033574.2631578947,
+          1039898.3333333334,
+          1041192.0350877193,
+          1049430.3333333333,
+          1046974.1754385965,
+          1041315.0175438597,
+          1040489.3859649122
+        ],
+        "bstr": [
+          790877.2837837838,
+          796121.1216216217,
+          788768.5,
+          794494.2162162162,
+          790144.7162162162,
+          789676.3243243244,
+          798250.7297297297,
+          799529.7837837838,
+          799200.7297297297
+        ]
+      }
+    }
+  ]
+}

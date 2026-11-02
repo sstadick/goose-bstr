@@ -151,6 +151,8 @@ def main():
     parser.add_argument("--samples", type=int, help="measured batches (default 5, or 3 for quick)")
     parser.add_argument("--sample-ms", type=int, help="minimum batch time in ms (default 50, or 5 for quick)")
     parser.add_argument("--cc", choices=["clang", "gcc"], default="clang")
+    parser.add_argument("--barrier", choices=["inline", "external"], default="inline",
+                        help="optimizer barrier in both runners (default inline); prebuilt binaries must match")
     parser.add_argument("--target", choices=["runtime", "baseline", "avx2", "scalar"], default="runtime",
                         help="AVX2 requires a capable CPU; runtime dispatch requires Clang/x86")
     parser.add_argument("--suite", choices=["substring", "byteset", "boundary", "upstream", "records", "quick"], default="substring")
@@ -212,13 +214,17 @@ def main():
     flags = ["-O3"] + {"runtime": [], "baseline": ["-DGS_SIMD=0"],
                        "avx2": ["-DGS_SIMD=0", "-mavx2"],
                        "scalar": ["-DGS_SIMD=0", "-DGOOSIMD_SCALAR"]}[options.target]
+    rust_flags = ["--check-cfg", "cfg(bench_external_barrier)"]
+    if options.barrier == "external":
+        flags.append("-DGOOSTR_BENCH_EXTERNAL")
+        rust_flags += ["--cfg", "bench_external_barrier"]
     with tempfile.TemporaryDirectory(prefix="goostr-bench-") as tmp:
         tmp = Path(tmp)
         barrier = tmp / "opaque.o"
         subprocess.run(["clang", "-O3", "-c", str(ROOT / "bench/opaque.c"), "-o", str(barrier)], check=True)
         subprocess.run(["cargo", "rustc", "--locked", "--release", "--manifest-path",
                         str(ROOT / "tests/oracle/Cargo.toml"), "--features", "bench", "--bin", "search-bench",
-                        "--", "-C", f"link-arg={barrier}"], check=True,
+                        "--", *rust_flags, "-C", f"link-arg={barrier}"], check=True,
                        env={**os.environ, "CARGO_PROFILE_RELEASE_OPT_LEVEL": "3"})
         rust = ROOT / "tests/oracle/target/release/search-bench"
         goose = (options.goose_exe or options.save_exe or tmp / "search").resolve()
@@ -293,14 +299,15 @@ def main():
                         bstr="1.13.1", memchr="2.8.3", goose_flags=None if options.goose_exe else flags,
                         cc=None if options.goose_exe else options.cc,
                         target=None if options.goose_exe else options.target, rust_profile="release",
-                        rust_opt_level="3",
+                        rust_opt_level="3", barrier=options.barrier,
                         suite=options.suite, calibration_target_ms=options.sample_ms, samples=options.samples,
                         prebuilt_goose=bool(options.goose_exe), warmup_passes=1,
                         scheduling=(f"CPU affinity {sorted(os.sched_getaffinity(0))}"
                                     if hasattr(os, "sched_getaffinity") else "user-initiated QoS on macOS"),
                         checkout_sources={path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
                                  for path in ("goostr.goose", "search.goose", "goostr.build", "src/dispatch.h", "bench/search.goose",
-                                              "bench/opaque.c", "tests/oracle/src/bin/search-bench.rs")})
+                                              "bench/search.build", "bench/opaque.c", "bench/opaque.h", "bench/compare.py",
+                                              "tests/oracle/src/bin/search-bench.rs")})
         if options.baseline_exe:
             metadata["baseline_sha256"] = hashlib.sha256(options.baseline_exe.read_bytes()).hexdigest()
         if upstream:

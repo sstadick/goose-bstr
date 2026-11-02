@@ -2,10 +2,9 @@ import goostr from "..";
 import goosimd from "github.com/sstadick/goosimd@main";
 import os;
 
-// External, opaque to the optimizer in both benchmark programs. Prevents
-// repeated searches over invariant input from being hoisted out of the loop.
-extern "goostr_bench_opaque" fn opaque_len(s: const u8[:]) -> i64;
-extern "goostr_bench_setup" fn setup() -> i64;
+// Hide input lengths from the optimizer on every timed iteration.
+extern fn opaque_len(s: const u8[:]) -> i64 = "goostr_bench_opaque_len";
+extern fn setup() -> i64 = "goostr_bench_setup";
 fn opaque(s: const u8[:]) -> const u8[:] { s[..opaque_len(s)] }
 
 // Non-overlapping counts using one-shot search, matching memchr's count model.

@@ -167,30 +167,33 @@ Goostr uses a clean checkout of Goose
 and Clang 18.1.3; bstr uses Rust 1.97.1. Native C and Rust builds use
 optimization level 3, with runtime SIMD selection and AVX2 available.
 
-Both runners use identical inputs and the same opaque C barrier, warm up
-before timing, rotate execution order, check results, and run on CPU 4.
+Both runners use identical inputs and inline black-box barriers:
+`std::hint::black_box` in Rust and empty, memory-clobbering assembly in Goose.
+They warm up before timing, rotate execution order, check results, and run on CPU 4.
 File I/O and process startup are excluded. Prepared searches exclude finder
 construction on both sides. Counts use repeated one-shot searches, including
 finder construction, and do not count overlapping matches.
 
 **Ratio = goostr / bstr; lower is better for goostr.** Times below are medians
-of nine batches of at least 50 ms. These are selected workloads, not an
+of nine batches calibrated to at least 50 ms. These are selected workloads, not an
 overall score.
 
 | Input / scenario | Operation | goostr | bstr | Ratio |
 | --- | --- | ---: | ---: | ---: |
-| English subtitles, `you` needle | forward count | 141.06 µs | 215.43 µs | 0.65× |
-| Upstream adversarial alphabet, `qbz` needle | forward count | 28.20 µs | 156.41 µs | 0.18× |
-| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.27 ms | 8.94 ms | 0.37× |
-| Same executable and needle | reverse count | 3.37 ms | 13.35 ms | 0.25× |
-| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.76 µs | 21.26 µs | 0.84× |
-| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 94.62 µs | 1,656.75 µs | 0.06× |
-| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 25.97 µs | 34.79 µs | 0.75× |
-| Same, needle appended at end | prepared `find` | 26.08 µs | 34.64 µs | 0.75× |
-| Same, needle appended at end | reverse count | 716.00 µs | 775.04 µs | 0.92× |
+| English subtitles, `you` needle | forward count | 140.69 µs | 221.06 µs | 0.64× |
+| Upstream adversarial alphabet, `qbz` needle | forward count | 28.33 µs | 157.86 µs | 0.18× |
+| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.29 ms | 9.13 ms | 0.36× |
+| Same executable and needle | reverse count | 3.37 ms | 14.81 ms | 0.23× |
+| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.21 µs | 20.47 µs | 0.84× |
+| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 96.82 µs | 1,692.46 µs | 0.06× |
+| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 32.63 µs | 31.03 µs | 1.05× |
+| Same input and needle | prepared `rfind` | 1,040.49 µs | 794.49 µs | 1.31× |
+| Same, needle appended at end | prepared `find` | 32.30 µs | 32.17 µs | 1.00× |
+| Same, needle appended at end | reverse count | 734.72 µs | 811.81 µs | 0.91× |
 
-[Raw measurements](bench/results/2026-11-02-clang-4645a5c.json) include
-individual samples, input and source hashes, and toolchain details.
+[Raw measurements](bench/results/2026-11-02-clang-inline.json) and the
+[prepared reverse search](bench/results/2026-11-02-clang-inline-prepared.json)
+include individual samples, input and source hashes, and toolchain details.
 
 ## Contributing
 
@@ -217,6 +220,10 @@ cases, or `--baseline-exe` to compare with a previously built version. Timings
 exclude file I/O, include a warm-up pass, and retain individual samples and
 compiler/CPU details in JSON. Pin the benchmark to one CPU where possible;
 run compiler/target comparisons sequentially. See `--help` for other options.
+
+Use `--barrier external` to compare with a separately compiled C barrier in
+both runners. Barrier choice can affect inlining and code layout, not just
+call overhead. Prebuilt executables must use the same barrier as the comparison.
 
 The runner builds native C and Rust code at optimization level 3. Goose's
 separate `-O2` option selects its maximum inlining level; it does not limit the
