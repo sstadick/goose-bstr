@@ -99,7 +99,7 @@ fn rfind_char(s: const u8[:], cp: i64) -> i64 {
 // assert(goostr::find_byteset("abc,def;ghi", ",;") == 3);
 // assert(goostr::find_byteset("abc", "") == -1);
 // ```
-fn find_byteset(s: const u8[:], set: const u8[:]) -> i64 {
+inline fn find_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, false, false);
 }
 
@@ -110,7 +110,7 @@ fn find_byteset(s: const u8[:], set: const u8[:]) -> i64 {
 // assert(goostr::find_not_byteset("  \tname", " \t") == 3);
 // assert(goostr::find_not_byteset("  ", " ") == -1);
 // ```
-fn find_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
+inline fn find_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, false, true);
 }
 
@@ -121,7 +121,7 @@ fn find_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
 // assert(goostr::rfind_byteset("abc,def;ghi", ",;") == 7);
 // assert(goostr::rfind_byteset("abc", "") == -1);
 // ```
-fn rfind_byteset(s: const u8[:], set: const u8[:]) -> i64 {
+inline fn rfind_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, true, false);
 }
 
@@ -132,7 +132,7 @@ fn rfind_byteset(s: const u8[:], set: const u8[:]) -> i64 {
 // assert(goostr::rfind_not_byteset("name \t ", " \t") == 3);
 // assert(goostr::rfind_not_byteset("", "") == -1);
 // ```
-fn rfind_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
+inline fn rfind_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, true, true);
 }
 

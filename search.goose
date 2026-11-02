@@ -229,8 +229,8 @@ inline fn packed_small(s: const u8[:], needle: const u8[:], a: i64, b: i64, reve
     return -1;
 }
 
-inline fn small_test(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert: bool) -> goosimd::Mask<u8[32]> {
-    let v = goosimd::load<goosimd::U8x32>(s);
+inline fn small_test<L>(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert: bool) -> goosimd::Mask<L> {
+    let v = goosimd::load<goosimd::Vec<L>>(s);
     var hits = v.eq(a);
     if count >= 2 { hits = hits.bit_or(v.eq(b)); }
     if count == 3 { hits = hits.bit_or(v.eq(c)); }
@@ -248,7 +248,7 @@ inline fn small_mask16(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert: 
 }
 
 inline fn small_search(s: const u8[:], a: u8, b: u8, c: u8, count: i64, reverse: bool, invert: bool) -> i64 {
-    if !runtime_simd() || s.len < DISPATCH_MIN { return small_search_base(s, a, b, c, count, reverse, invert); }
+    if !runtime_simd() || s.len < DISPATCH_MIN { return small_search_base<u8[16]>(s, a, b, c, count, reverse, invert); }
     // An immediate match should not pay for dispatch or a four-block scan.
     let edge = if reverse { s[s.len - 16..] } else { s };
     let hits = small_mask16(edge, a, b, c, count, invert);
@@ -260,13 +260,15 @@ inline fn small_search(s: const u8[:], a: u8, b: u8, c: u8, count: i64, reverse:
 
 // The fixed array keeps the comparison count constant in each SIMD version.
 simd fn small_search_wide<Set>(s: const u8[:], set: Set, reverse: bool, invert: bool) -> i64 {
-    return small_search_base(s, set[0], set[if set.len >= 2 { 1 } else { 0 }],
+    return small_search_base<u8[32]>(s, set[0], set[if set.len >= 2 { 1 } else { 0 }],
         set[set.len - 1], set.len, reverse, invert);
 }
 
 // Count and inversion are constants at the call sites. Misses test four
 // blocks together; a hit resolves the first/last matching lane in order.
-inline fn small_search_base(s: const u8[:], a: u8, b: u8, c: u8, count: i64, reverse: bool, invert: bool) -> i64 {
+// Baseline scans use 16-byte masks; 32-byte masks belong in the SIMD clones.
+inline fn small_search_base<L>(s: const u8[:], a: u8, b: u8, c: u8, count: i64, reverse: bool, invert: bool) -> i64 {
+    let width = default<L>().len;
     if s.len < 32 && s.len >= 16 {
         if !reverse {
             let first = small_mask16(s, a, b, c, count, invert);
@@ -281,32 +283,32 @@ inline fn small_search_base(s: const u8[:], a: u8, b: u8, c: u8, count: i64, rev
     }
     var rest = s;
     if !reverse {
-        while rest.len >= 128 {
-            let v0 = small_test(rest, a, b, c, count, invert);
-            let v1 = small_test(rest[32..], a, b, c, count, invert);
-            let v2 = small_test(rest[64..], a, b, c, count, invert);
-            let v3 = small_test(rest[96..], a, b, c, count, invert);
+        while rest.len >= 4 * width {
+            let v0 = small_test<L>(rest, a, b, c, count, invert);
+            let v1 = small_test<L>(rest[width..], a, b, c, count, invert);
+            let v2 = small_test<L>(rest[2 * width..], a, b, c, count, invert);
+            let v3 = small_test<L>(rest[3 * width..], a, b, c, count, invert);
             if v0.bit_or(v1).bit_or(v2.bit_or(v3)).to_bits() != 0 {
                 let base = s.len - rest.len;
                 let m0 = v0.to_bits();
                 let m1 = v1.to_bits();
                 let m2 = v2.to_bits();
                 if m0 != 0 { return base + ctz(m0); }
-                if m1 != 0 { return base + 32 + ctz(m1); }
-                if m2 != 0 { return base + 64 + ctz(m2); }
-                return base + 96 + ctz(v3.to_bits());
+                if m1 != 0 { return base + width + ctz(m1); }
+                if m2 != 0 { return base + 2 * width + ctz(m2); }
+                return base + 3 * width + ctz(v3.to_bits());
             }
-            rest = rest[128..];
+            rest = rest[4 * width..];
         }
-        while rest.len >= 32 {
-            let hits = small_test(rest, a, b, c, count, invert).to_bits();
+        while rest.len >= width {
+            let hits = small_test<L>(rest, a, b, c, count, invert).to_bits();
             if hits != 0 { return s.len - rest.len + ctz(hits); }
-            rest = rest[32..];
+            rest = rest[width..];
         }
         // Overlap the last in-bounds block; earlier bytes have already missed.
-        if rest.len > 0 && s.len >= 32 {
-            let hits = small_test(s[s.len - 32..], a, b, c, count, invert).to_bits();
-            return if hits != 0 { s.len - 32 + ctz(hits) } else { -1 };
+        if rest.len > 0 && s.len >= width {
+            let hits = small_test<L>(s[s.len - width..], a, b, c, count, invert).to_bits();
+            return if hits != 0 { s.len - width + ctz(hits) } else { -1 };
         }
         for v, i in rest {
             if (v == a || (count >= 2 && v == b) || (count == 3 && v == c)) != invert {
@@ -315,31 +317,31 @@ inline fn small_search_base(s: const u8[:], a: u8, b: u8, c: u8, count: i64, rev
         }
         return -1;
     }
-    while rest.len >= 128 {
-        let base = rest.len - 128;
-        let v0 = small_test(rest[base..], a, b, c, count, invert);
-        let v1 = small_test(rest[base + 32..], a, b, c, count, invert);
-        let v2 = small_test(rest[base + 64..], a, b, c, count, invert);
-        let v3 = small_test(rest[base + 96..], a, b, c, count, invert);
+    while rest.len >= 4 * width {
+        let base = rest.len - 4 * width;
+        let v0 = small_test<L>(rest[base..], a, b, c, count, invert);
+        let v1 = small_test<L>(rest[base + width..], a, b, c, count, invert);
+        let v2 = small_test<L>(rest[base + 2 * width..], a, b, c, count, invert);
+        let v3 = small_test<L>(rest[base + 3 * width..], a, b, c, count, invert);
         if v0.bit_or(v1).bit_or(v2.bit_or(v3)).to_bits() != 0 {
             let m3 = v3.to_bits();
             let m2 = v2.to_bits();
             let m1 = v1.to_bits();
-            if m3 != 0 { return base + 96 + 63 - clz(m3); }
-            if m2 != 0 { return base + 64 + 63 - clz(m2); }
-            if m1 != 0 { return base + 32 + 63 - clz(m1); }
+            if m3 != 0 { return base + 3 * width + 63 - clz(m3); }
+            if m2 != 0 { return base + 2 * width + 63 - clz(m2); }
+            if m1 != 0 { return base + width + 63 - clz(m1); }
             return base + 63 - clz(v0.to_bits());
         }
         rest = rest[..base];
     }
-    while rest.len >= 32 {
-        let base = rest.len - 32;
-        let hits = small_test(rest[base..], a, b, c, count, invert).to_bits();
+    while rest.len >= width {
+        let base = rest.len - width;
+        let hits = small_test<L>(rest[base..], a, b, c, count, invert).to_bits();
         if hits != 0 { return base + 63 - clz(hits); }
         rest = rest[..base];
     }
-    if rest.len > 0 && s.len >= 32 {
-        let hits = small_test(s, a, b, c, count, invert).to_bits();
+    if rest.len > 0 && s.len >= width {
+        let hits = small_test<L>(s, a, b, c, count, invert).to_bits();
         return if hits != 0 { 63 - clz(hits) } else { -1 };
     }
     var end = rest.len;
@@ -358,7 +360,7 @@ fn byte_search(s: const u8[:], byte: u8, reverse: bool) -> i64 {
 // Copy the constant directly, without a fill-literal temporary.
 const EMPTY_MEMBERS: u8[256] = [0; 256];
 
-fn byteset_search(s: const u8[:], set: const u8[:], reverse: bool, invert: bool) -> i64 {
+inline fn byteset_search(s: const u8[:], set: const u8[:], reverse: bool, invert: bool) -> i64 {
     if s.len == 0 { return -1; }
     if set.len == 0 { return if invert { if reverse { s.len - 1 } else { 0 } } else { -1 }; }
     if set.len <= 3 {
@@ -644,12 +646,13 @@ inline fn find_small(s: const u8[:], needle: const u8[:], reverse: bool) -> i64 
 // assert(goostr::find(f, "xabababa") == 1);
 // assert(goostr::find(f, "ab") == -1);
 // ```
-fn find(f: const Finder&, s: const u8[:]) -> i64 {
+inline fn find(f: const Finder&, s: const u8[:]) -> i64 {
     let needle = f.needle;
     if needle.len > s.len { return -1; }
     if needle.len == 0 { return 0; }
     if needle.len == 1 { return byte_search(s, needle[0], false); }
     if needle.len <= 32 {
+        if needle.len == s.len { return if equal_short(s, needle) { 0 } else { -1 }; }
         let candidates = s.len - needle.len + 1;
         if candidates >= 16 && candidates < 32 { return packed_small(s, needle, f.a, f.b, false); }
         return packed(s, needle, f.a, f.b, false);

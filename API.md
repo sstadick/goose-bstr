@@ -71,7 +71,7 @@
 
 ## `goostr::Finder`
 
-[source](search.goose#L439-L439)
+[source](search.goose#L441-L441)
 
 ```goose
 struct Finder { needle: const u8[:], a: i64, b: i64, two: TwoWay }
@@ -89,7 +89,7 @@ assert(goostr::find(f, "ababa") == 0);
 
 ## `goostr::FinderReverse`
 
-[source](search.goose#L447-L447)
+[source](search.goose#L449-L449)
 
 ```goose
 struct FinderReverse { needle: const u8[:], two: TwoWay, a: i64, b: i64 }
@@ -107,7 +107,7 @@ assert(goostr::rfind(f, "ababa") == 2);
 
 ## `goostr::finder`
 
-[source](search.goose#L581-L586)
+[source](search.goose#L583-L588)
 
 ```goose
 fn finder(needle: const u8[:]) -> Finder
@@ -126,7 +126,7 @@ assert(goostr::find(f, "haystack") == -1);
 
 ## `goostr::finder_reverse`
 
-[source](search.goose#L596-L605)
+[source](search.goose#L598-L607)
 
 ```goose
 fn finder_reverse(needle: const u8[:]) -> FinderReverse
@@ -145,10 +145,10 @@ assert(goostr::rfind(f, "name") == -1);
 
 ## `goostr::find`
 
-[source](search.goose#L647-L658)
+[source](search.goose#L649-L661)
 
 ```goose
-fn find(f: const Finder&, s: const u8[:]) -> i64
+inline fn find(f: const Finder&, s: const u8[:]) -> i64
 ```
 
 Search with a prepared finder. Return the first matching byte offset in s,
@@ -164,7 +164,7 @@ assert(goostr::find(f, "ab") == -1);
 
 ## `goostr::rfind`
 
-[source](search.goose#L753-L768)
+[source](search.goose#L756-L771)
 
 ```goose
 fn rfind(f: const FinderReverse&, s: const u8[:]) -> i64
@@ -183,7 +183,7 @@ assert(goostr::rfind(f, "ab") == -1);
 
 ## `goostr::find`
 
-[source](search.goose#L868-L873)
+[source](search.goose#L871-L876)
 
 ```goose
 fn find(s: const u8[:], needle: const u8[:]) -> i64
@@ -202,7 +202,7 @@ assert(goostr::find("abc", "x") == -1);
 
 ## `goostr::rfind`
 
-[source](search.goose#L883-L892)
+[source](search.goose#L886-L895)
 
 ```goose
 inline fn rfind(s: const u8[:], needle: const u8[:]) -> i64
@@ -347,7 +347,7 @@ assert(goostr::rfind_char("\xFF�", 0xFFFD) == 1);
 [source](goostr.goose#L102-L104)
 
 ```goose
-fn find_byteset(s: const u8[:], set: const u8[:]) -> i64
+inline fn find_byteset(s: const u8[:], set: const u8[:]) -> i64
 ```
 
 Return the first offset of any byte in set, or -1 if absent.
@@ -365,7 +365,7 @@ assert(goostr::find_byteset("abc", "") == -1);
 [source](goostr.goose#L113-L115)
 
 ```goose
-fn find_not_byteset(s: const u8[:], set: const u8[:]) -> i64
+inline fn find_not_byteset(s: const u8[:], set: const u8[:]) -> i64
 ```
 
 Return the first offset of a byte outside set, or -1 if none exists.
@@ -383,7 +383,7 @@ assert(goostr::find_not_byteset("  ", " ") == -1);
 [source](goostr.goose#L124-L126)
 
 ```goose
-fn rfind_byteset(s: const u8[:], set: const u8[:]) -> i64
+inline fn rfind_byteset(s: const u8[:], set: const u8[:]) -> i64
 ```
 
 Return the last offset of any byte in set, or -1 if absent.
@@ -401,7 +401,7 @@ assert(goostr::rfind_byteset("abc", "") == -1);
 [source](goostr.goose#L135-L137)
 
 ```goose
-fn rfind_not_byteset(s: const u8[:], set: const u8[:]) -> i64
+inline fn rfind_not_byteset(s: const u8[:], set: const u8[:]) -> i64
 ```
 
 Return the last offset of a byte outside set, or -1 if none exists.
