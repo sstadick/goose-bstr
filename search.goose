@@ -55,6 +55,69 @@ simd fn packed_wide(s: const u8[:], needle: const u8[:], a: i64, b: i64, prefilt
     return packed_scan(s, needle, a, b, prefilter);
 }
 
+inline fn prepared_equal(a: const u8[:], b: const u8[:]) -> bool {
+    var left = a;
+    var right = b;
+    while left.len >= 4 {
+        if goosimd::load_u32(left) != goosimd::load_u32(right) { return false; }
+        left = left[4..];
+        right = right[4..];
+    }
+    if left.len >= 2 {
+        if goosimd::load_u16(left) != goosimd::load_u16(right) { return false; }
+        left = left[2..];
+        right = right[2..];
+    }
+    return left.len == 0 || left[0] == right[0];
+}
+
+inline fn prepared_candidates(s: const u8[:], needle: const u8[:], pos: i64, candidates: u32) -> i64 {
+    var hits = candidates;
+    while hits != 0 {
+        let at = pos + ctz(hits);
+        if s.len - at < needle.len { return -1; }
+        if prepared_equal(needle, s[at..at + needle.len]) { return at; }
+        hits &= hits - 1;
+    }
+    return -1;
+}
+
+simd fn prepared_packed(f: const Finder&, s: const u8[:]) -> i64 {
+    let count = s.len - f.min_len + 32;
+    var xs = s[f.a..f.a + count];
+    var ys = s[f.b..f.b + count];
+    let v1 = f.v1;
+    let v2 = f.v2;
+    let needle = f.needle;
+    while xs.len >= 32 {
+        let x = goosimd::load<goosimd::U8x32>(xs).eq(v1);
+        let y = goosimd::load<goosimd::U8x32>(ys).eq(v2);
+        let hits = x.bit_and(y).to_bits();
+        if hits != 0 {
+            let pos = count - xs.len;
+            // The general scan rejects dense three-byte pairs with a third
+            // vector comparison instead of verifying candidates individually.
+            if needle.len == 3 && (hits & (hits - 1)) != 0 {
+                let at = packed_wide(s[pos..], needle, f.a, f.b, false);
+                return if at < 0 { -1 } else { pos + at };
+            }
+            let at = prepared_candidates(s, needle, pos, hits);
+            if at >= 0 { return at; }
+        }
+        xs = xs[32..];
+        ys = ys[32..];
+    }
+    if xs.len > 0 {
+        // Overlap the final load, masking positions already checked.
+        let last = count - 32;
+        let x = goosimd::load<goosimd::U8x32>(s[f.a + last..]).eq(v1);
+        let y = goosimd::load<goosimd::U8x32>(s[f.b + last..]).eq(v2);
+        let mask = (0xFFFFFFFF as u32) << (32 - xs.len);
+        return prepared_candidates(s, needle, last, x.bit_and(y).to_bits() & mask);
+    }
+    return -1;
+}
+
 inline fn packed_scan(s: const u8[:], needle: const u8[:], a: i64, b: i64, prefilter: bool) -> i64 {
     if needle.len > s.len || needle.len < 2 { return -1; }
     let x = needle[a];
@@ -250,9 +313,11 @@ inline fn small_mask16(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert: 
 inline fn small_search(s: const u8[:], a: u8, b: u8, c: u8, count: i64, reverse: bool, invert: bool) -> i64 {
     if !runtime_simd() || s.len < DISPATCH_MIN { return small_search_base<u8[16]>(s, a, b, c, count, reverse, invert); }
     // An immediate match should not pay for dispatch or a four-block scan.
-    let edge = if reverse { s[s.len - 16..] } else { s };
-    let hits = small_mask16(edge, a, b, c, count, invert);
-    if hits != 0 { return if reverse { s.len - 16 + 63 - clz(hits) } else { ctz(hits) }; }
+    let width = if count == 1 { 32 } else { 16 };
+    let edge = if reverse { s[s.len - width..] } else { s };
+    let hits = if count == 1 { small_test<u8[32]>(edge, a, b, c, count, invert).to_bits() }
+        else { small_mask16(edge, a, b, c, count, invert) };
+    if hits != 0 { return if reverse { s.len - width + 63 - clz(hits) } else { ctz(hits) }; }
     if count == 1 { return small_search_wide(s, [a], reverse, invert); }
     if count == 2 { return small_search_wide(s, [a, b], reverse, invert); }
     return small_search_wide(s, [a, b, c], reverse, invert);
@@ -438,7 +503,10 @@ struct TwoWay { critical: i64, period: i64, memory: i64, bytes: u64 }
 // let f: goostr::Finder = goostr::finder("aba");
 // assert(goostr::find(f, "ababa") == 0);
 // ```
-struct Finder { needle: const u8[:], a: i64, b: i64, two: TwoWay, wide: bool }
+struct Finder {
+    needle: const u8[:], a: i64, b: i64, two: TwoWay, wide: bool,
+    v1: goosimd::U8x32, v2: goosimd::U8x32, min_len: i64,
+}
 // A prepared reverse search. Construct with finder_reverse, not by setting
 // fields. Borrows its needle; keep the bytes alive and unchanged while in use.
 //
@@ -584,7 +652,13 @@ fn finder(needle: const u8[:]) -> Finder {
     let a, b = rare_pair(needle);
     // Repeated-byte pairs keep the initial probe for dense early matches.
     let wide = needle.len >= 2 && needle.len <= 32 && needle[a] != needle[b];
-    var f = Finder { needle: needle, a: a, b: b, two: default<TwoWay>(), wide: wide };
+    var f = Finder { needle: needle, a: a, b: b, two: default<TwoWay>(), wide: wide,
+        v1: default<goosimd::U8x32>(), v2: default<goosimd::U8x32>(), min_len: 0 };
+    if wide {
+        f.v1 = goosimd::splat<goosimd::U8x32>(needle[a]);
+        f.v2 = goosimd::splat<goosimd::U8x32>(needle[b]);
+        f.min_len = max(needle.len, max(a, b) + 32);
+    }
     if needle.len > 32 { f.two = two_way(needle, false); }
     return f;
 }
@@ -651,8 +725,8 @@ inline fn find_small(s: const u8[:], needle: const u8[:], reverse: bool) -> i64 
 inline fn find(f: const Finder&, s: const u8[:]) -> i64 {
     let needle = f.needle;
     if needle.len > s.len { return -1; }
-    if runtime_simd() && f.wide && s.len - needle.len + 1 >= DISPATCH_MIN {
-        return packed_wide(s, needle, f.a, f.b, false);
+    if runtime_simd() && f.wide && s.len >= f.min_len {
+        return prepared_packed(f, s);
     }
     if needle.len == 0 { return 0; }
     if needle.len == 1 { return byte_search(s, needle[0], false); }
@@ -876,6 +950,8 @@ inline fn rfind_two_way_scan(f: const FinderReverse&, rest: const u8[:], periodi
 fn find(s: const u8[:], needle: const u8[:]) -> i64 {
     if s.len < 64 { return find_small(s, needle, false); }
     if needle.len > s.len { return -1; }
+    if needle.len == 0 { return 0; }
+    if needle.len == 1 { return byte_search(s, needle[0], false); }
     let f = finder(needle);
     return find(f, s);
 }

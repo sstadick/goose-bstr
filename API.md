@@ -71,10 +71,13 @@
 
 ## `goostr::Finder`
 
-[source](search.goose#L441-L441)
+[source](search.goose#L506-L509)
 
 ```goose
-struct Finder { needle: const u8[:], a: i64, b: i64, two: TwoWay, wide: bool }
+struct Finder {
+    needle: const u8[:], a: i64, b: i64, two: TwoWay, wide: bool,
+    v1: goosimd::U8x32, v2: goosimd::U8x32, min_len: i64,
+}
 ```
 
 A prepared forward search. Construct with finder, not by setting fields.
@@ -89,7 +92,7 @@ assert(goostr::find(f, "ababa") == 0);
 
 ## `goostr::FinderReverse`
 
-[source](search.goose#L449-L449)
+[source](search.goose#L517-L517)
 
 ```goose
 struct FinderReverse { needle: const u8[:], two: TwoWay, a: i64, b: i64 }
@@ -107,7 +110,7 @@ assert(goostr::rfind(f, "ababa") == 2);
 
 ## `goostr::finder`
 
-[source](search.goose#L583-L590)
+[source](search.goose#L651-L664)
 
 ```goose
 fn finder(needle: const u8[:]) -> Finder
@@ -126,7 +129,7 @@ assert(goostr::find(f, "haystack") == -1);
 
 ## `goostr::finder_reverse`
 
-[source](search.goose#L600-L609)
+[source](search.goose#L674-L683)
 
 ```goose
 fn finder_reverse(needle: const u8[:]) -> FinderReverse
@@ -145,7 +148,7 @@ assert(goostr::rfind(f, "name") == -1);
 
 ## `goostr::find`
 
-[source](search.goose#L651-L666)
+[source](search.goose#L725-L740)
 
 ```goose
 inline fn find(f: const Finder&, s: const u8[:]) -> i64
@@ -164,7 +167,7 @@ assert(goostr::find(f, "ab") == -1);
 
 ## `goostr::rfind`
 
-[source](search.goose#L761-L776)
+[source](search.goose#L835-L850)
 
 ```goose
 fn rfind(f: const FinderReverse&, s: const u8[:]) -> i64
@@ -183,7 +186,7 @@ assert(goostr::rfind(f, "ab") == -1);
 
 ## `goostr::find`
 
-[source](search.goose#L876-L881)
+[source](search.goose#L950-L957)
 
 ```goose
 fn find(s: const u8[:], needle: const u8[:]) -> i64
@@ -202,7 +205,7 @@ assert(goostr::find("abc", "x") == -1);
 
 ## `goostr::rfind`
 
-[source](search.goose#L891-L900)
+[source](search.goose#L967-L976)
 
 ```goose
 inline fn rfind(s: const u8[:], needle: const u8[:]) -> i64

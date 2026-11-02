@@ -109,6 +109,25 @@ fn main() {
             count += 1;
         }
     }
+    // A matching prefix at the end must not be mistaken for a full match
+    // or read past the haystack. Cover every lane of the overlapping tail.
+    for nlen in [3, 7, 16, 32] {
+        var n: u8[>..] = [];
+        n.resize(nlen, 'a');
+        n[0] = 'q';
+        n[1] = 'z';
+        for tail in 0..33 {
+            var h: u8[>..] = [];
+            h.resize(64 + tail, 'a');
+            h[h.len - 2] = 'q';
+            h[h.len - 1] = 'z';
+            check(h, n);
+            let at = h.len - n.len - 2;
+            for i in n.len { h[at + i] = n[i]; }
+            check(h, n);
+            count += 2;
+        }
+    }
     // Dense false pair matches must not hide full matches. Exercise each
     // third-byte position, duplicate pair values, and neighboring matches
     // across SIMD lanes, the runtime-dispatch cutoff, and the final block.
@@ -262,6 +281,24 @@ fn main() {
     // Every position around 16/32-byte vectors and 64/128-byte unrolling.
     // Include high bits, NUL, duplicate set members, empty and full sets.
     var set_cases = 0;
+    // First and last blocks on both sides of the runtime-dispatch cutoff.
+    for len in [1023, 1024, 1025] {
+        var h: u8[>..] = [];
+        h.resize(len, 7);
+        for n in ["\0", "\x80", "\xFF"] {
+            check_set(h, n);
+            set_cases += 1;
+            for at in [0, 15, 16, 31, 32, len - 33, len - 32, len - 17, len - 16, len - 1] {
+                h[at] = n[0];
+                assert(goostr::find_byte(h, n[0]) == at);
+                assert(goostr::rfind_byte(h, n[0]) == at);
+                check_set(h, n);
+                check_set(h, "\x07");
+                h[at] = 7;
+                set_cases += 2;
+            }
+        }
+    }
     for size in 0..6 {
         var n: u8[>..] = [];
         for i in size { n.push([0, 128, 255, 1, 128][i] as u8); }
