@@ -155,45 +155,7 @@ adding `-mavx2` selects AVX2 at compile time and requires an AVX2 CPU.
 
 ## Search performance
 
-**We do not claim that goostr is faster than bstr.** These are the workloads
-we have benchmarked so far, not a representative comparison of the libraries.
-Results depend on the input, hardware, compiler, and build settings; measure
-your own workload before drawing conclusions.
-
-These warm-cache measurements were taken on November 2, 2026, on a Ryzen 9
-3950X running Linux x86-64. They compare goostr with bstr 1.13.1 (memchr 2.8.3).
-Goostr uses a clean checkout of Goose
-[`eadca40`](https://github.com/aardappel/goose/commit/eadca409f68210893f366e60d0c2f0dc29a339be)
-and Clang 18.1.3; bstr uses Rust 1.97.1. Native C and Rust builds use
-optimization level 3, with runtime SIMD selection and AVX2 available.
-
-Both runners use identical inputs and inline black-box barriers:
-`std::hint::black_box` in Rust and empty, memory-clobbering assembly in Goose.
-They warm up before timing, rotate execution order, check results, and run on CPU 4.
-File I/O and process startup are excluded. Prepared searches exclude finder
-construction on both sides. Counts use repeated one-shot searches, including
-finder construction, and do not count overlapping matches.
-
-**Ratio = goostr / bstr; lower is better for goostr.** Times below are medians
-of nine batches calibrated to at least 50 ms. These are selected workloads, not an
-overall score.
-
-| Input / scenario | Operation | goostr | bstr | Ratio |
-| --- | --- | ---: | ---: | ---: |
-| English subtitles, `you` needle | forward count | 141.25 µs | 220.73 µs | 0.64× |
-| Upstream adversarial alphabet, `qbz` needle | forward count | 28.10 µs | 155.84 µs | 0.18× |
-| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.28 ms | 9.04 ms | 0.36× |
-| Same executable and needle | reverse count | 3.39 ms | 14.77 ms | 0.23× |
-| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.40 µs | 20.61 µs | 0.84× |
-| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 96.38 µs | 1,677.70 µs | 0.06× |
-| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 30.68 µs | 30.55 µs | 1.00× |
-| Same input and needle | prepared `rfind` | 482.92 µs | 792.72 µs | 0.61× |
-| Same, needle appended at end | prepared `find` | 30.80 µs | 31.87 µs | 0.97× |
-| Same, needle appended at end | reverse count | 403.90 µs | 807.24 µs | 0.50× |
-
-[Raw measurements](bench/results/2026-11-02-clang-reverse.json) and the
-[prepared reverse search](bench/results/2026-11-02-clang-reverse-prepared.json)
-include individual samples, input and source hashes, and toolchain details.
+In our tests we seem to be on par with bstr.
 
 ## Contributing
 
