@@ -13,12 +13,41 @@ concurrency:
 
 jobs:
   test:
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    name: ${{ matrix.os }} / ${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            arch: x86_64
+            compilers: gcc clang
+          - os: ubuntu-24.04-arm
+            arch: arm64
+            compilers: gcc clang
+          - os: macos-15
+            arch: arm64
+            compilers: clang
+          - os: windows-2025
+            arch: x86_64
+            compilers: msvc clang-cl
+    defaults:
+      run:
+        shell: bash
+    env:
+      PYTHONUTF8: '1'
+      NATIVE_COMPILERS: ${{ matrix.compilers }}
     steps:
+      - name: Preserve shell script and generated documentation line endings
+        if: runner.os == 'Windows'
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
       - name: Check out Goose
         uses: actions/checkout@v4
         with:
@@ -37,9 +66,27 @@ jobs:
       - name: Build Goose
         run: |
           cmake -S .ci/goose -B .ci/goose/build -DCMAKE_BUILD_TYPE=Debug -DGOOSE_BUILTIN_LIBS=
-          cmake --build .ci/goose/build --parallel 2
-          echo "$GITHUB_WORKSPACE/.ci/goose/build" >> "$GITHUB_PATH"
-          echo "GOOSE_HOME=$RUNNER_TEMP/goostr-home" >> "$GITHUB_ENV"
+          cmake --build .ci/goose/build --config Debug --parallel 2
+      - name: Set test environment and check architecture
+        shell: python
+        env:
+          EXPECTED_ARCH: ${{ matrix.arch }}
+        run: |
+          import os
+          from pathlib import Path
+          import platform
+
+          machine = platform.machine().lower()
+          arch = {'amd64': 'x86_64', 'aarch64': 'arm64'}.get(machine, machine)
+          assert arch == os.environ['EXPECTED_ARCH'], (machine, os.environ['EXPECTED_ARCH'])
+          print(f'Testing {platform.system()} on {arch}')
+          build = Path(os.environ['GITHUB_WORKSPACE']) / '.ci/goose/build'
+          if os.name == 'nt':
+              build /= 'Debug'
+          with open(os.environ['GITHUB_PATH'], 'a', encoding='utf-8') as out:
+              out.write(str(build) + '\n')
+          with open(os.environ['GITHUB_ENV'], 'a', encoding='utf-8') as out:
+              out.write('GOOSE_HOME=' + str(Path(os.environ['RUNNER_TEMP']) / 'goostr-home') + '\n')
       - name: Check API reference
         env:
           GOOSDOC: .ci/goosdoc/main.goose
@@ -49,40 +96,31 @@ jobs:
           GOOSDOC: .ci/goosdoc/main.goose
         run: |
           scripts/doctest.sh
-          scripts/doctest.sh --cc gcc
-          scripts/doctest.sh --cc clang
+          read -ra compilers <<< "$NATIVE_COMPILERS"
+          for cc in "${compilers[@]}"; do
+            scripts/doctest.sh --cc "$cc"
+          done
       - name: Generate release reference
+        if: matrix.os == 'ubuntu-24.04'
         env:
           GOOSDOC: .ci/goosdoc/main.goose
           DOC_OUTPUT: ${{ runner.temp }}/API.md
         run: scripts/docs.sh --source-url "https://github.com/$GITHUB_REPOSITORY/blob/$GITHUB_SHA"
       - uses: actions/upload-artifact@v4
+        if: matrix.os == 'ubuntu-24.04'
         with:
           name: api-reference
           path: ${{ runner.temp }}/API.md
           if-no-files-found: error
-      - name: TinyCC tests
+      - name: TinyCC and native tests
         run: |
-          for level in 0 2; do
-            goose run tests/test.goose --debug "-O$level"
-            goose run tests/search.goose --debug "-O$level"
-          done
-      - name: GCC and Clang tests
-        run: |
-          for cc in gcc clang; do
-            for suite in test search; do
-              goose build "tests/$suite.goose" --cc "$cc" --debug -O2 -o "$RUNNER_TEMP/$suite-$cc"
-              "$RUNNER_TEMP/$suite-$cc"
-            done
-          done
-      - name: Baseline, scalar, and AVX2 search tests
+          read -ra compilers <<< "$NATIVE_COMPILERS"
+          python3 tests/run.py --cc "${compilers[@]}"
+      - name: AVX2 and runtime dispatch search tests
+        if: matrix.os == 'ubuntu-24.04'
         run: |
           goose --standalone -o "$RUNNER_TEMP/search.c" tests/search.goose
           for cc in gcc clang; do
-            "$cc" -O2 -DGS_SIMD=0 "$RUNNER_TEMP/search.c" -o "$RUNNER_TEMP/search-baseline" -lm -pthread -ldl
-            "$RUNNER_TEMP/search-baseline"
-            "$cc" -O2 -DGS_SIMD=0 -DGOOSIMD_SCALAR "$RUNNER_TEMP/search.c" -o "$RUNNER_TEMP/search-scalar" -lm -pthread -ldl
-            "$RUNNER_TEMP/search-scalar"
             if grep -qw avx2 /proc/cpuinfo; then
               "$cc" -O2 -DGS_SIMD=0 -mavx2 "$RUNNER_TEMP/search.c" -o "$RUNNER_TEMP/search-avx2" -lm -pthread -ldl
               "$RUNNER_TEMP/search-avx2"

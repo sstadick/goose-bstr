@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Compare public operations with Rust bstr. Requires Goose, Cargo and Python 3."""
 import itertools
+import os
 from pathlib import Path
 import random
 import subprocess
@@ -53,10 +54,11 @@ def main():
         needles = [b"", b"a", b"ab", b"aba", data[:2], data[len(data) // 2:]]
         cases.append(f"{data.hex()}|{needles[i % len(needles)].hex()}|{i % 5}")
     inputs = ("\n".join(cases) + "\n").encode()
-    oracle = subprocess.run([str(ROOT / "tests/oracle/target/debug/goostr-oracle")],
+    suffix = ".exe" if os.name == "nt" else ""
+    oracle = subprocess.run([str(ROOT / "tests/oracle/target/debug" / ("goostr-oracle" + suffix))],
                             input=inputs, stdout=subprocess.PIPE, check=True).stdout.splitlines()
     with tempfile.TemporaryDirectory(prefix="goostr-test-") as temp:
-        exe = str(Path(temp) / "snapshot")
+        exe = str(Path(temp) / ("snapshot" + suffix))
         subprocess.run(["goose", "build", str(ROOT / "tests/snapshot.goose"),
                         "--debug", "-O2", "-o", exe], check=True)
         actual = subprocess.run([exe], input=inputs, stdout=subprocess.PIPE, check=True).stdout.splitlines()

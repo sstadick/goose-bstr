@@ -197,13 +197,20 @@ include individual samples, input and source hashes, and toolchain details.
 
 ## Contributing
 
-Run the library tests from this checkout:
+CI targets native Linux x86-64 and ARM64, macOS ARM64, and Windows x86-64.
+Each job runs documentation examples, library tests, and comparisons with bstr.
+Search tests cover native vector builds and forced-scalar builds; Linux x86-64
+also tests explicit AVX2 when the runner supports it.
+
+Run the library tests from this checkout with your installed C compilers:
 
 ```sh
-goose run tests/test.goose --debug
-goose run tests/search.goose --debug
+python3 tests/run.py --cc gcc clang
 python3 tests/differential.py
 ```
+
+Use `--cc clang` on macOS or `--cc msvc clang-cl` on Windows. The test runner
+also exercises TinyCC and keeps generated executables in a temporary directory.
 
 The bstr comparison requires Python 3, Cargo, and a native C compiler.
 Compare search performance against bstr with the same inputs and checked results:
