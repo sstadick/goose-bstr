@@ -438,7 +438,7 @@ struct TwoWay { critical: i64, period: i64, memory: i64, bytes: u64 }
 // let f: goostr::Finder = goostr::finder("aba");
 // assert(goostr::find(f, "ababa") == 0);
 // ```
-struct Finder { needle: const u8[:], a: i64, b: i64, two: TwoWay }
+struct Finder { needle: const u8[:], a: i64, b: i64, two: TwoWay, wide: bool }
 // A prepared reverse search. Construct with finder_reverse, not by setting
 // fields. Borrows its needle; keep the bytes alive and unchanged while in use.
 //
@@ -582,7 +582,9 @@ inline fn rare_pair(needle: const u8[:]) -> i64, i64 {
 // ```
 fn finder(needle: const u8[:]) -> Finder {
     let a, b = rare_pair(needle);
-    var f = Finder { needle: needle, a: a, b: b, two: default<TwoWay>() };
+    // Repeated-byte pairs keep the initial probe for dense early matches.
+    let wide = needle.len >= 2 && needle.len <= 32 && needle[a] != needle[b];
+    var f = Finder { needle: needle, a: a, b: b, two: default<TwoWay>(), wide: wide };
     if needle.len > 32 { f.two = two_way(needle, false); }
     return f;
 }
@@ -649,6 +651,9 @@ inline fn find_small(s: const u8[:], needle: const u8[:], reverse: bool) -> i64 
 inline fn find(f: const Finder&, s: const u8[:]) -> i64 {
     let needle = f.needle;
     if needle.len > s.len { return -1; }
+    if runtime_simd() && f.wide && s.len - needle.len + 1 >= DISPATCH_MIN {
+        return packed_wide(s, needle, f.a, f.b, false);
+    }
     if needle.len == 0 { return 0; }
     if needle.len == 1 { return byte_search(s, needle[0], false); }
     if needle.len <= 32 {
