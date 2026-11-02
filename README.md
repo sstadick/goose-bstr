@@ -157,6 +157,10 @@ adding `-mavx2` selects AVX2 at compile time and requires an AVX2 CPU.
 
 In our tests we seem to be on par with bstr.
 
+[Results from memchr's benchmark suite](bench/results/2026-11-02-rebar/README.md)
+include per-case timings, comparisons with other engines, raw measurements,
+and limitations.
+
 ## Contributing
 
 CI targets native Linux x86-64 and ARM64, macOS ARM64, and Windows x86-64.

@@ -1,0 +1,44 @@
+{
+  "revisions": {
+    "goostr": "168e7a62d54b41ef39787e07bb04104f60399239",
+    "memchr": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+    "rebar": "463d00f31887e84c38467805b9e3122c314b9521",
+    "goose": "eadca409f68210893f366e60d0c2f0dc29a339be",
+    "goosimd": "43f2156370a80cca62d61e41ec5025a66d197ff7"
+  },
+  "clang": "Ubuntu clang version 18.1.3 (1ubuntu1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin",
+  "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)\nbinary: rustc\ncommit-hash: 8bab26f4f68e0e26f0bb7960be334d5b520ea452\ncommit-date: 2026-07-14\nhost: x86_64-unknown-linux-gnu\nrelease: 1.97.1\nLLVM version: 22.1.6",
+  "cpu": "AMD Ryzen 9 3950X, Linux x86-64; frequency boost enabled",
+  "affinity_cpu": 4,
+  "goose_flags": [
+    "--standalone",
+    "-O2"
+  ],
+  "native_flags": [
+    "clang",
+    "-O3",
+    "-lm",
+    "-pthread",
+    "-ldl"
+  ],
+  "rust_profile": "release: default opt-level=3, codegen-units=1, lto=fat",
+  "warmup": "50ms",
+  "measurement": "100ms",
+  "max_iters": 20000,
+  "published": true,
+  "sha256": {
+    "goostr/search.goose": "72a47c1979a9fe52f2f0b39fcb28db03c109a0e61aa04fa74fb8e98977d98bdc",
+    "goostr/goostr.goose": "a9e5b6ebc0a9b215c338862311a9ae257d7da804db40f5a747ba179d0e44d980",
+    "goosimd/goosimd.goose": "ae068945173e27f1d200a6badedd80191a707e4769ddbf0eae1bf629ff901763",
+    "goosimd/include/goosimd.h": "187fdd6252b2aec1f5ae04f261d0ed4cc1f0085fa425dd47ee8833f1e5eedf51",
+    "local-runner/executable": "11e740d9473165c3886d7081e6232cc348cf109a0f79e181bf9634f60ff2629d",
+    "local-runner/main.goose": "87f119273b7c089fc5c36420a9c96d6b683bd438b2a270265ed35a723e499b5b",
+    "local-runner/main.c": "8d54865c195e64ed667f6ffe6fd69ccf55ac3942c2b3ede6e3c7a3c91510a4b7",
+    "round-1.csv": "852590ba5ad618502e010be36854b76ec48620a7fa0201f65166706b60cd9d5f",
+    "round-2.csv": "16ec4cac2685f92833c33cbc739cc2f98d664fa3db863f145ff1d38f5dfc7ecd"
+  },
+  "recorded_at": "2026-11-02T20:14:32.634236+00:00",
+  "engine_version": "d636f9853fad-bin11e740d94731",
+  "source_state": "Measured before commit; source hashes match the goostr revision above.",
+  "runner_integration": "Local only; adapter and engine registration are not included in this repository."
+}
