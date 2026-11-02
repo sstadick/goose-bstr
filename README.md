@@ -179,17 +179,17 @@ overall score.
 
 | Input / scenario | Operation | goostr | bstr | Ratio |
 | --- | --- | ---: | ---: | ---: |
-| English subtitles, `you` needle | forward count | 137.03 µs | 213.50 µs | 0.64× |
-| Upstream adversarial alphabet, `qbz` needle | forward count | 28.18 µs | 156.28 µs | 0.18× |
-| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.26 ms | 8.95 ms | 0.36× |
-| Same executable and needle | reverse count | 16.23 ms | 13.38 ms | 1.21× |
-| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.24 µs | 20.36 µs | 0.85× |
-| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 88.03 µs | 1,660.05 µs | 0.05× |
-| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 25.71 µs | 34.23 µs | 0.75× |
-| Same, needle appended at end | prepared `find` | 25.84 µs | 34.47 µs | 0.75× |
-| Same, needle appended at end | reverse count | 879.88 µs | 778.70 µs | 1.13× |
+| English subtitles, `you` needle | forward count | 141.06 µs | 215.43 µs | 0.65× |
+| Upstream adversarial alphabet, `qbz` needle | forward count | 28.20 µs | 156.41 µs | 0.18× |
+| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.27 ms | 8.94 ms | 0.37× |
+| Same executable and needle | reverse count | 3.37 ms | 13.35 ms | 0.25× |
+| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.76 µs | 21.26 µs | 0.84× |
+| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 94.62 µs | 1,656.75 µs | 0.06× |
+| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 25.97 µs | 34.79 µs | 0.75× |
+| Same, needle appended at end | prepared `find` | 26.08 µs | 34.64 µs | 0.75× |
+| Same, needle appended at end | reverse count | 716.00 µs | 775.04 µs | 0.92× |
 
-[Raw measurements](bench/results/2026-11-02-clang-eadca40.json) include
+[Raw measurements](bench/results/2026-11-02-clang-4645a5c.json) include
 individual samples, input and source hashes, and toolchain details.
 
 ## Contributing
