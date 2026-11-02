@@ -30,8 +30,11 @@ executable hash; the source hashes in `environment.json` match this commit.
   The local Goose runner implements rebar's KLV protocol and uses a monotonic clock.
   Input parsing, prepared-finder setup, and CSV output are outside the timed job.
   Neither runner adds an FFI call or extra black-box barrier.
-- Goostr byte-set counts repeatedly call public searches; memchr2/3 use reusable
-  iterators. Count-only engines do not produce individual match offsets.
+- Goostr byte and byte-set counts repeatedly call public searches. Memchr's
+  forward one-shot byte count does the same; its reverse byte count and
+  two-/three-byte-set counts use reusable iterators. These compare complete
+  workloads, including their different setup and iteration costs. Count-only
+  engines do not produce individual match offsets.
 - Ratios near clock overhead are imprecise. Geometric means weight each case
   equally and are not overall application speedups. A favorable aggregate does
   not imply a win on every case or even most cases.

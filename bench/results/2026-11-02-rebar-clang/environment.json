@@ -1,0 +1,134 @@
+{
+  "timestamp_utc": "2026-11-02T23:40:06.650866+00:00",
+  "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+  "cpu": "AMD Ryzen 9 3950X 16-Core Processor",
+  "cpu_affinity": 4,
+  "rounds": 2,
+  "pins": {
+    "goose": [
+      "aardappel/goose",
+      "eadca409f68210893f366e60d0c2f0dc29a339be"
+    ],
+    "goosimd": [
+      "sstadick/goosimd",
+      "983f3bb2bfee95affd09f4f5530be249d7d6040b"
+    ],
+    "memchr": [
+      "BurntSushi/memchr",
+      "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d"
+    ],
+    "rebar": [
+      "BurntSushi/rebar",
+      "463d00f31887e84c38467805b9e3122c314b9521"
+    ]
+  },
+  "goostr_revision": "366b70366fe3e5e6a574858e897216561d2ac362",
+  "goostr_status": "M README.md\n M bench/results/2026-11-02-rebar/README.md\n?? bench/rebar/",
+  "versions": {
+    "goose": "goose v2026.3-265-geadca409 (runtime 3025e5810379)",
+    "clang": "Ubuntu clang version 18.1.3 (1ubuntu1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin",
+    "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)"
+  },
+  "goose_flags": [
+    "--standalone",
+    "-O2"
+  ],
+  "c_flags": [
+    "-O3"
+  ],
+  "rust_profile": "upstream release (opt-level 3, one codegen unit, fat LTO)",
+  "command": [
+    "taskset",
+    "-c",
+    "4",
+    "/home/seth/dev/goostr/.amp/in/rebar-bench/rebar/target/release/rebar",
+    "measure",
+    "-d",
+    "/home/seth/dev/goostr/.amp/in/rebar-bench/memchr/benchmarks",
+    "-E",
+    "wasm32",
+    "--max-time",
+    "100ms",
+    "--max-warmup-time",
+    "50ms",
+    "--max-iters",
+    "20000",
+    "--timeout",
+    "30s"
+  ],
+  "source_hashes": {
+    "search.goose": "7b581c887c64d72553b63388f7e4711b12d3e941b8966715ef1bb11da6d7e39a",
+    "goostr.goose": "a9e5b6ebc0a9b215c338862311a9ae257d7da804db40f5a747ba179d0e44d980",
+    "utf8.goose": "b14cf1a38e66d80c43e43d9ad5646ebcfba79e77444563cab04f6ec1afa117ed",
+    "src/dispatch.h": "35c506ef3d7b62f783b7e35243794bf9c4e02b2ff455441959794d3511f64f7c",
+    "bench/rebar/main.goose": "e4183b4449605390bcc36207ef1e70b738b4a97065c4db2726ff5d32e4e48484",
+    "bench/rebar/run.py": "20e58b9344795c2276493f335a12e54fe119dccef1c7fb20f4f3b77a091f237b",
+    "bench/rebar/report.py": "c89cdd307749d83bbfe3106e48ebb8a7f314ef64c2d5ef73319b50db387afd55"
+  },
+  "dependency_hashes": {
+    "goosimd.goose": "78272efb1c82b3ed028506bcc4d7f5f67f748cc17c0e487379df9037595e1389",
+    "include/goosimd.h": "40a3fcc685114d1902c1a153a62e21c35fb21392a6c93113f8d1a8e4fbf369c2"
+  },
+  "cargo_lock_hashes": {
+    "benchmarks/engines/libc/Cargo.lock": "203dbf9a4abae0af8e7d055f58b43f3ecc67c6f000e2851c0aa4c80779ee619b",
+    "benchmarks/engines/rust-bytecount/Cargo.lock": "9287c1ff9e54f01422914b2f71b7351f718cf22dfa1efe45e89016d3dcd15405",
+    "benchmarks/engines/rust-jetscii/Cargo.lock": "125911ba845f25bd6ea19904ef04718140ea2005d3f0c16df986a7c4e8d6dd0d",
+    "benchmarks/engines/rust-memchr/Cargo.lock": "02057fdec8b7760f9908c38cd88d17d936591a9d080f5b296fcf96fc891584b0",
+    "benchmarks/engines/rust-memchrold/Cargo.lock": "f9d38d53deba1ac767d5cb3f63c40fc9ad4e8d3ba16fec5b0119f47dd2bc5730",
+    "benchmarks/engines/rust-sliceslice/Cargo.lock": "ad639aa29679c94c52a6f7ffc33d33d2e95c7791b3acee961b0976c3f00be636",
+    "benchmarks/engines/rust-std/Cargo.lock": "2bea2ef1a934938191bda0cf771114db33af5c2c29cb9397e8a922d0e7f0bf9b",
+    "benchmarks/engines/stringzilla/Cargo.lock": "04bafd6c4689bddf9849796932a5ae6f4143c1f84dd3e47745225e8abb56c166"
+  },
+  "fixture_hashes": {
+    "benchmarks/definitions/memchr/sherlock/common.toml": "6caf1ff5efaee5f78403a4472c872ee3b69cdfd314330f0b65462a5a0f13dc40",
+    "benchmarks/definitions/memchr/sherlock/never.toml": "2a982b3eea8cce8a61ac725ff19a20ab2feab74b0c1262f9f22fad171158eeaf",
+    "benchmarks/definitions/memchr/sherlock/rare.toml": "de044f4e064878b8c0717d3ac5dea93412b35484e7d8bc2a0f2080e3df62bf73",
+    "benchmarks/definitions/memchr/sherlock/uncommon.toml": "650e7dd1e3631c6e2f2a6f14a37f0f073a1e339a374f6f6fee59a198000ca59c",
+    "benchmarks/definitions/memchr/sherlock/verycommon.toml": "a67b9bd49f765d8024b116c1916cc53ca6cccab42f2fef1c8436f17320c38f32",
+    "benchmarks/definitions/memmem/byterank.toml": "cc76abc195f1b287310806ced92a8c38fe85f94d3c4cc2f44a50ea2c2f838f8a",
+    "benchmarks/definitions/memmem/code.toml": "1faec00a2738f9fc60708c62b329f31b5a8ab83b7101bd7e0631b5b1e3d31635",
+    "benchmarks/definitions/memmem/pathological.toml": "2b4211e123980f4e4ada1ca52199068d03fd9bbe2f7690e340c50afc92b0dc79",
+    "benchmarks/definitions/memmem/sliceslice.toml": "2d2b94df32ed6626c52296e42129743e69206fd9d8af87866cd35b1cd5325679",
+    "benchmarks/definitions/memmem/subtitles/common.toml": "3227235d3d9afbaceae42fa2306275f118cf4c8f93fd841a6413961347bd8a44",
+    "benchmarks/definitions/memmem/subtitles/never.toml": "f47ea936e2252c8a2eaa4bc15f1e8e408a60e74a79d8ad8f42602be45ea5b46f",
+    "benchmarks/definitions/memmem/subtitles/rare.toml": "32465da580d0d524e1f7cc80664ca0334e6e0d7419c1dc610179e3df5fa41485",
+    "benchmarks/haystacks/README.md": "9fc354650d874c8bfe854b259401251ce0550e6a1da7187121470a68ee711b5e",
+    "benchmarks/haystacks/code/README.md": "a987d0b1814944bd49f5f9974a843756b549953436b0a703f9f14cdbd9f97f19",
+    "benchmarks/haystacks/code/rust-library.rs": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+    "benchmarks/haystacks/opensubtitles/README.md": "cb5ad149582ab60062c998d0066bbe2fbe662970f2a7f930638c2fa83b827ba5",
+    "benchmarks/haystacks/opensubtitles/en-huge.txt": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+    "benchmarks/haystacks/opensubtitles/en-medium.txt": "d1da7bb695f9807deaa21306ee0c132f09d92d92c13d07219792c6765480f90c",
+    "benchmarks/haystacks/opensubtitles/en-small.txt": "f1f7f5df5541ccfd67912d14a492d8e09c81081b6bdfb5dd42da22b5bec2ba8a",
+    "benchmarks/haystacks/opensubtitles/en-teeny.txt": "df96f11c5cf3fe2d6d3d055b89e7c3a36ade56a44041a4c7a510e7056c6f456b",
+    "benchmarks/haystacks/opensubtitles/en-tiny.txt": "fb3fa0f377a15f21b5e3658b4b791e38d7a6015e808dc17666652beba7de7eae",
+    "benchmarks/haystacks/opensubtitles/ru-huge.txt": "f3051579c195bbf7362cf2ea163a58b4c98e183993344c0e7566ca791f375cb8",
+    "benchmarks/haystacks/opensubtitles/ru-medium.txt": "d266a0858e828a9e725d89a947f56507cb63fba2d4b45847dc232a0b7ca95a4e",
+    "benchmarks/haystacks/opensubtitles/ru-small.txt": "ffda94a4199ece49284fb15b425e8e144416e364421b15bc7cadf7997c3947fd",
+    "benchmarks/haystacks/opensubtitles/ru-teeny.txt": "0b1d027caaa49a6fbe4bca2185f2afa0278d5945482c1ffb4ba4d3a5fdb34cbc",
+    "benchmarks/haystacks/opensubtitles/ru-tiny.txt": "3e2e7d356a8371cb79fb886d7040664436df9e40943e8edf89cd3744b786e57a",
+    "benchmarks/haystacks/opensubtitles/zh-huge.txt": "f29c872da93918dd8fd917e5ca3453448efbdf344cc3857ebe45dc01f94dd44b",
+    "benchmarks/haystacks/opensubtitles/zh-medium.txt": "a10cf9525fb01c1686d2fc4308aca81be33221c029f8dbef1fafe6a3be72860d",
+    "benchmarks/haystacks/opensubtitles/zh-small.txt": "b869a7baaf88118bb3fccaa85934383dba8f13de2613c9aa90786a9dade0bf46",
+    "benchmarks/haystacks/opensubtitles/zh-teeny.txt": "813ab7ea81b2206c4e5984ed265fa52703d1a712094a71efc055dbdd72b1aab3",
+    "benchmarks/haystacks/opensubtitles/zh-tiny.txt": "609d79e52904c3e5bfddf8bd4100b56c9a9d1ee4adc133cafaab43e70dc53a84",
+    "benchmarks/haystacks/pathological/README.md": "988f0d4071fa9ae7ee36d3d7ca5587a09fc0d416539400783c08350d31c34a29",
+    "benchmarks/haystacks/pathological/defeat-simple-vector-freq.txt": "61bfe9242900020f3d8bbd055e96bc8cbd39abf3271929f19371612177fc5053",
+    "benchmarks/haystacks/pathological/defeat-simple-vector-repeated.txt": "83421fb6b20a6ae43120646ff90e266a046ed40e208a8fe2870479a69a987207",
+    "benchmarks/haystacks/pathological/defeat-simple-vector.txt": "e781b9db9101bd8de98284a8b6af2199f33ca2b156125a749e6d976645a80256",
+    "benchmarks/haystacks/pathological/md5-huge.txt": "8e2c34e04985d4b8d6abcc92d09cf6114982662de8d8dbe3c5852259f278c430",
+    "benchmarks/haystacks/pathological/random-huge.txt": "bb441ae02baa167d711b35ac12a638bad4128ccadc7394d1d0ee805dd00e734b",
+    "benchmarks/haystacks/pathological/repeated-rare-huge.txt": "12d32a7ddc41a70b767aa5bb221997711c32f9a281a4060f5886a389162977ea",
+    "benchmarks/haystacks/pathological/repeated-rare-small.txt": "6fd89061b3cad3507a6826d544d11a6d8949a33c880d7bb6d37c9215ea86fdbf",
+    "benchmarks/haystacks/rg-13.0.0.txt": "4887b8a42f2de95ca6ef6d8db1a557ffcfccd6497d0e01bcfe78866c827e1969",
+    "benchmarks/haystacks/sherlock/README.md": "3f13c0b3616355a830bc30baa0e662763c0f26a9a5e4f3b8283d089997421c7e",
+    "benchmarks/haystacks/sherlock/huge.txt": "242ec73a70f0a03dcbe007e32038e7deeaee004aaec9a09a07fa322743440fa8",
+    "benchmarks/haystacks/sherlock/small.txt": "fe2b5de0d6b031256833bab58dc8766956f3387118a83dfb37333a0a55c7099f",
+    "benchmarks/haystacks/sherlock/tiny.txt": "d37ce445df03495dffdcbc38d5e13241e1551c4c0fd16b216ca2626ce450702c",
+    "benchmarks/haystacks/sliceslice/README.md": "4d6c31083d39db8cbdf2fbed7784677f5e61a1b7b31acfbb37636eacbdad5c40",
+    "benchmarks/haystacks/sliceslice/haystack.txt": "a40120b2384644f727cef7966267c7bb392c9baf391e1b65a3029b70ecc8c1d8",
+    "benchmarks/haystacks/sliceslice/i386-notutf8.txt": "563e894dab529ab3f43f5986c893a084a62da3535cf2e4860c243d0e0ef1a2b4",
+    "benchmarks/haystacks/sliceslice/i386.txt": "5732cb2e7d6485fdc57b90eac9ff9358b9286030950f936e697ac3e2ec34a238"
+  },
+  "runner_sha256": "92dc321686dfeb3831a856b4a6ba15b27c97d9ed7fe699310dbd33a85585f5f8",
+  "rust_runner_sha256": "f2e0ee755640b8b9a73600bdf69104cf218112c4d41a7cb561bc361b5f9c1fb4"
+}

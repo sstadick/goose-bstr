@@ -157,9 +157,10 @@ adding `-mavx2` selects AVX2 at compile time and requires an AVX2 CPU.
 
 In our tests we seem to be on par with bstr.
 
-[Results from memchr's benchmark suite](bench/results/2026-11-02-rebar/README.md)
-include per-case timings, comparisons with other engines, raw measurements,
-and limitations.
+[Results from memchr's benchmark suite](bench/results/2026-11-02-rebar-clang/README.md)
+include every matched comparison, raw measurements, and outliers.
+See the [benchmark instructions](bench/rebar/README.md) for methodology,
+limitations, and commands to repeat the run or include other native engines.
 
 ## Contributing
 
