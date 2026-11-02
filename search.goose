@@ -800,6 +800,7 @@ fn rfind_two_way(f: const FinderReverse&, s: const u8[:]) -> i64 {
 inline fn rfind_two_way_scan(f: const FinderReverse&, rest: const u8[:], periodic: bool) -> i64 {
     let needle = f.needle;
     let two = f.two;
+    let left = needle[..two.critical];
     var memory = needle.len;
     var base = rest.len - needle.len;
     while base >= 0 {
@@ -808,19 +809,29 @@ inline fn rfind_two_way_scan(f: const FinderReverse&, rest: const u8[:], periodi
         }
         let window = rest[base..base + needle.len];
         var i = if periodic { min(two.critical, memory) } else { two.critical };
-        let left = needle[..i];
-        let right = window[..i];
+        let right = window[..two.critical];
         if i > 0 && left[i - 1] == right[i - 1] {
             i -= 1;
             // Reject short partial matches before comparing whole words.
             if i >= 2 {
-                if goosimd::load_u16(left[i - 2..i]) != goosimd::load_u16(right[i - 2..i]) {
-                    while i > 0 && left[i - 1] == right[i - 1] { i -= 1; }
+                if left[i - 1] != right[i - 1] {
                     base -= two.critical - i + 1;
                     memory = needle.len;
                     continue;
                 }
-                i -= 2;
+                i -= 1;
+                if left[i - 1] != right[i - 1] {
+                    base -= two.critical - i + 1;
+                    memory = needle.len;
+                    continue;
+                }
+                i -= 1;
+            }
+            while i >= 16 {
+                let a = goosimd::load_u64(left[i - 8..i]) ^ goosimd::load_u64(right[i - 8..i]);
+                let b = goosimd::load_u64(left[i - 16..i - 8]) ^ goosimd::load_u64(right[i - 16..i - 8]);
+                if (a | b) != 0 { break; }
+                i -= 16;
             }
             while i >= 8 {
                 if goosimd::load_u64(left[i - 8..i]) != goosimd::load_u64(right[i - 8..i]) { break; }

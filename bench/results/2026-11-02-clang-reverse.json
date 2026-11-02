@@ -1,0 +1,2707 @@
+{
+  "environment": {
+    "platform": "Linux-6.8.0-139-generic-x86_64-with-glibc2.39",
+    "machine": "x86_64",
+    "cpu": "AMD Ryzen 9 3950X 16-Core Processor",
+    "versions": {
+      "goose": "goose eadca40 (runtime 3025e5810379)",
+      "rustc": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+      "clang": "Ubuntu clang version 18.1.3 (1ubuntu1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin",
+      "gcc": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+    },
+    "timestamp_utc": "2026-11-02T16:53:46.542363+00:00",
+    "goose_sha256": "820731bc36bfe0b705a27c895cea337ea26d0441977bf33df0c3d30401e6d74c",
+    "bstr_sha256": "e728f6fa4ad4badd758461ede1b1895b12eb5e7fad4565236142a2bed2b42583",
+    "bstr": "1.13.1",
+    "memchr": "2.8.3",
+    "goose_flags": [
+      "-O3"
+    ],
+    "cc": "clang",
+    "target": "runtime",
+    "rust_profile": "release",
+    "rust_opt_level": "3",
+    "barrier": "inline",
+    "suite": "quick",
+    "calibration_target_ms": 50,
+    "samples": 9,
+    "prebuilt_goose": false,
+    "warmup_passes": 1,
+    "scheduling": "CPU affinity [4]",
+    "checkout_sources": {
+      "goostr.goose": "34be1cb1dfc8249e790eee3d15fd46dc6e264dbbae83afc5b1afdf7c250bf9c6",
+      "search.goose": "7eed2a94fe90d702426267db78331cc8387f9ae414cc759bb9033d7ef65fc599",
+      "goostr.build": "19a5ad64f1cd9adc3e914a32156192e5bb4664ff216a7f923b4ed8693d5d4ab1",
+      "src/dispatch.h": "35c506ef3d7b62f783b7e35243794bf9c4e02b2ff455441959794d3511f64f7c",
+      "bench/search.goose": "be11b7271b09e7cca46752184bbe2e5472cef0f32e9cc34315cc266da681ab57",
+      "bench/search.build": "4f0bb9939d3e804fda5afb88486967ef2e5d72c3a1d0ec2370e952f5afd52aa6",
+      "bench/opaque.c": "8ec27300d64e671046ee90c6c1f1a3f41a3dfc0f95c1b255d87434be65dfbf49",
+      "bench/opaque.h": "3602d1340c2eb15f9ddd3a5b9d65d1d18dadaaa10db024488ef05e30755a4fb8",
+      "bench/compare.py": "49e4026cfb92b98138fee7db2c3bdcd66e88ba5b9c2a92db70c09214d60b1675",
+      "tests/oracle/src/bin/search-bench.rs": "6188b9699a4b53cf50fdcfae35b05b889d746afe83397497e3fc58818bb3dec1"
+    },
+    "upstream": {
+      "repository": "https://github.com/BurntSushi/memchr",
+      "revision": "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d",
+      "cases": {
+        "code/rust-library-never-fn-strength": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "666e20737472656e677468",
+          "upstream_count": 0
+        },
+        "code/rust-library-never-fn-strength-paren": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "666e20737472656e67746828",
+          "upstream_count": 0
+        },
+        "code/rust-library-never-fn-quux": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "666e207175757828",
+          "upstream_count": 0
+        },
+        "code/rust-library-rare-fn-from-str": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "70756220666e2066726f6d5f73747228",
+          "upstream_count": 1
+        },
+        "code/rust-library-common-fn-is-empty": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "666e2069735f656d707479",
+          "upstream_count": 17
+        },
+        "code/rust-library-common-fn": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "666e",
+          "upstream_count": 2985
+        },
+        "code/rust-library-common-paren": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "28",
+          "upstream_count": 30193
+        },
+        "code/rust-library-common-let": {
+          "definition": "definitions/memmem/code.toml",
+          "definition_sha256": "3b70050ec5cb9f05b6614018b185decc269fb0ded3032ad22702541553712883",
+          "haystack": "code/rust-library.rs",
+          "haystack_sha256": "119a67c6bc375544621e6abb91e61c0d6db8e4d4c885c81d94b511eb0cad4d75",
+          "pattern_hex": "6c6574",
+          "upstream_count": 4737
+        },
+        "byterank/binary": {
+          "definition": "definitions/memmem/byterank.toml",
+          "definition_sha256": "d66dfd4291d3b7da82325908255daee86bf1509bc1cd3808c413af078efc2103",
+          "haystack": "rg-13.0.0.txt",
+          "haystack_sha256": "4887b8a42f2de95ca6ef6d8db1a557ffcfccd6497d0e01bcfe78866c827e1969",
+          "pattern_hex": "0000dddd00",
+          "upstream_count": 1
+        },
+        "pathological/md5-huge-no-hash": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/md5-huge.txt",
+          "haystack_sha256": "8e2c34e04985d4b8d6abcc92d09cf6114982662de8d8dbe3c5852259f278c430",
+          "pattern_hex": "3631613161343065666663663937646532343530356631353461333036353937",
+          "upstream_count": 0
+        },
+        "pathological/md5-huge-last-hash": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/md5-huge.txt",
+          "haystack_sha256": "8e2c34e04985d4b8d6abcc92d09cf6114982662de8d8dbe3c5852259f278c430",
+          "pattern_hex": "3833316466333139643835393766356263373933643639306630386231353962",
+          "upstream_count": 1
+        },
+        "pathological/rare-repeated-huge-tricky": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/repeated-rare-huge.txt",
+          "haystack_sha256": "12d32a7ddc41a70b767aa5bb221997711c32f9a281a4060f5886a389162977ea",
+          "pattern_hex": "6162637a646566",
+          "upstream_count": 0
+        },
+        "pathological/rare-repeated-huge-match": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/repeated-rare-huge.txt",
+          "haystack_sha256": "12d32a7ddc41a70b767aa5bb221997711c32f9a281a4060f5886a389162977ea",
+          "pattern_hex": "7a7a7a7a7a7a7a7a7a7a",
+          "upstream_count": 50010
+        },
+        "pathological/rare-repeated-small-tricky": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/repeated-rare-small.txt",
+          "haystack_sha256": "6fd89061b3cad3507a6826d544d11a6d8949a33c880d7bb6d37c9215ea86fdbf",
+          "pattern_hex": "6162637a646566",
+          "upstream_count": 0
+        },
+        "pathological/rare-repeated-small-match": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/repeated-rare-small.txt",
+          "haystack_sha256": "6fd89061b3cad3507a6826d544d11a6d8949a33c880d7bb6d37c9215ea86fdbf",
+          "pattern_hex": "7a7a7a7a7a7a7a7a7a7a",
+          "upstream_count": 100
+        },
+        "pathological/defeat-simple-vector-alphabet": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/defeat-simple-vector.txt",
+          "haystack_sha256": "e781b9db9101bd8de98284a8b6af2199f33ca2b156125a749e6d976645a80256",
+          "pattern_hex": "71627a",
+          "upstream_count": 1
+        },
+        "pathological/defeat-simple-vector-freq-alphabet": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/defeat-simple-vector-freq.txt",
+          "haystack_sha256": "61bfe9242900020f3d8bbd055e96bc8cbd39abf3271929f19371612177fc5053",
+          "pattern_hex": "716a616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161616161617a",
+          "upstream_count": 1
+        },
+        "pathological/defeat-simple-vector-repeated-alphabet": {
+          "definition": "definitions/memmem/pathological.toml",
+          "definition_sha256": "aeb521e8aa357348c9035118144d055c857cd40a812471a9585d500c5fdc4443",
+          "haystack": "pathological/defeat-simple-vector-repeated.txt",
+          "haystack_sha256": "83421fb6b20a6ae43120646ff90e266a046ed40e208a8fe2870479a69a987207",
+          "pattern_hex": "7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a617a",
+          "upstream_count": 1
+        },
+        "subtitles/never/huge-en-john-watson": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "4a6f686e20576174736f6e",
+          "upstream_count": 0
+        },
+        "subtitles/never/huge-en-all-common-bytes": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "737465726e6e657373",
+          "upstream_count": 0
+        },
+        "subtitles/never/huge-en-some-rare-bytes": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "71756172747a",
+          "upstream_count": 0
+        },
+        "subtitles/never/huge-en-two-space": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "2020",
+          "upstream_count": 0
+        },
+        "subtitles/never/teeny-en-john-watson": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-teeny.txt",
+          "haystack_sha256": "df96f11c5cf3fe2d6d3d055b89e7c3a36ade56a44041a4c7a510e7056c6f456b",
+          "pattern_hex": "4a6f686e20576174736f6e",
+          "upstream_count": 0
+        },
+        "subtitles/never/teeny-en-all-common-bytes": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-teeny.txt",
+          "haystack_sha256": "df96f11c5cf3fe2d6d3d055b89e7c3a36ade56a44041a4c7a510e7056c6f456b",
+          "pattern_hex": "737465726e6e657373",
+          "upstream_count": 0
+        },
+        "subtitles/never/teeny-en-some-rare-bytes": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-teeny.txt",
+          "haystack_sha256": "df96f11c5cf3fe2d6d3d055b89e7c3a36ade56a44041a4c7a510e7056c6f456b",
+          "pattern_hex": "71756172747a",
+          "upstream_count": 0
+        },
+        "subtitles/never/teeny-en-two-space": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/en-teeny.txt",
+          "haystack_sha256": "df96f11c5cf3fe2d6d3d055b89e7c3a36ade56a44041a4c7a510e7056c6f456b",
+          "pattern_hex": "2020",
+          "upstream_count": 0
+        },
+        "subtitles/never/huge-ru-john-watson": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/ru-huge.txt",
+          "haystack_sha256": "f3051579c195bbf7362cf2ea163a58b4c98e183993344c0e7566ca791f375cb8",
+          "pattern_hex": "d094d0b6d0bed0bd20d0a3d0bed182d181d0bed0bd",
+          "upstream_count": 0
+        },
+        "subtitles/never/teeny-ru-john-watson": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/ru-teeny.txt",
+          "haystack_sha256": "0b1d027caaa49a6fbe4bca2185f2afa0278d5945482c1ffb4ba4d3a5fdb34cbc",
+          "pattern_hex": "d094d0b6d0bed0bd20d0a3d0bed182d181d0bed0bd",
+          "upstream_count": 0
+        },
+        "subtitles/never/huge-zh-john-watson": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/zh-huge.txt",
+          "haystack_sha256": "f29c872da93918dd8fd917e5ca3453448efbdf344cc3857ebe45dc01f94dd44b",
+          "pattern_hex": "e7baa6e7bfb0c2b7e6b283e6a3ae",
+          "upstream_count": 0
+        },
+        "subtitles/never/teeny-zh-john-watson": {
+          "definition": "definitions/memmem/subtitles/never.toml",
+          "definition_sha256": "43af70437b0b7b977a2f683f646d4bf1a24b48129faacefd61f3aab7fde71cb5",
+          "haystack": "opensubtitles/zh-teeny.txt",
+          "haystack_sha256": "813ab7ea81b2206c4e5984ed265fa52703d1a712094a71efc055dbdd72b1aab3",
+          "pattern_hex": "e7baa6e7bfb0c2b7e6b283e6a3ae",
+          "upstream_count": 0
+        },
+        "subtitles/rare/huge-en-sherlock-holmes": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "536865726c6f636b20486f6c6d6573",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-en-sherlock": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "536865726c6f636b",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-en-medium-needle": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "686f6d65722c206d617267652c20626172742c206c6973612c206d6167676965",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-en-long-needle": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "49206665656c20616672616964206f66204d6f73746166610a4865206973207374726f6e67657220616e64206f6c646572207468616e204920616d2c20616e64206d6f726520657870657269656e6365640a53686f756c642049207475726e206261636b3f0a446f6320796f7527726520626567696e6e696e6720746f20736f756e64206c696b6520536865726c6f636b20486f6c6d65732e",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-en-huge-needle": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "53696e63652077652077696c6c206d65657420616e797761792c207468656e2074686520736f6f6e65722c20746865206265747465720a546f6d6f72726f7720617420343a333020696e2066726f6e74206f662074686520486f7273652d526964696e6720436c75620a4e6f2c20343a33300a4920616d20636f6e66757365642c20616c6d6f7374206c6f73740a417320696620616e20696e76697369626c652068616e6420707573686564206d6520746f776172647320616e20756e6b6e6f776e20666174650a49206e656564656420736f6d656f6e65206279206d7920736964650a49206e656564656420736f6d656f6e6520746f206775696465206d6520746f207468652070617468206f662073656375726974790a427574204920686164206e6f206f6e650a4920636f756c646e27742061736b206d79206661746865722773206f70696e696f6e2c206e6f7220686973207769666527730a492066656c74206a757374206173206c6f6e656c79206173204920686164206265666f72650a49206665656c20616672616964206f66204d6f73746166610a4865206973207374726f6e67657220616e64206f6c646572207468616e204920616d2c20616e64206d6f726520657870657269656e6365640a53686f756c642049207475726e206261636b3f0a446f6320796f7527726520626567696e6e696e6720746f20736f756e64206c696b6520536865726c6f636b20486f6c6d65732e",
+          "upstream_count": 1
+        },
+        "subtitles/rare/teeny-en-sherlock-holmes": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/en-teeny.txt",
+          "haystack_sha256": "df96f11c5cf3fe2d6d3d055b89e7c3a36ade56a44041a4c7a510e7056c6f456b",
+          "pattern_hex": "536865726c6f636b20486f6c6d6573",
+          "upstream_count": 1
+        },
+        "subtitles/rare/teeny-en-sherlock": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/en-teeny.txt",
+          "haystack_sha256": "df96f11c5cf3fe2d6d3d055b89e7c3a36ade56a44041a4c7a510e7056c6f456b",
+          "pattern_hex": "536865726c6f636b",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-ru-sherlock-holmes": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/ru-huge.txt",
+          "haystack_sha256": "f3051579c195bbf7362cf2ea163a58b4c98e183993344c0e7566ca791f375cb8",
+          "pattern_hex": "d0a8d0b5d180d0bbd0bed0ba20d0a5d0bed0bbd0bcd181",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-ru-sherlock": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/ru-huge.txt",
+          "haystack_sha256": "f3051579c195bbf7362cf2ea163a58b4c98e183993344c0e7566ca791f375cb8",
+          "pattern_hex": "d0a8d0b5d180d0bbd0bed0ba",
+          "upstream_count": 1
+        },
+        "subtitles/rare/teeny-ru-sherlock-holmes": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/ru-teeny.txt",
+          "haystack_sha256": "0b1d027caaa49a6fbe4bca2185f2afa0278d5945482c1ffb4ba4d3a5fdb34cbc",
+          "pattern_hex": "d0a8d0b5d180d0bbd0bed0ba20d0a5d0bed0bbd0bcd181",
+          "upstream_count": 1
+        },
+        "subtitles/rare/teeny-ru-sherlock": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/ru-teeny.txt",
+          "haystack_sha256": "0b1d027caaa49a6fbe4bca2185f2afa0278d5945482c1ffb4ba4d3a5fdb34cbc",
+          "pattern_hex": "d0a8d0b5d180d0bbd0bed0ba",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-zh-sherlock-holmes": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/zh-huge.txt",
+          "haystack_sha256": "f29c872da93918dd8fd917e5ca3453448efbdf344cc3857ebe45dc01f94dd44b",
+          "pattern_hex": "e5a48fe6b49be5858bc2b7e7a68fe5b094e691a9e696af",
+          "upstream_count": 1
+        },
+        "subtitles/rare/huge-zh-sherlock": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/zh-huge.txt",
+          "haystack_sha256": "f29c872da93918dd8fd917e5ca3453448efbdf344cc3857ebe45dc01f94dd44b",
+          "pattern_hex": "e5a48fe6b49be5858b",
+          "upstream_count": 1
+        },
+        "subtitles/rare/teeny-zh-sherlock-holmes": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/zh-teeny.txt",
+          "haystack_sha256": "813ab7ea81b2206c4e5984ed265fa52703d1a712094a71efc055dbdd72b1aab3",
+          "pattern_hex": "e5a48fe6b49be5858bc2b7e7a68fe5b094e691a9e696af",
+          "upstream_count": 1
+        },
+        "subtitles/rare/teeny-zh-sherlock": {
+          "definition": "definitions/memmem/subtitles/rare.toml",
+          "definition_sha256": "58ede25abb528939bedb81417c8cbb32a7bb824a4e383566efb74b7e5dba0d10",
+          "haystack": "opensubtitles/zh-teeny.txt",
+          "haystack_sha256": "813ab7ea81b2206c4e5984ed265fa52703d1a712094a71efc055dbdd72b1aab3",
+          "pattern_hex": "e5a48fe6b49be5858b",
+          "upstream_count": 1
+        },
+        "subtitles/common/huge-en-that": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "74686174",
+          "upstream_count": 865
+        },
+        "subtitles/common/huge-en-you": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "796f75",
+          "upstream_count": 5009
+        },
+        "subtitles/common/huge-en-one-space": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/en-huge.txt",
+          "haystack_sha256": "2d8a8306fd32bc14ffd4ea1d60fa31f66a2130a353fe2b774e9c2c503c32c059",
+          "pattern_hex": "20",
+          "upstream_count": 96606
+        },
+        "subtitles/common/huge-ru-that": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/ru-huge.txt",
+          "haystack_sha256": "f3051579c195bbf7362cf2ea163a58b4c98e183993344c0e7566ca791f375cb8",
+          "pattern_hex": "d187d182d0be",
+          "upstream_count": 998
+        },
+        "subtitles/common/huge-ru-not": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/ru-huge.txt",
+          "haystack_sha256": "f3051579c195bbf7362cf2ea163a58b4c98e183993344c0e7566ca791f375cb8",
+          "pattern_hex": "d0bdd0b5",
+          "upstream_count": 3092
+        },
+        "subtitles/common/huge-ru-one-space": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/ru-huge.txt",
+          "haystack_sha256": "f3051579c195bbf7362cf2ea163a58b4c98e183993344c0e7566ca791f375cb8",
+          "pattern_hex": "20",
+          "upstream_count": 46941
+        },
+        "subtitles/common/huge-zh-that": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/zh-huge.txt",
+          "haystack_sha256": "f29c872da93918dd8fd917e5ca3453448efbdf344cc3857ebe45dc01f94dd44b",
+          "pattern_hex": "e982a3",
+          "upstream_count": 1056
+        },
+        "subtitles/common/huge-zh-do-not": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/zh-huge.txt",
+          "haystack_sha256": "f29c872da93918dd8fd917e5ca3453448efbdf344cc3857ebe45dc01f94dd44b",
+          "pattern_hex": "e4b88d",
+          "upstream_count": 2751
+        },
+        "subtitles/common/huge-zh-one-space": {
+          "definition": "definitions/memmem/subtitles/common.toml",
+          "definition_sha256": "09fc0d5ef9451990ef6c85d062ca88a5028bbbfac4438e3b9ee1c819f9fc6b59",
+          "haystack": "opensubtitles/zh-huge.txt",
+          "haystack_sha256": "f29c872da93918dd8fd917e5ca3453448efbdf344cc3857ebe45dc01f94dd44b",
+          "pattern_hex": "20",
+          "upstream_count": 17232
+        }
+      }
+    }
+  },
+  "results": [
+    {
+      "case": "byterank/binary",
+      "mode": "count",
+      "haystack": 33335253,
+      "needle": 5,
+      "sha256": "dfa219bc46e115f6bd4f97759ad1eb37063e8c9ff8eef8cc43e98c16235b37af",
+      "expected": 1,
+      "goose_ns": 3279829.8333333335,
+      "bstr_ns": 9042336.833333334,
+      "ratio": 0.36271927199644793,
+      "iterations": {
+        "goose": 18,
+        "bstr": 6
+      },
+      "samples": {
+        "goose": [
+          3299493.3333333335,
+          3282651.5555555555,
+          3269563.6666666665,
+          3279829.8333333335,
+          3291508.8333333335,
+          3278324.277777778,
+          3277872.0,
+          3284513.777777778,
+          3267250.277777778
+        ],
+        "bstr": [
+          9026968.5,
+          9210793.166666666,
+          9039295.166666666,
+          9042336.833333334,
+          9066032.0,
+          9016213.166666666,
+          9041560.166666666,
+          9083780.333333334,
+          9077953.833333334
+        ]
+      }
+    },
+    {
+      "case": "byterank/binary",
+      "mode": "rcount",
+      "haystack": 33335253,
+      "needle": 5,
+      "sha256": "dfa219bc46e115f6bd4f97759ad1eb37063e8c9ff8eef8cc43e98c16235b37af",
+      "expected": 1,
+      "goose_ns": 3385347.3529411764,
+      "bstr_ns": 14774267.0,
+      "ratio": 0.2291380921260714,
+      "iterations": {
+        "goose": 17,
+        "bstr": 4
+      },
+      "samples": {
+        "goose": [
+          3385790.3529411764,
+          3374962.6470588236,
+          3384455.6470588236,
+          3385347.3529411764,
+          3371464.9411764704,
+          3413923.470588235,
+          3385317.3529411764,
+          3399359.294117647,
+          3399326.294117647
+        ],
+        "bstr": [
+          14785884.5,
+          14765077.0,
+          14625320.75,
+          14774267.0,
+          14740286.75,
+          14689126.25,
+          14988986.0,
+          14813637.0,
+          14909038.0
+        ]
+      }
+    },
+    {
+      "case": "byterank/binary",
+      "mode": "prepared-find",
+      "haystack": 33335253,
+      "needle": 5,
+      "sha256": "dfa219bc46e115f6bd4f97759ad1eb37063e8c9ff8eef8cc43e98c16235b37af",
+      "expected": 33335248,
+      "goose_ns": 3308938.9444444445,
+      "bstr_ns": 9182917.833333334,
+      "ratio": 0.36033633366872053,
+      "iterations": {
+        "goose": 18,
+        "bstr": 6
+      },
+      "samples": {
+        "goose": [
+          3308938.9444444445,
+          3305141.722222222,
+          3313742.3333333335,
+          3311646.1666666665,
+          3317966.277777778,
+          3308536.1666666665,
+          3307092.277777778,
+          3311186.1666666665,
+          3307685.611111111
+        ],
+        "bstr": [
+          9189809.666666666,
+          9175412.833333334,
+          9191588.0,
+          9177792.666666666,
+          9180067.833333334,
+          9185366.166666666,
+          9194262.833333334,
+          9174334.5,
+          9182917.833333334
+        ]
+      }
+    },
+    {
+      "case": "pathological/rare-repeated-small-match",
+      "mode": "count",
+      "haystack": 1001,
+      "needle": 10,
+      "sha256": "e0fc00dc0e569970e7cc47a4419eb8f29467650a43ef62b1cd44eb31d4138f48",
+      "expected": 100,
+      "goose_ns": 1527.72555,
+      "bstr_ns": 4532.41335,
+      "ratio": 0.3370666865589389,
+      "iterations": {
+        "goose": 40000,
+        "bstr": 20000
+      },
+      "samples": {
+        "goose": [
+          1522.311275,
+          1526.761825,
+          1527.72555,
+          1533.885875,
+          1526.5023,
+          1532.331625,
+          1530.339825,
+          1533.875875,
+          1526.55205
+        ],
+        "bstr": [
+          4580.5247,
+          4261.92375,
+          4560.1785,
+          4532.41335,
+          4654.64425,
+          4548.2784,
+          4255.19575,
+          4244.03165,
+          4471.63635
+        ]
+      }
+    },
+    {
+      "case": "pathological/rare-repeated-small-match",
+      "mode": "rcount",
+      "haystack": 1001,
+      "needle": 10,
+      "sha256": "e0fc00dc0e569970e7cc47a4419eb8f29467650a43ef62b1cd44eb31d4138f48",
+      "expected": 100,
+      "goose_ns": 151.81317368421054,
+      "bstr_ns": 4160.6555,
+      "ratio": 0.03648780190626466,
+      "iterations": {
+        "goose": 380000,
+        "bstr": 20000
+      },
+      "samples": {
+        "goose": [
+          151.8872552631579,
+          151.5782,
+          151.25140789473684,
+          151.81317368421054,
+          153.59937368421052,
+          151.42138157894738,
+          153.25229210526317,
+          152.1679394736842,
+          151.71891315789475
+        ],
+        "bstr": [
+          4159.4425,
+          4159.9225,
+          4145.13335,
+          4194.37275,
+          4137.9888,
+          4160.6555,
+          4161.5475,
+          4166.65,
+          4182.48865
+        ]
+      }
+    },
+    {
+      "case": "pathological/rare-repeated-small-match",
+      "mode": "prepared-find",
+      "haystack": 1001,
+      "needle": 10,
+      "sha256": "e0fc00dc0e569970e7cc47a4419eb8f29467650a43ef62b1cd44eb31d4138f48",
+      "expected": 0,
+      "goose_ns": 5.7693127,
+      "bstr_ns": 7.883338142857143,
+      "ratio": 0.7318362596468606,
+      "iterations": {
+        "goose": 10000000,
+        "bstr": 7000000
+      },
+      "samples": {
+        "goose": [
+          5.7724987,
+          5.7851918,
+          5.7734007,
+          5.7693127,
+          5.7517065,
+          5.7684966,
+          5.7906249,
+          5.7663537,
+          5.7676227
+        ],
+        "bstr": [
+          7.883338142857143,
+          7.882745285714286,
+          7.8969825714285715,
+          7.887735428571428,
+          7.886719714285714,
+          7.8823868571428575,
+          7.880782571428571,
+          7.882095285714286,
+          7.901038285714286
+        ]
+      }
+    },
+    {
+      "case": "pathological/defeat-simple-vector-alphabet",
+      "mode": "count",
+      "haystack": 550004,
+      "needle": 3,
+      "sha256": "59ed8fd8e6e10d4904827ec1883b05ea69653f159f814d82979945982caefc98",
+      "expected": 1,
+      "goose_ns": 28103.960476190477,
+      "bstr_ns": 155836.145,
+      "ratio": 0.18034301654593984,
+      "iterations": {
+        "goose": 2100,
+        "bstr": 600
+      },
+      "samples": {
+        "goose": [
+          28037.402857142857,
+          28103.960476190477,
+          28061.202857142856,
+          28130.37,
+          28140.51761904762,
+          28042.764285714286,
+          28141.594285714287,
+          28093.226666666666,
+          28227.941904761905
+        ],
+        "bstr": [
+          155984.13,
+          156190.715,
+          155500.29333333333,
+          155425.04166666666,
+          155836.145,
+          155144.65666666668,
+          155998.39666666667,
+          155667.52833333332,
+          156027.83166666667
+        ]
+      }
+    },
+    {
+      "case": "pathological/defeat-simple-vector-alphabet",
+      "mode": "rcount",
+      "haystack": 550004,
+      "needle": 3,
+      "sha256": "59ed8fd8e6e10d4904827ec1883b05ea69653f159f814d82979945982caefc98",
+      "expected": 1,
+      "goose_ns": 28347.524285714284,
+      "bstr_ns": 101568.89,
+      "ratio": 0.2790965253801069,
+      "iterations": {
+        "goose": 2100,
+        "bstr": 500
+      },
+      "samples": {
+        "goose": [
+          28268.89523809524,
+          28327.114285714284,
+          28472.40095238095,
+          28398.98619047619,
+          28419.458095238097,
+          28319.014285714286,
+          28310.495238095238,
+          28347.524285714284,
+          28351.05761904762
+        ],
+        "bstr": [
+          101568.89,
+          101504.248,
+          102694.556,
+          102183.494,
+          101484.808,
+          101125.786,
+          102614.096,
+          101602.328,
+          101412.786
+        ]
+      }
+    },
+    {
+      "case": "pathological/defeat-simple-vector-alphabet",
+      "mode": "prepared-find",
+      "haystack": 550004,
+      "needle": 3,
+      "sha256": "59ed8fd8e6e10d4904827ec1883b05ea69653f159f814d82979945982caefc98",
+      "expected": 550000,
+      "goose_ns": 28066.33619047619,
+      "bstr_ns": 156350.365,
+      "ratio": 0.17950924636777274,
+      "iterations": {
+        "goose": 2100,
+        "bstr": 600
+      },
+      "samples": {
+        "goose": [
+          28130.446190476192,
+          28000.05476190476,
+          28070.35523809524,
+          28018.39285714286,
+          28100.503333333334,
+          28045.974285714285,
+          28066.33619047619,
+          28069.064761904763,
+          28057.226666666666
+        ],
+        "bstr": [
+          157002.305,
+          157017.68666666668,
+          156139.09833333333,
+          155901.48,
+          156932.85333333333,
+          156852.08666666667,
+          155678.27833333332,
+          156350.365,
+          155616.01166666666
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-en-that",
+      "mode": "count",
+      "haystack": 613345,
+      "needle": 4,
+      "sha256": "6bcd9b845c6f6157557fe68926fc3880178a6f0850b028fa1d6dc8e35e4c25cc",
+      "expected": 865,
+      "goose_ns": 49881.814545454545,
+      "bstr_ns": 56395.727,
+      "ratio": 0.8844963474884284,
+      "iterations": {
+        "goose": 1100,
+        "bstr": 1000
+      },
+      "samples": {
+        "goose": [
+          49881.814545454545,
+          49700.784545454546,
+          49490.18363636364,
+          50113.69727272727,
+          49872.50454545455,
+          50008.487272727274,
+          50103.233636363635,
+          50093.26090909091,
+          49727.94
+        ],
+        "bstr": [
+          56771.569,
+          56399.667,
+          55634.741,
+          55741.542,
+          56395.727,
+          56067.414,
+          56552.568,
+          55982.114,
+          56989.431
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-en-that",
+      "mode": "rcount",
+      "haystack": 613345,
+      "needle": 4,
+      "sha256": "6bcd9b845c6f6157557fe68926fc3880178a6f0850b028fa1d6dc8e35e4c25cc",
+      "expected": 865,
+      "goose_ns": 38630.905333333336,
+      "bstr_ns": 260278.765,
+      "ratio": 0.14842127183649936,
+      "iterations": {
+        "goose": 1500,
+        "bstr": 200
+      },
+      "samples": {
+        "goose": [
+          37806.126,
+          38856.58066666667,
+          38630.905333333336,
+          38501.28466666667,
+          38752.94,
+          38436.310666666664,
+          38629.01866666666,
+          38995.761333333336,
+          39646.76666666667
+        ],
+        "bstr": [
+          258355.405,
+          255829.985,
+          257821.95,
+          257585.8,
+          260278.765,
+          261949.585,
+          261407.33,
+          260307.42,
+          261873.58
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-en-that",
+      "mode": "prepared-find",
+      "haystack": 613345,
+      "needle": 4,
+      "sha256": "6bcd9b845c6f6157557fe68926fc3880178a6f0850b028fa1d6dc8e35e4c25cc",
+      "expected": 261,
+      "goose_ns": 20.177695,
+      "bstr_ns": 13.50554225,
+      "ratio": 1.4940307191294004,
+      "iterations": {
+        "goose": 4000000,
+        "bstr": 4000000
+      },
+      "samples": {
+        "goose": [
+          20.2757585,
+          20.575988,
+          19.9181255,
+          20.177695,
+          20.51643275,
+          20.0285915,
+          20.07419925,
+          20.13230975,
+          20.18404025
+        ],
+        "bstr": [
+          13.5433325,
+          13.5357725,
+          13.3681035,
+          13.51302975,
+          13.343391,
+          13.50630475,
+          13.375761,
+          13.50554225,
+          13.344516
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-en-you",
+      "mode": "count",
+      "haystack": 613345,
+      "needle": 3,
+      "sha256": "b026aac1da6cd252901117746749d580ce61d6da1f6e86c3463b8ee3722193c1",
+      "expected": 5009,
+      "goose_ns": 141248.2425,
+      "bstr_ns": 220732.095,
+      "ratio": 0.6399080410123412,
+      "iterations": {
+        "goose": 400,
+        "bstr": 400
+      },
+      "samples": {
+        "goose": [
+          141373.8175,
+          140548.7875,
+          141360.47,
+          140659.1875,
+          141444.62,
+          141248.2425,
+          141028.2925,
+          141049.09,
+          141604.67
+        ],
+        "bstr": [
+          219982.215,
+          220732.095,
+          220740.67,
+          220260.665,
+          217946.7225,
+          218765.7525,
+          221105.4725,
+          221063.7475,
+          220733.845
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-en-you",
+      "mode": "rcount",
+      "haystack": 613345,
+      "needle": 3,
+      "sha256": "b026aac1da6cd252901117746749d580ce61d6da1f6e86c3463b8ee3722193c1",
+      "expected": 5009,
+      "goose_ns": 103907.206,
+      "bstr_ns": 412834.625,
+      "ratio": 0.2516920813025313,
+      "iterations": {
+        "goose": 500,
+        "bstr": 200
+      },
+      "samples": {
+        "goose": [
+          104018.708,
+          103629.484,
+          104532.09,
+          103601.344,
+          104152.828,
+          104328.55,
+          103642.884,
+          103482.402,
+          103907.206
+        ],
+        "bstr": [
+          415374.495,
+          412687.12,
+          416256.745,
+          412834.625,
+          412555.42,
+          414893.685,
+          412438.015,
+          420685.18,
+          411938.915
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-en-you",
+      "mode": "prepared-find",
+      "haystack": 613345,
+      "needle": 3,
+      "sha256": "b026aac1da6cd252901117746749d580ce61d6da1f6e86c3463b8ee3722193c1",
+      "expected": 4,
+      "goose_ns": 7.07943975,
+      "bstr_ns": 6.3904615555555555,
+      "ratio": 1.107813526214782,
+      "iterations": {
+        "goose": 8000000,
+        "bstr": 9000000
+      },
+      "samples": {
+        "goose": [
+          7.1007825,
+          7.0685535,
+          7.07542225,
+          7.10741,
+          7.07943975,
+          7.0710385,
+          7.092641125,
+          7.0730235,
+          7.09700125
+        ],
+        "bstr": [
+          6.381714888888889,
+          6.385977222222222,
+          6.395618333333333,
+          6.3904615555555555,
+          6.394237222222222,
+          6.380768222222223,
+          6.386759444444444,
+          6.420439666666667,
+          6.396251666666666
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-zh-that",
+      "mode": "count",
+      "haystack": 613427,
+      "needle": 3,
+      "sha256": "da8a3b3593f1ffcdfd2dbc99ef590a33db465e60fa991dbc7c54dcfecdbc59a0",
+      "expected": 1056,
+      "goose_ns": 37955.99333333333,
+      "bstr_ns": 55747.392,
+      "ratio": 0.6808568431924732,
+      "iterations": {
+        "goose": 1500,
+        "bstr": 1000
+      },
+      "samples": {
+        "goose": [
+          37782.825333333334,
+          37860.67933333333,
+          37915.81333333333,
+          37931.81333333333,
+          37955.99333333333,
+          38179.01533333334,
+          38310.183333333334,
+          38417.83,
+          38564.158
+        ],
+        "bstr": [
+          55231.137,
+          55188.518,
+          55731.142,
+          56040.763,
+          55449.629,
+          55747.392,
+          56559.858,
+          56599.288,
+          56524.797
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-zh-that",
+      "mode": "rcount",
+      "haystack": 613427,
+      "needle": 3,
+      "sha256": "da8a3b3593f1ffcdfd2dbc99ef590a33db465e60fa991dbc7c54dcfecdbc59a0",
+      "expected": 1056,
+      "goose_ns": 27459.774285714284,
+      "bstr_ns": 200331.39,
+      "ratio": 0.13707175039175978,
+      "iterations": {
+        "goose": 2100,
+        "bstr": 400
+      },
+      "samples": {
+        "goose": [
+          27537.865714285716,
+          27640.47095238095,
+          27637.31380952381,
+          27416.95,
+          27297.344761904762,
+          27366.44476190476,
+          27459.774285714284,
+          27576.441904761905,
+          27426.216666666667
+        ],
+        "bstr": [
+          199591.3325,
+          200331.39,
+          200216.615,
+          201589.95,
+          204130.6925,
+          200227.0375,
+          201477.3475,
+          201561.2725,
+          198907.7025
+        ]
+      }
+    },
+    {
+      "case": "subtitles/common/huge-zh-that",
+      "mode": "prepared-find",
+      "haystack": 613427,
+      "needle": 3,
+      "sha256": "da8a3b3593f1ffcdfd2dbc99ef590a33db465e60fa991dbc7c54dcfecdbc59a0",
+      "expected": 3004,
+      "goose_ns": 59.657011,
+      "bstr_ns": 57.047671,
+      "ratio": 1.0457396411502933,
+      "iterations": {
+        "goose": 1000000,
+        "bstr": 1000000
+      },
+      "samples": {
+        "goose": [
+          59.726081,
+          59.405489,
+          59.705552,
+          59.357419,
+          59.657011,
+          59.865283,
+          59.636081,
+          59.405349,
+          59.766052
+        ],
+        "bstr": [
+          57.047671,
+          56.904671,
+          57.101232,
+          57.292263,
+          57.222392,
+          56.87666,
+          57.010581,
+          57.059061,
+          56.8373
+        ]
+      }
+    },
+    {
+      "case": "tiny-hit",
+      "mode": "count",
+      "haystack": 23,
+      "needle": 5,
+      "sha256": "0bf1afced33c48bb289ced9f05f1bec79940b49fa9ecd14d5867311a9d9a19e3",
+      "expected": 1,
+      "goose_ns": 15.478690333333333,
+      "bstr_ns": 74.11513037974683,
+      "ratio": 0.20884656417690303,
+      "iterations": {
+        "goose": 6000000,
+        "bstr": 790000
+      },
+      "samples": {
+        "goose": [
+          15.454035166666667,
+          15.508018833333333,
+          15.433955,
+          15.451590166666668,
+          15.499303833333334,
+          15.478690333333333,
+          15.4844255,
+          15.5591475,
+          15.4562585
+        ],
+        "bstr": [
+          74.77591898734177,
+          75.13566962025317,
+          74.11513037974683,
+          71.84869493670887,
+          71.95953164556963,
+          74.02147088607595,
+          74.31700506329113,
+          75.22065696202532,
+          71.48164050632911
+        ]
+      }
+    },
+    {
+      "case": "tiny-hit",
+      "mode": "rcount",
+      "haystack": 23,
+      "needle": 5,
+      "sha256": "0bf1afced33c48bb289ced9f05f1bec79940b49fa9ecd14d5867311a9d9a19e3",
+      "expected": 1,
+      "goose_ns": 19.084937666666665,
+      "bstr_ns": 53.150511,
+      "ratio": 0.3590734558820453,
+      "iterations": {
+        "goose": 3000000,
+        "bstr": 1000000
+      },
+      "samples": {
+        "goose": [
+          18.835942333333332,
+          19.223585333333332,
+          18.969886666666667,
+          19.085940666666666,
+          19.017670333333335,
+          19.180315,
+          19.084937666666665,
+          19.102717666666667,
+          18.991817
+        ],
+        "bstr": [
+          52.92741,
+          53.150511,
+          53.611155,
+          52.671928,
+          54.954395,
+          53.826126,
+          53.672796,
+          53.097161,
+          52.466836
+        ]
+      }
+    },
+    {
+      "case": "tiny-hit",
+      "mode": "prepared-find",
+      "haystack": 23,
+      "needle": 5,
+      "sha256": "0bf1afced33c48bb289ced9f05f1bec79940b49fa9ecd14d5867311a9d9a19e3",
+      "expected": 9,
+      "goose_ns": 4.64028925,
+      "bstr_ns": 7.645577714285714,
+      "ratio": 0.6069246070613669,
+      "iterations": {
+        "goose": 12000000,
+        "bstr": 7000000
+      },
+      "samples": {
+        "goose": [
+          4.5997139166666665,
+          4.64028925,
+          4.598440583333334,
+          4.640980916666667,
+          4.64222175,
+          4.64637675,
+          4.641808416666667,
+          4.632071666666667,
+          4.603896416666666
+        ],
+        "bstr": [
+          7.645577714285714,
+          7.592364571428571,
+          7.605770285714286,
+          7.671265142857143,
+          7.660123571428572,
+          7.640410571428571,
+          7.649793428571429,
+          7.666779428571428,
+          7.632974857142857
+        ]
+      }
+    },
+    {
+      "case": "tiny-miss",
+      "mode": "count",
+      "haystack": 23,
+      "needle": 5,
+      "sha256": "23689b54357382c2e5eb617a27f2124a912ffdc9148164e9b8e6709423545145",
+      "expected": 0,
+      "goose_ns": 5.5271298,
+      "bstr_ns": 35.595849,
+      "ratio": 0.15527456024437006,
+      "iterations": {
+        "goose": 10000000,
+        "bstr": 2000000
+      },
+      "samples": {
+        "goose": [
+          5.5699481,
+          5.5652261,
+          5.5224297,
+          5.5302288,
+          5.5353788,
+          5.5233688,
+          5.5271298,
+          5.5260348,
+          5.5166797
+        ],
+        "bstr": [
+          35.086605,
+          35.75281,
+          34.800773,
+          35.595849,
+          41.154276,
+          35.6963895,
+          34.665002,
+          36.4925255,
+          34.723612
+        ]
+      }
+    },
+    {
+      "case": "tiny-miss",
+      "mode": "rcount",
+      "haystack": 23,
+      "needle": 5,
+      "sha256": "23689b54357382c2e5eb617a27f2124a912ffdc9148164e9b8e6709423545145",
+      "expected": 0,
+      "goose_ns": 6.039721222222222,
+      "bstr_ns": 25.7272995,
+      "ratio": 0.2347592378369219,
+      "iterations": {
+        "goose": 9000000,
+        "bstr": 2000000
+      },
+      "samples": {
+        "goose": [
+          6.035324444444444,
+          6.036086777777777,
+          6.034962222222222,
+          6.039721222222222,
+          6.0405578888888884,
+          6.036626777777777,
+          6.043971222222222,
+          6.0414567777777775,
+          6.042279
+        ],
+        "bstr": [
+          23.9294705,
+          24.068897,
+          25.7230645,
+          26.0358065,
+          26.355434,
+          25.552848,
+          25.7272995,
+          25.804785,
+          26.0710365
+        ]
+      }
+    },
+    {
+      "case": "tiny-miss",
+      "mode": "prepared-find",
+      "haystack": 23,
+      "needle": 5,
+      "sha256": "23689b54357382c2e5eb617a27f2124a912ffdc9148164e9b8e6709423545145",
+      "expected": -1,
+      "goose_ns": 3.59157275,
+      "bstr_ns": 7.051607,
+      "ratio": 0.5093268456395826,
+      "iterations": {
+        "goose": 16000000,
+        "bstr": 8000000
+      },
+      "samples": {
+        "goose": [
+          3.5976915625,
+          3.5983296875,
+          3.5953984375,
+          3.5806645,
+          3.5741431875,
+          3.5973546875,
+          3.59157275,
+          3.543374875,
+          3.558638125
+        ],
+        "bstr": [
+          7.08100475,
+          7.067828375,
+          7.05677575,
+          7.069862125,
+          7.051607,
+          7.030654375,
+          6.99020525,
+          6.968307625,
+          6.958355
+        ]
+      }
+    },
+    {
+      "case": "needle-33-tail-miss",
+      "mode": "count",
+      "haystack": 1048609,
+      "needle": 33,
+      "sha256": "a86bf111a4aa21a9ecf94e60e8ea5158e118216c0a113a93b1f30854aa316a5b",
+      "expected": 0,
+      "goose_ns": 16976.785428571427,
+      "bstr_ns": 20400.225357142856,
+      "ratio": 0.8321861710526273,
+      "iterations": {
+        "goose": 3500,
+        "bstr": 2800
+      },
+      "samples": {
+        "goose": [
+          17029.937142857143,
+          17011.465714285714,
+          16957.490857142857,
+          16951.590857142855,
+          16976.785428571427,
+          16947.296857142857,
+          16900.01914285714,
+          17122.94057142857,
+          17048.40885714286
+        ],
+        "bstr": [
+          20435.98285714286,
+          20377.864642857145,
+          20322.092857142856,
+          20400.225357142856,
+          20343.6075,
+          20312.59642857143,
+          20453.600714285716,
+          20589.069642857143,
+          20457.440357142856
+        ]
+      }
+    },
+    {
+      "case": "needle-33-tail-miss",
+      "mode": "rcount",
+      "haystack": 1048609,
+      "needle": 33,
+      "sha256": "a86bf111a4aa21a9ecf94e60e8ea5158e118216c0a113a93b1f30854aa316a5b",
+      "expected": 0,
+      "goose_ns": 84343.955,
+      "bstr_ns": 88989.205,
+      "ratio": 0.9477998483074436,
+      "iterations": {
+        "goose": 600,
+        "bstr": 600
+      },
+      "samples": {
+        "goose": [
+          85218.74333333333,
+          82613.675,
+          84159.435,
+          85008.725,
+          84046.36833333333,
+          83899.96666666666,
+          84458.07166666667,
+          84343.955,
+          84353.67
+        ],
+        "bstr": [
+          86638.455,
+          89883.34666666666,
+          89554.42666666667,
+          89621.21,
+          86233.20166666666,
+          87589.795,
+          89920.76333333334,
+          88989.205,
+          88948.32333333333
+        ]
+      }
+    },
+    {
+      "case": "needle-33-tail-miss",
+      "mode": "prepared-find",
+      "haystack": 1048609,
+      "needle": 33,
+      "sha256": "a86bf111a4aa21a9ecf94e60e8ea5158e118216c0a113a93b1f30854aa316a5b",
+      "expected": -1,
+      "goose_ns": 16999.203333333335,
+      "bstr_ns": 20276.788571428573,
+      "ratio": 0.8383577741342341,
+      "iterations": {
+        "goose": 3600,
+        "bstr": 2800
+      },
+      "samples": {
+        "goose": [
+          16999.203333333335,
+          16874.921944444446,
+          17483.906944444443,
+          17016.097777777777,
+          17006.611944444445,
+          17004.195,
+          16966.68388888889,
+          16966.130833333333,
+          16855.882777777777
+        ],
+        "bstr": [
+          20236.385,
+          20252.845714285715,
+          20364.811071428572,
+          20349.578928571427,
+          20355.057142857142,
+          20342.717857142856,
+          20261.20642857143,
+          20276.788571428573,
+          20251.213571428572
+        ]
+      }
+    },
+    {
+      "case": "long-needle-tail-miss",
+      "mode": "count",
+      "haystack": 1050624,
+      "needle": 2048,
+      "sha256": "220d3577388bc1dd48a433af049a7d9c2edd5303389538ba133ef0b454f6d993",
+      "expected": 0,
+      "goose_ns": 21759.998846153845,
+      "bstr_ns": 26937.28,
+      "ratio": 0.8078023781968278,
+      "iterations": {
+        "goose": 2600,
+        "bstr": 2100
+      },
+      "samples": {
+        "goose": [
+          21732.898846153847,
+          21843.076538461537,
+          21716.76423076923,
+          21807.672307692308,
+          21743.487307692307,
+          21759.998846153845,
+          21707.32923076923,
+          21814.599615384614,
+          21874.653846153848
+        ],
+        "bstr": [
+          26937.28,
+          26865.450476190475,
+          26807.11238095238,
+          26817.46,
+          27910.581904761904,
+          27790.814285714285,
+          26805.692857142858,
+          26981.32761904762,
+          28280.999047619047
+        ]
+      }
+    },
+    {
+      "case": "long-needle-tail-miss",
+      "mode": "rcount",
+      "haystack": 1050624,
+      "needle": 2048,
+      "sha256": "220d3577388bc1dd48a433af049a7d9c2edd5303389538ba133ef0b454f6d993",
+      "expected": 0,
+      "goose_ns": 2414.536975,
+      "bstr_ns": 9002.228,
+      "ratio": 0.2682154878770011,
+      "iterations": {
+        "goose": 40000,
+        "bstr": 6000
+      },
+      "samples": {
+        "goose": [
+          2449.919,
+          2456.49455,
+          2442.7137,
+          2405.20315,
+          2407.233425,
+          2388.59355,
+          2414.536975,
+          2426.678825,
+          2398.215625
+        ],
+        "bstr": [
+          8465.147333333332,
+          9041.96,
+          8338.151333333333,
+          9034.464833333333,
+          8347.696333333333,
+          8336.851333333334,
+          9002.228,
+          9058.45,
+          9666.979666666666
+        ]
+      }
+    },
+    {
+      "case": "long-needle-tail-miss",
+      "mode": "prepared-find",
+      "haystack": 1050624,
+      "needle": 2048,
+      "sha256": "220d3577388bc1dd48a433af049a7d9c2edd5303389538ba133ef0b454f6d993",
+      "expected": -1,
+      "goose_ns": 17399.740294117648,
+      "bstr_ns": 20611.480357142857,
+      "ratio": 0.8441771281162642,
+      "iterations": {
+        "goose": 3400,
+        "bstr": 2800
+      },
+      "samples": {
+        "goose": [
+          17360.93117647059,
+          17399.740294117648,
+          17399.866470588237,
+          17505.470294117647,
+          17392.26382352941,
+          17384.307647058824,
+          17403.46088235294,
+          17456.096470588236,
+          17384.192941176472
+        ],
+        "bstr": [
+          20685.745357142856,
+          20636.912857142856,
+          20644.881071428572,
+          20601.87714285714,
+          20611.480357142857,
+          20598.084285714285,
+          20628.309285714287,
+          20603.71285714286,
+          20599.91607142857
+        ]
+      }
+    },
+    {
+      "case": "periodic-miss",
+      "mode": "count",
+      "haystack": 1048576,
+      "needle": 256,
+      "sha256": "a6214614892bacd22a2a7003c127017b862f1e0785e1923bc8f0eaaaaec1adfd",
+      "expected": 0,
+      "goose_ns": 89779.97666666667,
+      "bstr_ns": 1683746.8235294118,
+      "ratio": 0.053321541820921144,
+      "iterations": {
+        "goose": 600,
+        "bstr": 34
+      },
+      "samples": {
+        "goose": [
+          89949.81166666666,
+          89833.445,
+          89589.29333333333,
+          89468.04166666667,
+          89775.72833333333,
+          90074.51333333334,
+          90157.26333333334,
+          89779.97666666667,
+          89563.74166666667
+        ],
+        "bstr": [
+          1678015.8823529412,
+          1682495.9411764706,
+          1683746.8235294118,
+          1672318.5,
+          1696181.6470588236,
+          1697531.3529411764,
+          1696295.4705882352,
+          1694423.6764705882,
+          1673935.5882352942
+        ]
+      }
+    },
+    {
+      "case": "periodic-miss",
+      "mode": "rcount",
+      "haystack": 1048576,
+      "needle": 256,
+      "sha256": "a6214614892bacd22a2a7003c127017b862f1e0785e1923bc8f0eaaaaec1adfd",
+      "expected": 0,
+      "goose_ns": 44149.04076923077,
+      "bstr_ns": 540721.98,
+      "ratio": 0.08164831910334175,
+      "iterations": {
+        "goose": 1300,
+        "bstr": 100
+      },
+      "samples": {
+        "goose": [
+          44092.60153846154,
+          44170.92538461539,
+          44145.53307692308,
+          44068.47923076923,
+          44238.74923076923,
+          44017.32461538461,
+          44299.803846153845,
+          44386.32,
+          44149.04076923077
+        ],
+        "bstr": [
+          540721.98,
+          544623.82,
+          540453.18,
+          540385.98,
+          539598.07,
+          542610.09,
+          544294.11,
+          538910.17,
+          541664.58
+        ]
+      }
+    },
+    {
+      "case": "periodic-miss",
+      "mode": "prepared-find",
+      "haystack": 1048576,
+      "needle": 256,
+      "sha256": "a6214614892bacd22a2a7003c127017b862f1e0785e1923bc8f0eaaaaec1adfd",
+      "expected": -1,
+      "goose_ns": 96379.595,
+      "bstr_ns": 1677704.7352941176,
+      "ratio": 0.05744729270440054,
+      "iterations": {
+        "goose": 600,
+        "bstr": 34
+      },
+      "samples": {
+        "goose": [
+          96611.69666666667,
+          96479.76166666667,
+          96375.41166666667,
+          96484.145,
+          96174.09166666666,
+          96286.47666666667,
+          96379.595,
+          96258.97666666667,
+          96535.84666666666
+        ],
+        "bstr": [
+          1672960.2647058824,
+          1676162.6470588236,
+          1680307.0882352942,
+          1671048.5,
+          1677704.7352941176,
+          1672201.4411764706,
+          1683576.5294117648,
+          1678538.2647058824,
+          1678552.9705882352
+        ]
+      }
+    },
+    {
+      "case": "periodic-reverse",
+      "mode": "count",
+      "haystack": 1048576,
+      "needle": 256,
+      "sha256": "2e840038360a968875072fcd813204c5bd65e4850f2699e94aa44130db330ad8",
+      "expected": 0,
+      "goose_ns": 17243.34794117647,
+      "bstr_ns": 21112.830714285716,
+      "ratio": 0.8167236395027309,
+      "iterations": {
+        "goose": 3400,
+        "bstr": 2800
+      },
+      "samples": {
+        "goose": [
+          17187.00911764706,
+          17272.307058823528,
+          17282.253823529412,
+          17243.34794117647,
+          17297.86,
+          17239.730294117646,
+          17252.43617647059,
+          17187.86794117647,
+          17240.35088235294
+        ],
+        "bstr": [
+          21142.770357142857,
+          21103.216428571428,
+          21081.448571428573,
+          21112.830714285716,
+          21172.095714285715,
+          21038.665714285715,
+          21103.46285714286,
+          21224.806785714285,
+          21119.659642857143
+        ]
+      }
+    },
+    {
+      "case": "periodic-reverse",
+      "mode": "rcount",
+      "haystack": 1048576,
+      "needle": 256,
+      "sha256": "2e840038360a968875072fcd813204c5bd65e4850f2699e94aa44130db330ad8",
+      "expected": 0,
+      "goose_ns": 59942.30888888889,
+      "bstr_ns": 1354148.3333333333,
+      "ratio": 0.0442656889303527,
+      "iterations": {
+        "goose": 900,
+        "bstr": 42
+      },
+      "samples": {
+        "goose": [
+          59942.43111111111,
+          59978.12,
+          59789.862222222226,
+          59922.00666666667,
+          60025.09777777778,
+          59942.30888888889,
+          59895.66222222222,
+          60374.27777777778,
+          59886.13
+        ],
+        "bstr": [
+          1354301.4285714286,
+          1352788.3095238095,
+          1351471.4047619049,
+          1355979.761904762,
+          1354148.3333333333,
+          1362624.3333333333,
+          1350588.2857142857,
+          1351726.380952381,
+          1358241.2142857143
+        ]
+      }
+    },
+    {
+      "case": "periodic-reverse",
+      "mode": "prepared-find",
+      "haystack": 1048576,
+      "needle": 256,
+      "sha256": "2e840038360a968875072fcd813204c5bd65e4850f2699e94aa44130db330ad8",
+      "expected": -1,
+      "goose_ns": 16081.385,
+      "bstr_ns": 20012.682068965518,
+      "ratio": 0.8035597100169827,
+      "iterations": {
+        "goose": 3600,
+        "bstr": 2900
+      },
+      "samples": {
+        "goose": [
+          16208.888888888889,
+          16036.065555555555,
+          16051.176666666666,
+          16090.210277777778,
+          16052.44611111111,
+          16095.826944444445,
+          16152.76638888889,
+          16081.385,
+          16054.71
+        ],
+        "bstr": [
+          20012.682068965518,
+          20046.90620689655,
+          20010.185517241378,
+          19968.709310344828,
+          19999.654482758622,
+          20048.34793103448,
+          19992.633793103447,
+          20097.044827586207,
+          20141.341724137932
+        ]
+      }
+    },
+    {
+      "case": "false-pairs",
+      "mode": "count",
+      "haystack": 1048576,
+      "needle": 128,
+      "sha256": "439796ed7ea8379b34dc0c862cdd29487bf7e2a4c4d420be28702803f248dfad",
+      "expected": 0,
+      "goose_ns": 16648.91114285714,
+      "bstr_ns": 20457.99357142857,
+      "ratio": 0.8138095793572271,
+      "iterations": {
+        "goose": 3500,
+        "bstr": 2800
+      },
+      "samples": {
+        "goose": [
+          16737.697714285714,
+          16623.331142857143,
+          16760.957714285716,
+          16639.805428571428,
+          16650.908571428572,
+          16648.91114285714,
+          16642.937142857143,
+          16643.328285714284,
+          16678.508857142857
+        ],
+        "bstr": [
+          20438.42892857143,
+          20472.4975,
+          20428.8825,
+          20408.375357142857,
+          20985.654642857142,
+          20414.268214285716,
+          20471.629642857144,
+          20468.915,
+          20457.99357142857
+        ]
+      }
+    },
+    {
+      "case": "false-pairs",
+      "mode": "rcount",
+      "haystack": 1048576,
+      "needle": 128,
+      "sha256": "439796ed7ea8379b34dc0c862cdd29487bf7e2a4c4d420be28702803f248dfad",
+      "expected": 0,
+      "goose_ns": 70977.8225,
+      "bstr_ns": 606762.87,
+      "ratio": 0.1169778607250638,
+      "iterations": {
+        "goose": 800,
+        "bstr": 100
+      },
+      "samples": {
+        "goose": [
+          78530.7925,
+          69237.9725,
+          69240.535,
+          78559.05625,
+          77962.375,
+          78947.47125,
+          69184.285,
+          69193.81,
+          70977.8225
+        ],
+        "bstr": [
+          570393.71,
+          606762.87,
+          622359.09,
+          600101.93,
+          564847.46,
+          677963.91,
+          640844.34,
+          612456.32,
+          570441.3
+        ]
+      }
+    },
+    {
+      "case": "false-pairs",
+      "mode": "prepared-find",
+      "haystack": 1048576,
+      "needle": 128,
+      "sha256": "439796ed7ea8379b34dc0c862cdd29487bf7e2a4c4d420be28702803f248dfad",
+      "expected": -1,
+      "goose_ns": 16144.855,
+      "bstr_ns": 19784.896,
+      "ratio": 0.8160191996965765,
+      "iterations": {
+        "goose": 3600,
+        "bstr": 3000
+      },
+      "samples": {
+        "goose": [
+          16144.855,
+          16115.43,
+          16127.405,
+          16174.558055555555,
+          16162.11638888889,
+          16108.496388888889,
+          16139.693888888889,
+          16664.536944444444,
+          16655.223055555554
+        ],
+        "bstr": [
+          19754.279,
+          20878.727333333332,
+          19722.719,
+          19742.379,
+          19782.40233333333,
+          20374.550333333333,
+          19784.896,
+          20184.049,
+          20165.465333333334
+        ]
+      }
+    },
+    {
+      "case": "duplicate-pair-reject",
+      "mode": "count",
+      "haystack": 1048576,
+      "needle": 5,
+      "sha256": "7465ff87d11b5f96b35027ff78377b1c6e9291345ed554a187ec2d62e5a37b90",
+      "expected": 0,
+      "goose_ns": 16056.895428571428,
+      "bstr_ns": 23229.6312,
+      "ratio": 0.6912247245910399,
+      "iterations": {
+        "goose": 3500,
+        "bstr": 2500
+      },
+      "samples": {
+        "goose": [
+          15988.434857142856,
+          16056.895428571428,
+          16616.314,
+          16061.018285714286,
+          16094.367142857143,
+          16032.138,
+          15941.860285714285,
+          15991.526285714286,
+          16102.216
+        ],
+        "bstr": [
+          23274.1116,
+          23347.632,
+          23193.9868,
+          23229.6312,
+          23265.9276,
+          23084.25,
+          23098.9584,
+          23387.2444,
+          23103.3664
+        ]
+      }
+    },
+    {
+      "case": "duplicate-pair-reject",
+      "mode": "rcount",
+      "haystack": 1048576,
+      "needle": 5,
+      "sha256": "7465ff87d11b5f96b35027ff78377b1c6e9291345ed554a187ec2d62e5a37b90",
+      "expected": 0,
+      "goose_ns": 14285.05775,
+      "bstr_ns": 296858.39,
+      "ratio": 0.048120781595561435,
+      "iterations": {
+        "goose": 4000,
+        "bstr": 200
+      },
+      "samples": {
+        "goose": [
+          14239.5875,
+          14227.82225,
+          14309.798,
+          14383.9435,
+          14285.05775,
+          14268.5775,
+          14308.8455,
+          14223.31475,
+          14335.92825
+        ],
+        "bstr": [
+          296183.23,
+          296858.39,
+          296301.535,
+          296230.085,
+          297583.445,
+          296323.335,
+          297498.895,
+          297042.295,
+          318753.055
+        ]
+      }
+    },
+    {
+      "case": "duplicate-pair-reject",
+      "mode": "prepared-find",
+      "haystack": 1048576,
+      "needle": 5,
+      "sha256": "7465ff87d11b5f96b35027ff78377b1c6e9291345ed554a187ec2d62e5a37b90",
+      "expected": -1,
+      "goose_ns": 16120.981081081081,
+      "bstr_ns": 23246.5476,
+      "ratio": 0.693478505216021,
+      "iterations": {
+        "goose": 3700,
+        "bstr": 2500
+      },
+      "samples": {
+        "goose": [
+          15904.373783783783,
+          16120.981081081081,
+          16202.430540540541,
+          16170.80027027027,
+          16227.665675675677,
+          16062.332162162162,
+          16033.075135135135,
+          16169.270540540541,
+          16080.031891891891
+        ],
+        "bstr": [
+          23076.2344,
+          23100.9264,
+          23223.9628,
+          23366.48,
+          23352.0444,
+          23231.7912,
+          23249.4752,
+          23261.5676,
+          23246.5476
+        ]
+      }
+    },
+    {
+      "case": "duplicate-pair-dense",
+      "mode": "count",
+      "haystack": 1048576,
+      "needle": 5,
+      "sha256": "b30900bd79911391d68bdef448aed873a81bd4a6f9d1cf787489026dcd8bace5",
+      "expected": 0,
+      "goose_ns": 54016.777,
+      "bstr_ns": 873386.7313432836,
+      "ratio": 0.06184748984784929,
+      "iterations": {
+        "goose": 1000,
+        "bstr": 67
+      },
+      "samples": {
+        "goose": [
+          54294.739,
+          54016.777,
+          54232.299,
+          53938.897,
+          54076.668,
+          54331.55,
+          53971.897,
+          53985.638,
+          53959.827
+        ],
+        "bstr": [
+          876249.4477611941,
+          873386.7313432836,
+          872959.4179104478,
+          877154.5223880596,
+          871022.8358208955,
+          871256.7164179104,
+          876023.7611940298,
+          873721.8059701492,
+          873138.8208955224
+        ]
+      }
+    },
+    {
+      "case": "duplicate-pair-dense",
+      "mode": "rcount",
+      "haystack": 1048576,
+      "needle": 5,
+      "sha256": "b30900bd79911391d68bdef448aed873a81bd4a6f9d1cf787489026dcd8bace5",
+      "expected": 0,
+      "goose_ns": 54649.36636363636,
+      "bstr_ns": 1141949.6326530613,
+      "ratio": 0.047856196806746146,
+      "iterations": {
+        "goose": 1100,
+        "bstr": 49
+      },
+      "samples": {
+        "goose": [
+          54451.73818181818,
+          54666.56636363636,
+          54340.11,
+          54344.391818181815,
+          54456.92,
+          54673.10272727273,
+          54649.36636363636,
+          54885.13181818182,
+          58187.62909090909
+        ],
+        "bstr": [
+          1141949.6326530613,
+          1140817.7959183673,
+          1136254.693877551,
+          1130614.224489796,
+          1157053.2040816327,
+          1153546.6530612244,
+          1142629.6326530613,
+          1139240.224489796,
+          1162399.1836734693
+        ]
+      }
+    },
+    {
+      "case": "duplicate-pair-dense",
+      "mode": "prepared-find",
+      "haystack": 1048576,
+      "needle": 5,
+      "sha256": "b30900bd79911391d68bdef448aed873a81bd4a6f9d1cf787489026dcd8bace5",
+      "expected": -1,
+      "goose_ns": 54423.221,
+      "bstr_ns": 878550.4242424242,
+      "ratio": 0.06194661057380884,
+      "iterations": {
+        "goose": 1000,
+        "bstr": 66
+      },
+      "samples": {
+        "goose": [
+          54820.594,
+          54762.273,
+          54172.598,
+          54481.521,
+          54159.898,
+          54243.829,
+          54423.221,
+          54227.369,
+          54547.832
+        ],
+        "bstr": [
+          884204.696969697,
+          884373.0303030303,
+          878550.4242424242,
+          876371.0,
+          878499.9545454546,
+          876209.6363636364,
+          879057.8333333334,
+          881443.3181818182,
+          875081.303030303
+        ]
+      }
+    },
+    {
+      "case": "near-periodic-miss",
+      "mode": "count",
+      "haystack": 1048576,
+      "needle": 116,
+      "sha256": "df21d9b8b49da12d1db3bfbba7d7b34843fd15d9e3682f366051311e1af8cc3f",
+      "expected": 0,
+      "goose_ns": 24597.985416666666,
+      "bstr_ns": 31415.531578947368,
+      "ratio": 0.7829880374569446,
+      "iterations": {
+        "goose": 2400,
+        "bstr": 1900
+      },
+      "samples": {
+        "goose": [
+          24443.934583333332,
+          24597.985416666666,
+          24691.890416666665,
+          24495.18875,
+          24614.0525,
+          24560.239166666666,
+          24588.43125,
+          24607.352083333335,
+          24627.910416666666
+        ],
+        "bstr": [
+          31485.836842105262,
+          31415.531578947368,
+          30722.5,
+          32027.96789473684,
+          31552.12210526316,
+          31632.14894736842,
+          31390.18894736842,
+          30740.536842105263,
+          31190.88263157895
+        ]
+      }
+    },
+    {
+      "case": "near-periodic-miss",
+      "mode": "rcount",
+      "haystack": 1048576,
+      "needle": 116,
+      "sha256": "df21d9b8b49da12d1db3bfbba7d7b34843fd15d9e3682f366051311e1af8cc3f",
+      "expected": 0,
+      "goose_ns": 404544.7,
+      "bstr_ns": 796883.1621621621,
+      "ratio": 0.5076587374519993,
+      "iterations": {
+        "goose": 200,
+        "bstr": 74
+      },
+      "samples": {
+        "goose": [
+          403408.99,
+          404964.605,
+          404544.7,
+          402904.085,
+          405551.155,
+          404829.8,
+          405189.85,
+          404248.95,
+          402925.885
+        ],
+        "bstr": [
+          803768.9054054054,
+          800833.2027027027,
+          799955.8918918918,
+          796883.1621621621,
+          797978.8513513514,
+          795945.8648648649,
+          794837.7432432432,
+          794733.5540540541,
+          795250.0405405406
+        ]
+      }
+    },
+    {
+      "case": "near-periodic-miss",
+      "mode": "prepared-find",
+      "haystack": 1048576,
+      "needle": 116,
+      "sha256": "df21d9b8b49da12d1db3bfbba7d7b34843fd15d9e3682f366051311e1af8cc3f",
+      "expected": -1,
+      "goose_ns": 30675.95736842105,
+      "bstr_ns": 30548.10947368421,
+      "ratio": 1.0041851327934705,
+      "iterations": {
+        "goose": 1900,
+        "bstr": 1900
+      },
+      "samples": {
+        "goose": [
+          30751.953157894735,
+          30812.49,
+          30675.95736842105,
+          30645.314736842105,
+          30759.31105263158,
+          30565.377368421054,
+          30612.18894736842,
+          30817.084736842105,
+          30589.714736842107
+        ],
+        "bstr": [
+          30827.88,
+          30388.934736842104,
+          30548.10947368421,
+          30662.21052631579,
+          30154.00105263158,
+          30576.09894736842,
+          30539.20894736842,
+          30798.421578947367,
+          30165.664210526316
+        ]
+      }
+    },
+    {
+      "case": "near-periodic-end",
+      "mode": "count",
+      "haystack": 1048692,
+      "needle": 116,
+      "sha256": "59d8084888e5d1178a07e8450a8480faee146ed0ee9d74fc40334e907cbfc75e",
+      "expected": 1,
+      "goose_ns": 24657.50739130435,
+      "bstr_ns": 32980.282222222224,
+      "ratio": 0.7476439172097211,
+      "iterations": {
+        "goose": 2300,
+        "bstr": 1800
+      },
+      "samples": {
+        "goose": [
+          24648.59,
+          24685.41652173913,
+          24424.336086956522,
+          24686.48608695652,
+          24651.159565217393,
+          24681.703478260868,
+          24657.50739130435,
+          24724.925217391305,
+          24544.654347826086
+        ],
+        "bstr": [
+          33006.265555555554,
+          32980.282222222224,
+          32834.75833333333,
+          33123.01666666667,
+          33087.19944444444,
+          33178.65555555555,
+          32903.84777777778,
+          32955.55388888889,
+          32978.68722222222
+        ]
+      }
+    },
+    {
+      "case": "near-periodic-end",
+      "mode": "rcount",
+      "haystack": 1048692,
+      "needle": 116,
+      "sha256": "59d8084888e5d1178a07e8450a8480faee146ed0ee9d74fc40334e907cbfc75e",
+      "expected": 1,
+      "goose_ns": 403898.845,
+      "bstr_ns": 807236.9428571429,
+      "ratio": 0.5003473250003105,
+      "iterations": {
+        "goose": 200,
+        "bstr": 70
+      },
+      "samples": {
+        "goose": [
+          403290.135,
+          403771.595,
+          404028.195,
+          403898.845,
+          402919.085,
+          403242.59,
+          404953.005,
+          405335.955,
+          405580.405
+        ],
+        "bstr": [
+          807236.9428571429,
+          808731.9571428571,
+          806495.3714285714,
+          804462.0571428571,
+          808358.9428571429,
+          808263.8142857143,
+          805827.7857142857,
+          805579.2142857143,
+          808044.2285714286
+        ]
+      }
+    },
+    {
+      "case": "near-periodic-end",
+      "mode": "prepared-find",
+      "haystack": 1048692,
+      "needle": 116,
+      "sha256": "59d8084888e5d1178a07e8450a8480faee146ed0ee9d74fc40334e907cbfc75e",
+      "expected": 1048576,
+      "goose_ns": 30795.405789473683,
+      "bstr_ns": 31866.117777777778,
+      "ratio": 0.9663996726626434,
+      "iterations": {
+        "goose": 1900,
+        "bstr": 1800
+      },
+      "samples": {
+        "goose": [
+          30608.520526315788,
+          30904.68,
+          30738.536842105263,
+          30953.448947368423,
+          30904.76947368421,
+          30860.65894736842,
+          30795.405789473683,
+          30768.126315789475,
+          30765.6
+        ],
+        "bstr": [
+          31949.946666666667,
+          31866.117777777778,
+          31877.16222222222,
+          32022.557777777776,
+          31820.72333333333,
+          31721.43888888889,
+          31775.289444444443,
+          32007.652222222223,
+          31848.995555555557
+        ]
+      }
+    },
+    {
+      "case": "n64-p3-miss",
+      "mode": "count",
+      "haystack": 64,
+      "needle": 3,
+      "sha256": "fb7959dd09037ae4c8e35a4157f4ad852732b913dfb3e256f6ddb3489775f62c",
+      "expected": 0,
+      "goose_ns": 15.647761166666667,
+      "bstr_ns": 35.1055345,
+      "ratio": 0.44573487883133267,
+      "iterations": {
+        "goose": 6000000,
+        "bstr": 2000000
+      },
+      "samples": {
+        "goose": [
+          15.868837833333334,
+          15.707791666666667,
+          15.593540833333334,
+          15.647761166666667,
+          15.634406166666666,
+          15.610797666666667,
+          15.534802,
+          15.693093333333334,
+          15.711638333333333
+        ],
+        "bstr": [
+          34.918693,
+          34.9851985,
+          35.050139,
+          35.198625,
+          34.941778,
+          35.1055345,
+          36.4324045,
+          36.654401,
+          36.858643
+        ]
+      }
+    },
+    {
+      "case": "n64-p3-miss",
+      "mode": "rcount",
+      "haystack": 64,
+      "needle": 3,
+      "sha256": "fb7959dd09037ae4c8e35a4157f4ad852732b913dfb3e256f6ddb3489775f62c",
+      "expected": 0,
+      "goose_ns": 25.25375025,
+      "bstr_ns": 96.77152380952381,
+      "ratio": 0.2609626185044597,
+      "iterations": {
+        "goose": 4000000,
+        "bstr": 630000
+      },
+      "samples": {
+        "goose": [
+          25.3017855,
+          25.0208085,
+          24.46055675,
+          25.49968975,
+          24.78383675,
+          25.25375025,
+          25.00473075,
+          26.014356,
+          25.4981445
+        ],
+        "bstr": [
+          96.37926666666667,
+          96.73693492063492,
+          96.42299682539682,
+          96.16142380952381,
+          98.10581904761905,
+          97.48214603174603,
+          96.77152380952381,
+          96.92184126984127,
+          96.80211111111112
+        ]
+      }
+    },
+    {
+      "case": "n64-p3-miss",
+      "mode": "prepared-find",
+      "haystack": 64,
+      "needle": 3,
+      "sha256": "fb7959dd09037ae4c8e35a4157f4ad852732b913dfb3e256f6ddb3489775f62c",
+      "expected": -1,
+      "goose_ns": 9.9099797,
+      "bstr_ns": 6.808381375,
+      "ratio": 1.4555559029623248,
+      "iterations": {
+        "goose": 10000000,
+        "bstr": 8000000
+      },
+      "samples": {
+        "goose": [
+          9.9099797,
+          9.8884545,
+          9.8757994,
+          9.8929096,
+          9.8611823,
+          9.9935473,
+          9.9807602,
+          9.955498,
+          9.9220737
+        ],
+        "bstr": [
+          6.786309875,
+          6.827942625,
+          6.737292,
+          6.74408325,
+          6.808381375,
+          6.840314,
+          6.818376375,
+          6.77845225,
+          6.8380315
+        ]
+      }
+    },
+    {
+      "case": "n65-p33-middle",
+      "mode": "count",
+      "haystack": 65,
+      "needle": 33,
+      "sha256": "0072cde33f18fc3ef2cef8d0847e57ebaee351a25e4480483e5c9da7fb3012c3",
+      "expected": 1,
+      "goose_ns": 133.74580227272727,
+      "bstr_ns": 341.29539411764705,
+      "ratio": 0.39187696223824253,
+      "iterations": {
+        "goose": 440000,
+        "bstr": 170000
+      },
+      "samples": {
+        "goose": [
+          133.66598636363636,
+          134.669925,
+          134.86265227272727,
+          133.3053431818182,
+          133.74580227272727,
+          133.81848636363637,
+          133.27173181818182,
+          133.9172818181818,
+          133.05334318181818
+        ],
+        "bstr": [
+          339.32261764705885,
+          341.9596294117647,
+          341.2002764705882,
+          343.6969411764706,
+          341.72286470588233,
+          336.94383529411766,
+          339.6791470588235,
+          342.5147588235294,
+          341.29539411764705
+        ]
+      }
+    },
+    {
+      "case": "n65-p33-middle",
+      "mode": "rcount",
+      "haystack": 65,
+      "needle": 33,
+      "sha256": "0072cde33f18fc3ef2cef8d0847e57ebaee351a25e4480483e5c9da7fb3012c3",
+      "expected": 1,
+      "goose_ns": 78.09474415584415,
+      "bstr_ns": 218.9019576923077,
+      "ratio": 0.35675671875724135,
+      "iterations": {
+        "goose": 770000,
+        "bstr": 260000
+      },
+      "samples": {
+        "goose": [
+          78.09474415584415,
+          77.837312987013,
+          77.89469090909091,
+          81.74301818181819,
+          78.97851558441559,
+          78.86773636363637,
+          77.3391025974026,
+          78.01458701298701,
+          79.93436753246753
+        ],
+        "bstr": [
+          218.1223346153846,
+          217.20890384615385,
+          218.9019576923077,
+          219.06365,
+          221.62182307692308,
+          217.55433076923077,
+          219.94300384615386,
+          215.74862692307693,
+          219.85808076923078
+        ]
+      }
+    },
+    {
+      "case": "n65-p33-middle",
+      "mode": "prepared-find",
+      "haystack": 65,
+      "needle": 33,
+      "sha256": "0072cde33f18fc3ef2cef8d0847e57ebaee351a25e4480483e5c9da7fb3012c3",
+      "expected": 16,
+      "goose_ns": 20.075447666666665,
+      "bstr_ns": 25.5451625,
+      "ratio": 0.7858806013336836,
+      "iterations": {
+        "goose": 3000000,
+        "bstr": 2000000
+      },
+      "samples": {
+        "goose": [
+          20.299636333333332,
+          20.106791333333334,
+          20.186935333333334,
+          19.968320333333335,
+          20.051501,
+          20.075447666666665,
+          20.002234,
+          20.067618,
+          20.212639
+        ],
+        "bstr": [
+          25.504532,
+          25.626528,
+          25.611928,
+          25.5451625,
+          25.626718,
+          25.373111,
+          25.5458175,
+          25.5203075,
+          25.465352
+        ]
+      }
+    }
+  ]
+}

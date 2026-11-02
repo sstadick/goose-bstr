@@ -180,19 +180,19 @@ overall score.
 
 | Input / scenario | Operation | goostr | bstr | Ratio |
 | --- | --- | ---: | ---: | ---: |
-| English subtitles, `you` needle | forward count | 140.69 µs | 221.06 µs | 0.64× |
-| Upstream adversarial alphabet, `qbz` needle | forward count | 28.33 µs | 157.86 µs | 0.18× |
-| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.29 ms | 9.13 ms | 0.36× |
-| Same executable and needle | reverse count | 3.37 ms | 14.81 ms | 0.23× |
-| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.21 µs | 20.47 µs | 0.84× |
-| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 96.82 µs | 1,692.46 µs | 0.06× |
-| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 32.63 µs | 31.03 µs | 1.05× |
-| Same input and needle | prepared `rfind` | 1,040.49 µs | 794.49 µs | 1.31× |
-| Same, needle appended at end | prepared `find` | 32.30 µs | 32.17 µs | 1.00× |
-| Same, needle appended at end | reverse count | 734.72 µs | 811.81 µs | 0.91× |
+| English subtitles, `you` needle | forward count | 141.25 µs | 220.73 µs | 0.64× |
+| Upstream adversarial alphabet, `qbz` needle | forward count | 28.10 µs | 155.84 µs | 0.18× |
+| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.28 ms | 9.04 ms | 0.36× |
+| Same executable and needle | reverse count | 3.39 ms | 14.77 ms | 0.23× |
+| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.40 µs | 20.61 µs | 0.84× |
+| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 96.38 µs | 1,677.70 µs | 0.06× |
+| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 30.68 µs | 30.55 µs | 1.00× |
+| Same input and needle | prepared `rfind` | 482.92 µs | 792.72 µs | 0.61× |
+| Same, needle appended at end | prepared `find` | 30.80 µs | 31.87 µs | 0.97× |
+| Same, needle appended at end | reverse count | 403.90 µs | 807.24 µs | 0.50× |
 
-[Raw measurements](bench/results/2026-11-02-clang-inline.json) and the
-[prepared reverse search](bench/results/2026-11-02-clang-inline-prepared.json)
+[Raw measurements](bench/results/2026-11-02-clang-reverse.json) and the
+[prepared reverse search](bench/results/2026-11-02-clang-reverse-prepared.json)
 include individual samples, input and source hashes, and toolchain details.
 
 ## Contributing
