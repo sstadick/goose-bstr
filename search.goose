@@ -130,40 +130,53 @@ inline fn packed_scan(s: const u8[:], needle: const u8[:], a: i64, b: i64, prefi
 
 fn packed_reverse(s: const u8[:], needle: const u8[:], a: i64, b: i64) -> i64 {
     if !runtime_simd() || s.len - needle.len + 1 < DISPATCH_MIN {
-        if needle.len == 3 { return packed_reverse_scan(s, needle, a, b, true); }
-        return packed_reverse_scan(s, needle, a, b, false);
+        if needle.len == 3 { return packed_reverse_scan(s, needle, a, b, true, false); }
+        if s.len - needle.len + 1 >= DISPATCH_MIN && needle[a] == needle[b] {
+            return packed_reverse_scan(s, needle, a, b, false, true);
+        }
+        return packed_reverse_scan(s, needle, a, b, false, false);
     }
     if needle.len == 3 { return packed_reverse_triple_wide(s, needle, a, b); }
+    if needle[a] == needle[b] { return packed_reverse_duplicate_wide(s, needle, a, b); }
     return packed_reverse_wide(s, needle, a, b);
 }
 
 simd fn packed_reverse_wide(s: const u8[:], needle: const u8[:], a: i64, b: i64) -> i64 {
-    return packed_reverse_scan(s, needle, a, b, false);
+    return packed_reverse_scan(s, needle, a, b, false, false);
+}
+
+simd fn packed_reverse_duplicate_wide(s: const u8[:], needle: const u8[:], a: i64, b: i64) -> i64 {
+    return packed_reverse_scan(s, needle, a, b, false, true);
 }
 
 simd fn packed_reverse_triple_wide(s: const u8[:], needle: const u8[:], a: i64, b: i64) -> i64 {
-    return packed_reverse_scan(s, needle, a, b, true);
+    return packed_reverse_scan(s, needle, a, b, true, false);
 }
 
-// Callers pass a literal flag to keep the third-byte check out of other scans.
-inline fn packed_reverse_scan(s: const u8[:], needle: const u8[:], a: i64, b: i64, triple: bool) -> i64 {
+// Literal flags keep third-byte checks out of scans with distinct pair bytes.
+inline fn packed_reverse_scan(s: const u8[:], needle: const u8[:], a: i64, b: i64, triple: bool, duplicates: bool) -> i64 {
     if needle.len > s.len || needle.len < 2 { return -1; }
     let x = needle[a];
     let y = needle[b];
     let count = s.len - needle.len + 1;
     var xs = s[a..a + count];
     var ys = s[b..b + count];
+    var c = a;
+    if triple { c = 3 - a - b; }
+    else if duplicates {
+        for i in needle.len {
+            if needle[i] != x { c = i; break; }
+        }
+    }
     while xs.len >= 32 {
         let start = xs.len - 32;
         let vx = goosimd::load<goosimd::U8x32>(xs[start..]).eq(x);
         let vy = goosimd::load<goosimd::U8x32>(ys[start..]).eq(y);
         var hits = vx.bit_and(vy).to_bits();
-        if triple && (hits & (hits - 1)) != 0 {
-            // With multiple candidates, checking the third distinct position
-            // resolves a three-byte needle for the whole block at once.
-            let c = 3 - a - b;
+        if (triple || (duplicates && c != a)) && (hits & (hits - 1)) != 0 {
+            // Reject dense pair matches together before verifying each lane.
             hits &= goosimd::load<goosimd::U8x32>(s[start + c..]).eq(needle[c]).to_bits();
-            if hits != 0 { return start + 63 - clz(hits); }
+            if triple && hits != 0 { return start + 63 - clz(hits); }
         }
         while hits != 0 {
             let lane = 63 - clz(hits);
@@ -757,59 +770,77 @@ fn rfind(f: const FinderReverse&, s: const u8[:]) -> i64 {
 // Share the long-search kernel between prepared and one-shot searches while
 // specializing periodic memory tracking outside the candidate loop.
 fn rfind_two_way(f: const FinderReverse&, s: const u8[:]) -> i64 {
-    if f.two.memory > 0 { return rfind_two_way_scan(f, s, true); }
-    return rfind_two_way_scan(f, s, false);
-}
-
-inline fn rfind_two_way_scan(f: const FinderReverse&, s: const u8[:], periodic: bool) -> i64 {
     let needle = f.needle;
+    let two = f.two;
     var rest = s;
     // Skip an initial run with no critical-byte matches. Stop probing at
     // the first candidate or byte-set jump, then let Two-Way handle dense
     // matches without paying for a vector probe on every mismatch.
-    if f.two.critical > 0 {
-        let byte = needle[f.two.critical - 1];
-        while rest.len - needle.len >= 15 {
-            let base = rest.len - needle.len;
-            if f.two.bytes & ((1 as u64) << (rest[base] & 63)) == 0 { break; }
-            let end = base + f.two.critical;
-            if rest[end - 1] == byte { break; }
-            let hits = goosimd::load<goosimd::U8x16>(rest[end - 16..end]).eq(byte).to_bits();
+    if two.critical > 0 {
+        let byte = needle[two.critical - 1];
+        let count = rest.len - needle.len + 1;
+        var probes = rest[two.critical - 1..two.critical - 1 + count];
+        while probes.len >= 16 {
+            let base = probes.len - 1;
+            if two.bytes & ((1 as u64) << (rest[base] & 63)) == 0 { break; }
+            if probes[base] == byte { break; }
+            let hits = goosimd::load<goosimd::U8x16>(probes[probes.len - 16..]).eq(byte).to_bits();
             if hits != 0 {
-                rest = rest[..rest.len - (15 - (63 - clz(hits)))];
+                probes = probes[..probes.len - (15 - (63 - clz(hits)))];
                 break;
             }
-            rest = rest[..rest.len - 16];
+            probes = probes[..probes.len - 16];
         }
+        rest = rest[..probes.len + needle.len - 1];
     }
+    if two.memory > 0 { return rfind_two_way_scan(f, rest, true); }
+    return rfind_two_way_scan(f, rest, false);
+}
+
+inline fn rfind_two_way_scan(f: const FinderReverse&, rest: const u8[:], periodic: bool) -> i64 {
+    let needle = f.needle;
+    let two = f.two;
     var memory = needle.len;
     var base = rest.len - needle.len;
     while base >= 0 {
-        if f.two.bytes & ((1 as u64) << (rest[base] & 63)) == 0 {
+        if two.bytes & ((1 as u64) << (rest[base] & 63)) == 0 {
             base -= needle.len; memory = needle.len; continue;
         }
         let window = rest[base..base + needle.len];
-        var i = if periodic { min(f.two.critical, memory) } else { f.two.critical };
-        if i > 0 && needle[i - 1] == window[i - 1] {
+        var i = if periodic { min(two.critical, memory) } else { two.critical };
+        let left = needle[..i];
+        let right = window[..i];
+        if i > 0 && left[i - 1] == right[i - 1] {
             i -= 1;
-            let left = needle[..i];
-            let right = window[..i];
+            // Reject short partial matches before comparing whole words.
+            if i >= 2 {
+                if goosimd::load_u16(left[i - 2..i]) != goosimd::load_u16(right[i - 2..i]) {
+                    while i > 0 && left[i - 1] == right[i - 1] { i -= 1; }
+                    base -= two.critical - i + 1;
+                    memory = needle.len;
+                    continue;
+                }
+                i -= 2;
+            }
             while i >= 8 {
                 if goosimd::load_u64(left[i - 8..i]) != goosimd::load_u64(right[i - 8..i]) { break; }
                 i -= 8;
             }
+            // Cover a short prefix with an overlapping, in-bounds load.
+            if i > 0 && i < 8 && left.len >= 8 &&
+                goosimd::load_u64(left) == goosimd::load_u64(right) { i = 0; }
             while i > 0 && left[i - 1] == right[i - 1] { i -= 1; }
         }
         if i > 0 {
-            base -= f.two.critical - i + 1;
+            base -= two.critical - i + 1;
             memory = needle.len;
         } else {
-            var j = f.two.critical;
+            var j = two.critical;
             let stop = if periodic { memory } else { needle.len };
             while j < stop && needle[j] == window[j] { j += 1; }
             if j >= stop { return base; }
-            base -= f.two.period;
-            memory = needle.len - f.two.memory;
+            base -= two.period;
+            memory = needle.len - two.memory;
         }
     }
     return -1;
