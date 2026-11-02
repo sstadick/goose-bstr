@@ -162,10 +162,10 @@ your own workload before drawing conclusions.
 
 These warm-cache measurements were taken on November 2, 2026, on a Ryzen 9
 3950X running Linux x86-64. They compare goostr with bstr 1.13.1 (memchr 2.8.3).
-Goostr uses Goose `v2026.3-145-g6958c54e-dirty`, GCC 13.3 or Clang 18.1.3;
-bstr uses Rust 1.97.1. Native C and Rust builds use optimization level 3.
-Clang uses runtime SIMD selection with AVX2 available; GCC uses the baseline
-target because Goose's runtime dispatch requires Clang.
+Goostr uses a clean checkout of Goose
+[`eadca40`](https://github.com/aardappel/goose/commit/eadca409f68210893f366e60d0c2f0dc29a339be)
+and Clang 18.1.3; bstr uses Rust 1.97.1. Native C and Rust builds use
+optimization level 3, with runtime SIMD selection and AVX2 available.
 
 Both runners use identical inputs and the same opaque C barrier, warm up
 before timing, rotate execution order, check results, and run on CPU 4.
@@ -174,43 +174,23 @@ construction on both sides. Counts use repeated one-shot searches, including
 finder construction, and do not count overlapping matches.
 
 **Ratio = goostr / bstr; lower is better for goostr.** Times below are medians
-of nine batches of at least 30 ms. These are selected workloads, not an
+of nine batches of at least 50 ms. These are selected workloads, not an
 overall score.
 
-| Compiler | Input / scenario | Operation | goostr | bstr | Ratio |
-| --- | --- | --- | ---: | ---: | ---: |
-| GCC | 1 MiB, long-needle near-match miss | prepared `find` | 28.14 µs | 21.08 µs | 1.34× |
-| Clang | Same | prepared `find` | 18.26 µs | 21.60 µs | 0.85× |
-| GCC | 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 90.60 µs | 1,709.90 µs | 0.05× |
-| Clang | Same | prepared `find` | 90.22 µs | 1,712.31 µs | 0.05× |
-| GCC | 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 25.52 µs | 36.08 µs | 0.71× |
-| Clang | Same | prepared `find` | 28.75 µs | 35.61 µs | 0.81× |
-| GCC | Same, needle appended at end | prepared `find` | 25.04 µs | 35.72 µs | 0.70× |
-| Clang | Same | prepared `find` | 30.87 µs | 35.63 µs | 0.87× |
-| GCC | Same | reverse count | 702.43 µs | 803.04 µs | 0.87× |
-| Clang | Same | reverse count | 907.96 µs | 802.34 µs | 1.13× |
+| Input / scenario | Operation | goostr | bstr | Ratio |
+| --- | --- | ---: | ---: | ---: |
+| English subtitles, `you` needle | forward count | 137.03 µs | 213.50 µs | 0.64× |
+| Upstream adversarial alphabet, `qbz` needle | forward count | 28.18 µs | 156.28 µs | 0.18× |
+| 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.26 ms | 8.95 ms | 0.36× |
+| Same executable and needle | reverse count | 16.23 ms | 13.38 ms | 1.21× |
+| 1 MiB + 2 KiB, long-needle near-match miss | prepared `find` | 17.24 µs | 20.36 µs | 0.85× |
+| 1 MiB repeated `a`, needle `a` × 255 + `b` | prepared `find` | 88.03 µs | 1,660.05 µs | 0.05× |
+| 1 MiB repeated `zza`, 116-byte needle miss | prepared `find` | 25.71 µs | 34.23 µs | 0.75× |
+| Same, needle appended at end | prepared `find` | 25.84 µs | 34.47 µs | 0.75× |
+| Same, needle appended at end | reverse count | 879.88 µs | 778.70 µs | 1.13× |
 
-The quick suite covers 57 case/operation combinations per compiler. Its
-three batches of at least 5 ms are useful for screening, but less precise
-than the longer measurements above. Two examples from that suite:
-
-| Compiler | Input | Operation | goostr | bstr | Ratio |
-| --- | --- | --- | ---: | ---: | ---: |
-| GCC | Upstream adversarial alphabet, `qbz` needle | forward count | 43.93 µs | 157.56 µs | 0.28× |
-| Clang | Same | forward count | 28.56 µs | 160.34 µs | 0.18× |
-| GCC | 31.8 MiB ripgrep executable, five-byte needle | forward count | 3.84 ms | 8.94 ms | 0.43× |
-| Clang | Same | forward count | 3.27 ms | 9.06 ms | 0.36× |
-
-Raw samples, input hashes, source hashes, and toolchain details:
-[GCC measurements](bench/results/2026-11-02-gcc-confirm.json),
-[Clang measurements](bench/results/2026-11-02-clang-confirm.json),
-[GCC quick suite](bench/results/2026-11-02-gcc-quick.json), and
-[Clang quick suite](bench/results/2026-11-02-clang-quick.json).
-The JSON baseline columns refer to v0.2.1 built at the same optimization level.
-
-Code layout can affect these timings even when a search loop's instructions
-are unchanged. These results do not predict cold-cache, other-platform, or
-whole-library performance. Use the commands below to measure your workload.
+[Raw measurements](bench/results/2026-11-02-clang-eadca40.json) include
+individual samples, input and source hashes, and toolchain details.
 
 ## Contributing
 
@@ -228,7 +208,7 @@ Compare search performance against bstr with the same inputs and checked results
 ```sh
 python3 bench/compare.py --cc clang --target runtime --suite substring --output substring.json
 python3 bench/compare.py --cc clang --target runtime --suite byteset --output byteset.json
-python3 bench/compare.py --cc gcc --target baseline --suite boundary --output boundary.json
+python3 bench/compare.py --cc clang --target runtime --suite boundary --output boundary.json
 ```
 
 The boundary suite covers lengths around scalar/SIMD and search-algorithm
@@ -275,23 +255,6 @@ is included in each one-shot search. The four `find`/`rfind` modes instead measu
 the first or last match on the same inputs: they are **adapted workloads**, not
 upstream count timings. Prepared modes exclude finder construction. Use
 `--modes count rcount` or `--case 'subtitles/*'` to select a subset.
-
-For development, `--suite quick` runs 19 selected cases with `count`, `rcount`,
-and `prepared-find`: upstream text, binary, and pathological workloads plus
-small-input, long-needle, periodic, duplicate-byte, and boundary controls. It
-defaults to three 5 ms samples instead of five 50 ms samples. With prebuilt
-executables, the 57 comparisons take roughly 13 seconds on the machine above:
-
-```sh
-taskset -c 4 python3 bench/compare.py \
-  --suite quick --memchr-checkout ../memchr-bench \
-  --cc clang --save-exe /tmp/goostr-candidate --output quick.json
-```
-
-Use `--goose-exe /tmp/goostr-candidate` to rerun without recompiling Goose,
-and `--baseline-exe /tmp/goostr-before` to compare with a saved earlier build.
-The quick suite is an iteration screen, not a substitute for the full suites
-and longer confirmation runs (`--samples 9 --sample-ms 50`).
 
 This is a library comparison, not a ripgrep benchmark. It excludes filesystem
 traversal, regex matching, output formatting, and I/O, and does not reproduce
