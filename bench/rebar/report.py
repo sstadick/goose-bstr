@@ -55,7 +55,7 @@ def matrix(times, columns):
         for engine in columns:
             value = times.get((name, engine))
             cell = "—" if value is None else f"{value:.3f}"
-            cells.append(f"**{cell}**" if value == best else cell)
+            cells.append(f"🟢 **{cell}**" if value == best else cell)
         label = name.removeprefix("memmem/").removeprefix("memchr/sherlock/")
         print(f"| {label} | " + " | ".join(cells) + " |")
     print()
@@ -103,7 +103,7 @@ def main():
     print(f"{len(rounds)} rounds · {len({name for name, _ in times})} workloads · {len(engines)} engine configurations · {len(times):,} engine/case pairs per round. No reported measurement errors.\n")
     print("[Substring search](#substring-search) · [Byte search](#byte-search) · [Specialized variants](#specialized-variants) · [Methodology](#methodology)\n")
     print("Raw results: " + ", ".join(f"[{p.name}]({p.name})" for p in args.rounds) + "\n")
-    print("**Times are microseconds; lower is better.** Each row is a workload and each column is an engine. Values are medians of round medians for the complete workload, not individual search calls. **Bold** marks the lowest reported time in that row, including ties; it does not establish statistical significance.\n")
+    print("**Times are microseconds; lower is better.** Each row is a workload and each column is an engine. Values are medians of round medians for the complete workload, not individual search calls. 🟢 **Green markers and bold** identify the lowest reported time in that row, including ties; they do not establish statistical significance.\n")
     print("**—** means that engine was not measured on that workload, not that it failed. All measured engine/case pairs are included below. Benchmark names omit the common `memmem/` or `memchr/sherlock/` prefix. Versions are recorded in the CSVs; `unknown` means the runner did not report a version.\n")
 
     for heading, substring in (("Substring search", True), ("Byte search", False)):
