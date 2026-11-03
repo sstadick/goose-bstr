@@ -2,6 +2,7 @@
 """Render goostr comparisons from complete rebar CSV rounds."""
 import argparse
 import csv
+from decimal import Decimal
 import json
 from pathlib import Path
 import re
@@ -41,7 +42,7 @@ def read(path):
             if key in rows:
                 raise ValueError(f"{path}: duplicate {key}")
             value, unit = re.fullmatch(r"([0-9.]+)(ns|us|µs|ms|s)", row["median"]).groups()
-            rows[key] = float(value) * {"ns": .001, "us": 1, "µs": 1, "ms": 1000, "s": 1e6}[unit]
+            rows[key] = Decimal(value) * {"ns": Decimal(".001"), "us": 1, "µs": 1, "ms": 1000, "s": 1000000}[unit]
     return rows
 
 
@@ -54,8 +55,12 @@ def matrix(times, columns):
         best = min(times[name, engine] for engine in columns if (name, engine) in times)
         for engine in columns:
             value = times.get((name, engine))
-            cell = "—" if value is None else f"{value:.3f}"
-            cells.append(f"🟢 **{cell}**" if value == best else cell)
+            if value is None:
+                cells.append("—")
+                continue
+            color = "🟩" if value <= best * Decimal("1.1") else "🟨" if value <= best * Decimal("1.5") else "🟧" if value <= best * 2 else "🟥"
+            cell = f"**{value:.3f}**" if value == best else f"{value:.3f}"
+            cells.append(f"{color} {cell}")
         label = name.removeprefix("memmem/").removeprefix("memchr/sherlock/")
         print(f"| {label} | " + " | ".join(cells) + " |")
     print()
@@ -103,7 +108,8 @@ def main():
     print(f"{len(rounds)} rounds · {len({name for name, _ in times})} workloads · {len(engines)} engine configurations · {len(times):,} engine/case pairs per round. No reported measurement errors.\n")
     print("[Substring search](#substring-search) · [Byte search](#byte-search) · [Specialized variants](#specialized-variants) · [Methodology](#methodology)\n")
     print("Raw results: " + ", ".join(f"[{p.name}]({p.name})" for p in args.rounds) + "\n")
-    print("**Times are microseconds; lower is better.** Each row is a workload and each column is an engine. Values are medians of round medians for the complete workload, not individual search calls. 🟢 **Green markers and bold** identify the lowest reported time in that row, including ties; they do not establish statistical significance.\n")
+    print("**Times are microseconds; lower is better.** Each row is a workload and each column is an engine. Values are medians of round medians for the complete workload, not individual search calls. **Bold** marks the lowest reported time, including ties.\n")
+    print("Color is relative to the fastest measured engine in each row: 🟩 ≤1.10× · 🟨 >1.10–1.50× · 🟧 >1.50–2.00× · 🟥 >2.00×. These bands are descriptive, not statistical significance or application speedups; tiny timings and differing APIs need the caveats below.\n")
     print("**—** means that engine was not measured on that workload, not that it failed. All measured engine/case pairs are included below. Benchmark names omit the common `memmem/` or `memchr/sherlock/` prefix. Versions are recorded in the CSVs; `unknown` means the runner did not report a version.\n")
 
     for heading, substring in (("Substring search", True), ("Byte search", False)):
