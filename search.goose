@@ -952,6 +952,11 @@ fn find(s: const u8[:], needle: const u8[:]) -> i64 {
     if needle.len > s.len { return -1; }
     if needle.len == 0 { return 0; }
     if needle.len == 1 { return byte_search(s, needle[0], false); }
+    // Two- and three-byte needles need no finder preprocessing.
+    if needle.len <= 3 {
+        let b = if needle.len == 3 && needle[0] == needle[2] { 1 } else { needle.len - 1 };
+        return packed(s, needle, 0, b, false);
+    }
     let f = finder(needle);
     return find(f, s);
 }

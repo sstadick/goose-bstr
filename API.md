@@ -186,7 +186,7 @@ assert(goostr::rfind(f, "ab") == -1);
 
 ## `goostr::find`
 
-[source](search.goose#L950-L957)
+[source](search.goose#L950-L962)
 
 ```goose
 fn find(s: const u8[:], needle: const u8[:]) -> i64
@@ -205,7 +205,7 @@ assert(goostr::find("abc", "x") == -1);
 
 ## `goostr::rfind`
 
-[source](search.goose#L967-L976)
+[source](search.goose#L972-L981)
 
 ```goose
 inline fn rfind(s: const u8[:], needle: const u8[:]) -> i64

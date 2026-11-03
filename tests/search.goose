@@ -131,7 +131,7 @@ fn main() {
     // Dense false pair matches must not hide full matches. Exercise each
     // third-byte position, duplicate pair values, and neighboring matches
     // across SIMD lanes, the runtime-dispatch cutoff, and the final block.
-    for n in ["qbz", "bqz", "qzb", "zzazza", "\0\0\xDD\xDD\0"] {
+    for n in ["qbz", "bqz", "qzb", "qbq", "\xFFb\xFF", "zzazza", "\0\0\xDD\xDD\0"] {
         for at in [-1, 0, 31, 32, 63, 64, 512, 1023, 1024, 1200 - n.len] {
             var h: u8[>..] = [];
             for i in 400 {
