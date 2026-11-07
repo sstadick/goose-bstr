@@ -1,5 +1,5 @@
-import goostr from "../..";
-import goosimd from "github.com/sstadick/goosimd@main";
+import bstr from "../..";
+import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
 import os;
 
 struct Benchmark {
@@ -28,11 +28,11 @@ fn read_benchmark(raw: const u8[:]) -> Benchmark {
     };
     var pos = 0;
     while pos < raw.len {
-        let colon = goostr::find_byte(raw[pos..], ':');
+        let colon = bstr::find_byte(raw[pos..], ':');
         assert(colon >= 0);
         let key = raw[pos..pos + colon];
         pos += colon + 1;
-        let next = goostr::find_byte(raw[pos..], ':');
+        let next = bstr::find_byte(raw[pos..], ':');
         assert(next >= 0);
         let len = integer(raw[pos..pos + next]);
         pos += next + 1;
@@ -42,7 +42,7 @@ fn read_benchmark(raw: const u8[:]) -> Benchmark {
         assert(raw[pos] == '\n');
         pos++;
         if key == "model" { b.model = value; }
-        else if key == "pattern" { b.needles.push(goostr::unescape_bytes(value)); }
+        else if key == "pattern" { b.needles.push(bstr::unescape_bytes(value)); }
         else if key == "haystack" { b.haystack = value; }
         else if key == "max-iters" { b.max_iters = integer(value); }
         else if key == "max-warmup-iters" { b.max_warmup_iters = integer(value); }
@@ -77,7 +77,7 @@ fn count_oneshot(s: const u8[:], needle: const u8[:]) -> i64 {
     var count = 0;
     var start = 0;
     while start <= s.len {
-        let at = goostr::find(s[start..], needle);
+        let at = bstr::find(s[start..], needle);
         if at < 0 { break; }
         count++;
         start += at + max(1, needle.len);
@@ -85,11 +85,11 @@ fn count_oneshot(s: const u8[:], needle: const u8[:]) -> i64 {
     return count;
 }
 
-fn count_prebuilt(s: const u8[:], f: const goostr::Finder&) -> i64 {
+fn count_prebuilt(s: const u8[:], f: const bstr::Finder&) -> i64 {
     var count = 0;
     var start = 0;
     while start <= s.len {
-        let at = goostr::find(f, s[start..]);
+        let at = bstr::find(f, s[start..]);
         if at < 0 { break; }
         count++;
         start += at + max(1, f.needle.len);
@@ -101,7 +101,7 @@ fn count_byte(s: const u8[:], byte: u8) -> i64 {
     var count = 0;
     var start = 0;
     while start <= s.len {
-        let at = goostr::find_byte(s[start..], byte);
+        let at = bstr::find_byte(s[start..], byte);
         if at < 0 { break; }
         count++;
         start += at + 1;
@@ -113,7 +113,7 @@ fn count_byte_reverse(s: const u8[:], byte: u8) -> i64 {
     var count = 0;
     var end = s.len;
     while end >= 0 {
-        let at = goostr::rfind_byte(s[..end], byte);
+        let at = bstr::rfind_byte(s[..end], byte);
         if at < 0 { break; }
         count++;
         end = at;
@@ -125,7 +125,7 @@ fn count_set(s: const u8[:], set: const u8[:]) -> i64 {
     var count = 0;
     var start = 0;
     while start <= s.len {
-        let at = goostr::find_byteset(s[start..], set);
+        let at = bstr::find_byteset(s[start..], set);
         if at < 0 { break; }
         count++;
         start += at + 1;
@@ -137,7 +137,7 @@ fn count_set_reverse(s: const u8[:], set: const u8[:]) -> i64 {
     var count = 0;
     var end = s.len;
     while end >= 0 {
-        let at = goostr::rfind_byteset(s[..end], set);
+        let at = bstr::rfind_byteset(s[..end], set);
         if at < 0 { break; }
         count++;
         end = at;
@@ -164,7 +164,7 @@ fn main() {
             run(b) { count_oneshot(h, n) }
         } else {
             assert(mode == "memmem-prebuilt");
-            let f = goostr::finder(n);
+            let f = bstr::finder(n);
             run(b) { count_prebuilt(h, f) }
         }
     } else if b.model == "count-bytes" {
@@ -188,14 +188,14 @@ fn main() {
         }
     } else {
         assert(mode == "memmem-prebuilt");
-        var finders: goostr::Finder[>..] = [];
-        for n in needles { finders.push(goostr::finder(n)); }
+        var finders: bstr::Finder[>..] = [];
+        for n in needles { finders.push(bstr::finder(n)); }
         if b.model == "needles-in-needles" {
             run(b) {
                 var count = 0;
                 for i in 0..finders.len {
                     for j in i..needles.len {
-                        if goostr::find(finders[i], needles[j]) >= 0 { count++; }
+                        if bstr::find(finders[i], needles[j]) >= 0 { count++; }
                     }
                 }
                 count
@@ -204,7 +204,7 @@ fn main() {
             assert(b.model == "needles-in-haystack");
             run(b) {
                 var count = 0;
-                for &f in finders { if goostr::find(f, h) >= 0 { count++; } }
+                for &f in finders { if bstr::find(f, h) >= 0 { count++; } }
                 count
             }
         }

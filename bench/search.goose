@@ -1,5 +1,5 @@
-import goostr from "..";
-import goosimd from "github.com/sstadick/goosimd@main";
+import bstr from "..";
+import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
 import os;
 
 // Hide input lengths from the optimizer on every timed iteration.
@@ -12,7 +12,7 @@ fn count_matches(s: const u8[:], needle: const u8[:]) -> i64 {
     var count = 0;
     var start = 0;
     while start <= s.len {
-        let at = goostr::find(s[start..], needle);
+        let at = bstr::find(s[start..], needle);
         if at < 0 { break; }
         count++;
         start += at + max(1, needle.len);
@@ -24,7 +24,7 @@ fn count_reverse(s: const u8[:], needle: const u8[:]) -> i64 {
     var count = 0;
     var end = s.len;
     while end >= 0 {
-        let at = goostr::rfind(s[..end], needle);
+        let at = bstr::rfind(s[..end], needle);
         if at < 0 { break; }
         count++;
         end = at - (if needle.len == 0 { 1 } else { 0 });
@@ -37,9 +37,9 @@ fn record_prefixes(s: const u8[:]) -> i64 {
     var checksum = 0;
     var start = 0;
     while start < s.len {
-        let newline = goostr::find_byte(s[start..], 10);
+        let newline = bstr::find_byte(s[start..], 10);
         let end = if newline < 0 { s.len } else { start + newline };
-        checksum += goostr::find_byte(s[start..end], 124) + 1;
+        checksum += bstr::find_byte(s[start..end], 124) + 1;
         start = end + 1;
     }
     return checksum;
@@ -57,14 +57,14 @@ fn main() {
     assert(ok && iterations > 0);
     var checksum = 0;
     var elapsed = 0;
-    let forward = goostr::finder(needle);
-    let reverse = goostr::finder_reverse(needle);
+    let forward = bstr::finder(needle);
+    let reverse = bstr::finder_reverse(needle);
     // Discard one full pass to warm code/data and reduce CPU ramp-up noise.
     for pass in 2 {
         checksum = 0;
         let start = clock_ns();
         if argv[3] == "find" {
-            for i in iterations { checksum += goostr::find(opaque(haystack), opaque(needle)) + 1; }
+            for i in iterations { checksum += bstr::find(opaque(haystack), opaque(needle)) + 1; }
         } else if argv[3] == "count" {
             for i in iterations { checksum += count_matches(opaque(haystack), opaque(needle)) + 1; }
         } else if argv[3] == "rcount" {
@@ -72,20 +72,20 @@ fn main() {
         } else if argv[3] == "records" {
             for i in iterations { checksum += record_prefixes(opaque(haystack)) + 1; }
         } else if argv[3] == "prepared-find" {
-            for i in iterations { checksum += goostr::find(forward, opaque(haystack)) + 1; }
+            for i in iterations { checksum += bstr::find(forward, opaque(haystack)) + 1; }
         } else if argv[3] == "prepared-rfind" {
-            for i in iterations { checksum += goostr::rfind(reverse, opaque(haystack)) + 1; }
+            for i in iterations { checksum += bstr::rfind(reverse, opaque(haystack)) + 1; }
         } else if argv[3] == "find-set" {
-            for i in iterations { checksum += goostr::find_byteset(opaque(haystack), opaque(needle)) + 1; }
+            for i in iterations { checksum += bstr::find_byteset(opaque(haystack), opaque(needle)) + 1; }
         } else if argv[3] == "rfind-set" {
-            for i in iterations { checksum += goostr::rfind_byteset(opaque(haystack), opaque(needle)) + 1; }
+            for i in iterations { checksum += bstr::rfind_byteset(opaque(haystack), opaque(needle)) + 1; }
         } else if argv[3] == "find-not-set" {
-            for i in iterations { checksum += goostr::find_not_byteset(opaque(haystack), opaque(needle)) + 1; }
+            for i in iterations { checksum += bstr::find_not_byteset(opaque(haystack), opaque(needle)) + 1; }
         } else if argv[3] == "rfind-not-set" {
-            for i in iterations { checksum += goostr::rfind_not_byteset(opaque(haystack), opaque(needle)) + 1; }
+            for i in iterations { checksum += bstr::rfind_not_byteset(opaque(haystack), opaque(needle)) + 1; }
         } else {
             assert(argv[3] == "rfind");
-            for i in iterations { checksum += goostr::rfind(opaque(haystack), opaque(needle)) + 1; }
+            for i in iterations { checksum += bstr::rfind(opaque(haystack), opaque(needle)) + 1; }
         }
         elapsed = clock_ns() - start;
     }

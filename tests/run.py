@@ -23,7 +23,7 @@ def main():
     for level in (0, 2):
         for suite in ("test", "search"):
             run("goose", "run", f"tests/{suite}.goose", "--debug", f"-O{level}")
-    with tempfile.TemporaryDirectory(prefix="goostr-tests-") as directory:
+    with tempfile.TemporaryDirectory(prefix="goose-bstr-tests-") as directory:
         exe = Path(directory) / ("test.exe" if os.name == "nt" else "test")
         for cc in args.cc:
             for suite in ("test", "search"):

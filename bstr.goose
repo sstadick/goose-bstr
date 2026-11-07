@@ -1,5 +1,5 @@
 // Native Goose byte strings, with bstr-compatible byte and UTF-8 semantics.
-namespace goostr;
+namespace bstr;
 
 import std;
 import .utf8;
@@ -10,30 +10,30 @@ const UNLIMITED: i64 = 0x7FFFFFFFFFFFFFFF;
 // Return whether needle occurs in s. An empty needle always matches.
 //
 // ```goose
-// assert(goostr::contains_str("a\0b", "\0"));
-// assert(!goostr::contains_str("goose", "duck"));
+// assert(bstr::contains_str("a\0b", "\0"));
+// assert(!bstr::contains_str("goose", "duck"));
 // ```
 fn contains_str(s: const u8[:], needle: const u8[:]) -> bool { find(s, needle) >= 0 }
 // Return whether s begins with prefix. An empty prefix always matches.
 //
 // ```goose
-// assert(goostr::starts_with_str("goose", "goo"));
-// assert(!goostr::starts_with_str("goose", "ose"));
+// assert(bstr::starts_with_str("goose", "goo"));
+// assert(!bstr::starts_with_str("goose", "ose"));
 // ```
 fn starts_with_str(s: const u8[:], prefix: const u8[:]) -> bool { ::starts_with(s, prefix) }
 // Return whether s ends with suffix. An empty suffix always matches.
 //
 // ```goose
-// assert(goostr::ends_with_str("notes.txt", ".txt"));
-// assert(!goostr::ends_with_str("notes.txt", ".csv"));
+// assert(bstr::ends_with_str("notes.txt", ".txt"));
+// assert(!bstr::ends_with_str("notes.txt", ".csv"));
 // ```
 fn ends_with_str(s: const u8[:], suffix: const u8[:]) -> bool { ::ends_with(s, suffix) }
 
 // Return the first byte offset matching byte, or -1 if absent.
 //
 // ```goose
-// assert(goostr::find_byte("goose", 'o') == 1);
-// assert(goostr::find_byte("goose", 'x') == -1);
+// assert(bstr::find_byte("goose", 'o') == 1);
+// assert(bstr::find_byte("goose", 'x') == -1);
 // ```
 fn find_byte(s: const u8[:], byte: u8) -> i64 {
     return byte_search(s, byte, false);
@@ -42,8 +42,8 @@ fn find_byte(s: const u8[:], byte: u8) -> i64 {
 // Return the last byte offset matching byte, or -1 if absent.
 //
 // ```goose
-// assert(goostr::rfind_byte("goose", 'o') == 2);
-// assert(goostr::rfind_byte("goose", 'x') == -1);
+// assert(bstr::rfind_byte("goose", 'o') == 2);
+// assert(bstr::rfind_byte("goose", 'x') == -1);
 // ```
 fn rfind_byte(s: const u8[:], byte: u8) -> i64 {
     return byte_search(s, byte, true);
@@ -71,8 +71,8 @@ fn char_bytes(cp: i64) -> u8[4], i64 {
 // Malformed input bytes are not interpreted as replacement characters.
 //
 // ```goose
-// assert(goostr::find_char("café café", 0xE9) == 3);
-// assert(goostr::find_char("\xFF", 0xFFFD) == -1);
+// assert(bstr::find_char("café café", 0xE9) == 3);
+// assert(bstr::find_char("\xFF", 0xFFFD) == -1);
 // ```
 fn find_char(s: const u8[:], cp: i64) -> i64 {
     let bytes, size = char_bytes(cp);
@@ -84,8 +84,8 @@ fn find_char(s: const u8[:], cp: i64) -> i64 {
 // Malformed input bytes are not interpreted as replacement characters.
 //
 // ```goose
-// assert(goostr::rfind_char("café café", 0xE9) == 9);
-// assert(goostr::rfind_char("\xFF�", 0xFFFD) == 1);
+// assert(bstr::rfind_char("café café", 0xE9) == 9);
+// assert(bstr::rfind_char("\xFF�", 0xFFFD) == 1);
 // ```
 fn rfind_char(s: const u8[:], cp: i64) -> i64 {
     let bytes, size = char_bytes(cp);
@@ -96,8 +96,8 @@ fn rfind_char(s: const u8[:], cp: i64) -> i64 {
 // Duplicates in set have no effect; an empty set never matches.
 //
 // ```goose
-// assert(goostr::find_byteset("abc,def;ghi", ",;") == 3);
-// assert(goostr::find_byteset("abc", "") == -1);
+// assert(bstr::find_byteset("abc,def;ghi", ",;") == 3);
+// assert(bstr::find_byteset("abc", "") == -1);
 // ```
 inline fn find_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, false, false);
@@ -107,8 +107,8 @@ inline fn find_byteset(s: const u8[:], set: const u8[:]) -> i64 {
 // An empty set matches every byte; empty input still returns -1.
 //
 // ```goose
-// assert(goostr::find_not_byteset("  \tname", " \t") == 3);
-// assert(goostr::find_not_byteset("  ", " ") == -1);
+// assert(bstr::find_not_byteset("  \tname", " \t") == 3);
+// assert(bstr::find_not_byteset("  ", " ") == -1);
 // ```
 inline fn find_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, false, true);
@@ -118,8 +118,8 @@ inline fn find_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
 // Duplicates in set have no effect; an empty set never matches.
 //
 // ```goose
-// assert(goostr::rfind_byteset("abc,def;ghi", ",;") == 7);
-// assert(goostr::rfind_byteset("abc", "") == -1);
+// assert(bstr::rfind_byteset("abc,def;ghi", ",;") == 7);
+// assert(bstr::rfind_byteset("abc", "") == -1);
 // ```
 inline fn rfind_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, true, false);
@@ -129,8 +129,8 @@ inline fn rfind_byteset(s: const u8[:], set: const u8[:]) -> i64 {
 // An empty set matches every byte; empty input still returns -1.
 //
 // ```goose
-// assert(goostr::rfind_not_byteset("name \t ", " \t") == 3);
-// assert(goostr::rfind_not_byteset("", "") == -1);
+// assert(bstr::rfind_not_byteset("name \t ", " \t") == 3);
+// assert(bstr::rfind_not_byteset("", "") == -1);
 // ```
 inline fn rfind_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
     return byteset_search(s, set, true, true);
@@ -142,7 +142,7 @@ inline fn rfind_not_byteset(s: const u8[:], set: const u8[:]) -> i64 {
 //
 // ```goose
 // var offsets: i64[>..] = [];
-// goostr::find_iter("ababa", "aba") { at => offsets.push(at); }
+// bstr::find_iter("ababa", "aba") { at => offsets.push(at); }
 // assert(offsets.len == 1 && offsets[0] == 0); // Matches do not overlap.
 // ```
 fn find_iter<F>(s: const u8[:], needle: const u8[:]) {
@@ -164,7 +164,7 @@ fn find_iter<F>(s: const u8[:], needle: const u8[:]) {
 //
 // ```goose
 // var offsets: i64[>..] = [];
-// goostr::rfind_iter("ababa", "aba") { at => offsets.push(at); }
+// bstr::rfind_iter("ababa", "aba") { at => offsets.push(at); }
 // assert(offsets.len == 1 && offsets[0] == 2);
 // ```
 fn rfind_iter<F>(s: const u8[:], needle: const u8[:]) {
@@ -185,7 +185,7 @@ fn rfind_iter<F>(s: const u8[:], needle: const u8[:]) {
 //
 // ```goose
 // var parts: const u8[:][>..] = [];
-// goostr::splitn_str("a:b:c", ":", 2) { part => parts.push(part); }
+// bstr::splitn_str("a:b:c", ":", 2) { part => parts.push(part); }
 // assert(parts.len == 2 && parts[0] == "a" && parts[1] == "b:c");
 // ```
 fn splitn_str<F>(s: const u8[:], needle: const u8[:], n: i64) {
@@ -208,7 +208,7 @@ fn splitn_str<F>(s: const u8[:], needle: const u8[:], n: i64) {
 //
 // ```goose
 // var parts: const u8[:][>..] = [];
-// goostr::split_str("a::b::", "::") { part => parts.push(part); }
+// bstr::split_str("a::b::", "::") { part => parts.push(part); }
 // assert(parts.len == 3 && parts[1] == "b" && parts[2] == "");
 // ```
 fn split_str<F>(s: const u8[:], needle: const u8[:]) {
@@ -222,7 +222,7 @@ fn split_str<F>(s: const u8[:], needle: const u8[:]) {
 //
 // ```goose
 // var parts: const u8[:][>..] = [];
-// goostr::rsplitn_str("a:b:c", ":", 2) { part => parts.push(part); }
+// bstr::rsplitn_str("a:b:c", ":", 2) { part => parts.push(part); }
 // assert(parts.len == 2 && parts[0] == "c" && parts[1] == "a:b");
 // ```
 fn rsplitn_str<F>(s: const u8[:], needle: const u8[:], n: i64) {
@@ -245,7 +245,7 @@ fn rsplitn_str<F>(s: const u8[:], needle: const u8[:], n: i64) {
 //
 // ```goose
 // var parts: const u8[:][>..] = [];
-// goostr::rsplit_str("a:b:c", ":") { part => parts.push(part); }
+// bstr::rsplit_str("a:b:c", ":") { part => parts.push(part); }
 // assert(parts.len == 3 && parts[0] == "c" && parts[2] == "a");
 // ```
 fn rsplit_str<F>(s: const u8[:], needle: const u8[:]) {
@@ -257,7 +257,7 @@ fn rsplit_str<F>(s: const u8[:], needle: const u8[:]) {
 // succeeds with an empty left view and all of s on the right.
 //
 // ```goose
-// let key, value, found = goostr::split_once_str("name=goose=bird", "=");
+// let key, value, found = bstr::split_once_str("name=goose=bird", "=");
 // assert(found && key == "name" && value == "goose=bird");
 // ```
 fn split_once_str(s: const u8[:], needle: const u8[:]) -> const u8[:], const u8[:], bool {
@@ -271,7 +271,7 @@ fn split_once_str(s: const u8[:], needle: const u8[:]) -> const u8[:], const u8[
 // succeeds with all of s on the left and an empty right view.
 //
 // ```goose
-// let base, extension, found = goostr::rsplit_once_str("archive.tar.gz", ".");
+// let base, extension, found = bstr::rsplit_once_str("archive.tar.gz", ".");
 // assert(found && base == "archive.tar" && extension == "gz");
 // ```
 fn rsplit_once_str(s: const u8[:], needle: const u8[:]) -> const u8[:], const u8[:], bool {
@@ -287,7 +287,7 @@ fn rsplit_once_str(s: const u8[:], needle: const u8[:]) -> const u8[:], const u8
 // ```goose
 // var out: u8[>..] = [];
 // out.append("result: ");
-// goostr::replacen_into("a-a-a", "-", "/", 1, out);
+// bstr::replacen_into("a-a-a", "-", "/", 1, out);
 // assert(out == "result: a/a-a");
 // ```
 fn replacen_into(s: const u8[:], needle: const u8[:], replacement: const u8[:], n: i64, out: u8[>..]&) {
@@ -311,7 +311,7 @@ fn replacen_into(s: const u8[:], needle: const u8[:], replacement: const u8[:], 
 // ```goose
 // var out: u8[>..] = [];
 // out.append("result: ");
-// goostr::replace_into("a\0b", "\0", "/", out);
+// bstr::replace_into("a\0b", "\0", "/", out);
 // assert(out == "result: a/b");
 // ```
 fn replace_into(s: const u8[:], needle: const u8[:], replacement: const u8[:], out: u8[>..]&) {
@@ -323,8 +323,8 @@ fn replace_into(s: const u8[:], needle: const u8[:], replacement: const u8[:], o
 // An empty needle inserts at byte boundaries, including both ends.
 //
 // ```goose
-// assert(goostr::replacen("a-a-a", "-", "/", 1) == "a/a-a");
-// assert(goostr::replacen("abc", "b", "X", 0) == "abc");
+// assert(bstr::replacen("a-a-a", "-", "/", 1) == "a/a-a");
+// assert(bstr::replacen("abc", "b", "X", 0) == "abc");
 // ```
 fn replacen(s: const u8[:], needle: const u8[:], replacement: const u8[:], n: i64) -> u8[>..] {
     var out: u8[>..] = [];
@@ -337,8 +337,8 @@ fn replacen(s: const u8[:], needle: const u8[:], replacement: const u8[:], n: i6
 // both ends; otherwise an absent needle returns a copy of s.
 //
 // ```goose
-// assert(goostr::replace("a-a-a", "-", "/") == "a/a/a");
-// assert(goostr::replace("ab", "", "-") == "-a-b-");
+// assert(bstr::replace("a-a-a", "-", "/") == "a/a/a");
+// assert(bstr::replace("ab", "", "-") == "-a-b-");
 // ```
 fn replace(s: const u8[:], needle: const u8[:], replacement: const u8[:]) -> u8[>..] {
     return replacen(s, needle, replacement, UNLIMITED);
@@ -348,8 +348,8 @@ fn replace(s: const u8[:], needle: const u8[:], replacement: const u8[:]) -> u8[
 // an empty builder; negative n asserts.
 //
 // ```goose
-// assert(goostr::repeatn("ab", 3) == "ababab");
-// assert(goostr::repeatn("ab", 0) == "");
+// assert(bstr::repeatn("ab", 3) == "ababab");
+// assert(bstr::repeatn("ab", 0) == "");
 // ```
 fn repeatn(s: const u8[:], n: i64) -> u8[>..] {
     assert(n >= 0);
@@ -365,7 +365,7 @@ fn repeatn(s: const u8[:], n: i64) -> u8[>..] {
 //
 // ```goose
 // var rows: const u8[:][>..] = [];
-// goostr::lines_with_terminator("a\r\nb\n") { row => rows.push(row); }
+// bstr::lines_with_terminator("a\r\nb\n") { row => rows.push(row); }
 // assert(rows.len == 2 && rows[0] == "a\r\n" && rows[1] == "b\n");
 // ```
 fn lines_with_terminator<F>(s: const u8[:]) {
@@ -382,7 +382,7 @@ fn lines_with_terminator<F>(s: const u8[:]) {
 //
 // ```goose
 // var rows: const u8[:][>..] = [];
-// goostr::lines("a\r\nb\n") { row => rows.push(row); }
+// bstr::lines("a\r\nb\n") { row => rows.push(row); }
 // assert(rows.len == 2 && rows[0] == "a" && rows[1] == "b");
 // ```
 fn lines<F>(s: const u8[:]) {
@@ -399,8 +399,8 @@ fn lines<F>(s: const u8[:]) {
 // Return the first offset of a byte >= 128, or -1 if every byte is ASCII.
 //
 // ```goose
-// assert(goostr::find_non_ascii_byte("café") == 3);
-// assert(goostr::find_non_ascii_byte("goose") == -1);
+// assert(bstr::find_non_ascii_byte("café") == 3);
+// assert(bstr::find_non_ascii_byte("goose") == -1);
 // ```
 fn find_non_ascii_byte(s: const u8[:]) -> i64 {
     for b, i in s { if b >= 128 { return i; } }
@@ -410,8 +410,8 @@ fn find_non_ascii_byte(s: const u8[:]) -> i64 {
 // Return whether every byte is below 128. Empty input is ASCII.
 //
 // ```goose
-// assert(goostr::is_ascii("a\0b"));
-// assert(!goostr::is_ascii("café"));
+// assert(bstr::is_ascii("a\0b"));
+// assert(!bstr::is_ascii("café"));
 // ```
 fn is_ascii(s: const u8[:]) -> bool { find_non_ascii_byte(s) < 0 }
 
@@ -420,7 +420,7 @@ fn is_ascii(s: const u8[:]) -> bool { find_non_ascii_byte(s) < 0 }
 // ```goose
 // var bytes: u8[>..] = [];
 // bytes.append("GOOSE\xFF");
-// goostr::make_ascii_lowercase(bytes);
+// bstr::make_ascii_lowercase(bytes);
 // assert(bytes == "goose\xFF");
 // ```
 fn make_ascii_lowercase(s: u8[:]) {
@@ -435,7 +435,7 @@ fn make_ascii_lowercase(s: u8[:]) {
 // ```goose
 // var bytes: u8[>..] = [];
 // bytes.append("goose\xFF");
-// goostr::make_ascii_uppercase(bytes);
+// bstr::make_ascii_uppercase(bytes);
 // assert(bytes == "GOOSE\xFF");
 // ```
 fn make_ascii_uppercase(s: u8[:]) {
@@ -449,7 +449,7 @@ fn make_ascii_uppercase(s: u8[:]) {
 // are unchanged; this is not Unicode case conversion.
 //
 // ```goose
-// assert(goostr::to_ascii_lowercase("CAFÉ") == "cafÉ");
+// assert(bstr::to_ascii_lowercase("CAFÉ") == "cafÉ");
 // ```
 fn to_ascii_lowercase(s: const u8[:]) -> u8[>..] {
     var out: u8[>..] = [];
@@ -462,7 +462,7 @@ fn to_ascii_lowercase(s: const u8[:]) -> u8[>..] {
 // are unchanged; this is not Unicode case conversion.
 //
 // ```goose
-// assert(goostr::to_ascii_uppercase("café") == "CAFé");
+// assert(bstr::to_ascii_uppercase("café") == "CAFé");
 // ```
 fn to_ascii_uppercase(s: const u8[:]) -> u8[>..] {
     var out: u8[>..] = [];
@@ -476,7 +476,7 @@ fn to_ascii_uppercase(s: const u8[:]) -> u8[>..] {
 // ```goose
 // var bytes: u8[>..] = [];
 // bytes.append("a\0bc");
-// goostr::reverse_bytes(bytes);
+// bstr::reverse_bytes(bytes);
 // assert(bytes == "cb\0a");
 // ```
 fn reverse_bytes(s: u8[:]) {
@@ -493,7 +493,7 @@ fn reverse_bytes(s: u8[:]) {
 // ```goose
 // var bytes: u8[>..] = [];
 // bytes.append("aé\xFF");
-// goostr::reverse_chars(bytes);
+// bstr::reverse_chars(bytes);
 // assert(bytes == "\xFFéa");
 // ```
 fn reverse_chars(s: u8[:]) {
@@ -511,8 +511,8 @@ fn reverse_chars(s: u8[:]) {
 // Invalid bytes use uppercase hex escapes; ASCII space is also escaped.
 //
 // ```goose
-// assert(goostr::escape_bytes("a \xFF\n") == "a\\x20\\xFF\\n");
-// assert(goostr::escape_bytes("café") == "café");
+// assert(bstr::escape_bytes("a \xFF\n") == "a\\x20\\xFF\\n");
+// assert(bstr::escape_bytes("café") == "café");
 // ```
 fn escape_bytes(s: const u8[:]) -> u8[>..] {
     var out: u8[>..] = [];
@@ -544,9 +544,9 @@ fn escape_bytes(s: const u8[:]) -> u8[>..] {
 // are unchanged. Unicode escapes such as `\u{1234}` are not interpreted.
 //
 // ```goose
-// assert(goostr::unescape_bytes("café\\xFF\\n") == "café\xFF\n");
-// assert(goostr::unescape_bytes("\\xZ\\q") == "\\xZ\\q");
-// assert(goostr::unescape_bytes(goostr::escape_bytes("a\0\xFF")) == "a\0\xFF");
+// assert(bstr::unescape_bytes("café\\xFF\\n") == "café\xFF\n");
+// assert(bstr::unescape_bytes("\\xZ\\q") == "\\xZ\\q");
+// assert(bstr::unescape_bytes(bstr::escape_bytes("a\0\xFF")) == "a\0\xFF");
 // ```
 fn unescape_bytes(s: const u8[:]) -> u8[>..] {
     var out: u8[>..] = [];

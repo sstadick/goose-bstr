@@ -1,6 +1,6 @@
 // Differential-test driver. Input: hex haystack|hex needle|split limit.
-import goostr from "..";
-import goosimd from "github.com/sstadick/goosimd@main";
+import bstr from "..";
+import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
 import os;
 
 fn unhex(s: const u8[:]) -> u8[>..] {
@@ -25,53 +25,53 @@ fn hex(out: u8[>..]&, s: const u8[:]) {
 
 fn snapshot(s: const u8[:], needle: const u8[:], n: i64) {
     var out: u8[>..] = [];
-    let cp, size, valid = goostr::decode_utf8(s);
-    let rcp, rsize, rvalid = goostr::decode_last_utf8(s);
-    let end, error = goostr::validate_utf8(s);
+    let cp, size, valid = bstr::decode_utf8(s);
+    let rcp, rsize, rvalid = bstr::decode_last_utf8(s);
+    let end, error = bstr::validate_utf8(s);
     format(out, cp, ",", size, ",", valid, ",", rcp, ",", rsize, ",", rvalid, ",", end, ",", error, "|");
-    hex(out, goostr::to_str_lossy(s));
-    hex(out, goostr::escape_bytes(s));
-    hex(out, goostr::unescape_bytes(goostr::escape_bytes(s)));
-    hex(out, goostr::unescape_bytes(goostr::to_str_lossy(s)));
-    let ch, chsize = goostr::decode_utf8_lossy(needle);
+    hex(out, bstr::to_str_lossy(s));
+    hex(out, bstr::escape_bytes(s));
+    hex(out, bstr::unescape_bytes(bstr::escape_bytes(s)));
+    hex(out, bstr::unescape_bytes(bstr::to_str_lossy(s)));
+    let ch, chsize = bstr::decode_utf8_lossy(needle);
     let scalar = if chsize == 0 { 0 } else { ch };
-    format(out, goostr::find_char(s, scalar), ",", goostr::rfind_char(s, scalar), "|");
-    hex(out, goostr::trim(s));
-    hex(out, goostr::trim_start(s));
-    hex(out, goostr::trim_end(s));
-    hex(out, goostr::to_ascii_lowercase(s));
-    hex(out, goostr::to_ascii_uppercase(s));
+    format(out, bstr::find_char(s, scalar), ",", bstr::rfind_char(s, scalar), "|");
+    hex(out, bstr::trim(s));
+    hex(out, bstr::trim_start(s));
+    hex(out, bstr::trim_end(s));
+    hex(out, bstr::to_ascii_lowercase(s));
+    hex(out, bstr::to_ascii_uppercase(s));
     var rev: u8[>..] = [];
     rev.append(s);
-    goostr::reverse_chars(rev);
+    bstr::reverse_chars(rev);
     hex(out, rev);
     out.push('|');
-    goostr::char_indices(s) { a, b, cp => format(out, a, ",", b, ",", cp, ";"); }
+    bstr::char_indices(s) { a, b, cp => format(out, a, ",", b, ",", cp, ";"); }
     out.push('|');
-    goostr::utf8_chunks(s) { good, bad => hex(out, good); hex(out, bad); }
+    bstr::utf8_chunks(s) { good, bad => hex(out, good); hex(out, bad); }
     out.push('|');
-    goostr::fields(s) { hex(out, it); }
+    bstr::fields(s) { hex(out, it); }
     out.push('|');
-    goostr::lines(s) { hex(out, it); }
+    bstr::lines(s) { hex(out, it); }
     out.push('|');
-    goostr::lines_with_terminator(s) { hex(out, it); }
-    format(out, "|", goostr::find(s, needle), ",", goostr::rfind(s, needle), ",",
-        goostr::find_byteset(s, needle), ",", goostr::rfind_byteset(s, needle), ",",
-        goostr::find_not_byteset(s, needle), ",", goostr::rfind_not_byteset(s, needle), "|");
-    goostr::find_iter(s, needle) { format(out, it, ","); }
+    bstr::lines_with_terminator(s) { hex(out, it); }
+    format(out, "|", bstr::find(s, needle), ",", bstr::rfind(s, needle), ",",
+        bstr::find_byteset(s, needle), ",", bstr::rfind_byteset(s, needle), ",",
+        bstr::find_not_byteset(s, needle), ",", bstr::rfind_not_byteset(s, needle), "|");
+    bstr::find_iter(s, needle) { format(out, it, ","); }
     out.push('|');
-    goostr::rfind_iter(s, needle) { format(out, it, ","); }
+    bstr::rfind_iter(s, needle) { format(out, it, ","); }
     out.push('|');
-    goostr::split_str(s, needle) { hex(out, it); }
+    bstr::split_str(s, needle) { hex(out, it); }
     out.push('|');
-    goostr::rsplit_str(s, needle) { hex(out, it); }
+    bstr::rsplit_str(s, needle) { hex(out, it); }
     out.push('|');
-    goostr::splitn_str(s, needle, n) { hex(out, it); }
+    bstr::splitn_str(s, needle, n) { hex(out, it); }
     out.push('|');
-    goostr::rsplitn_str(s, needle, n) { hex(out, it); }
+    bstr::rsplitn_str(s, needle, n) { hex(out, it); }
     out.push('|');
-    hex(out, goostr::replace(s, needle, "\xFF!"));
-    hex(out, goostr::replacen(s, needle, "\xFF!", n));
+    hex(out, bstr::replace(s, needle, "\xFF!"));
+    hex(out, bstr::replacen(s, needle, "\xFF!", n));
     print(out);
 }
 

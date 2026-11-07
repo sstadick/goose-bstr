@@ -1,5 +1,5 @@
-import goostr from "..";
-import goosimd from "github.com/sstadick/goosimd@main";
+import bstr from "..";
+import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
 
 // Independent membership oracle: no ByteSet or SIMD helpers from the library.
 fn check_set(h: const u8[:], n: const u8[:]) {
@@ -18,26 +18,28 @@ fn check_set(h: const u8[:], n: const u8[:]) {
             last_not = i;
         }
     }
-    assert(goostr::find_byteset(h, n) == first);
-    assert(goostr::rfind_byteset(h, n) == last);
-    assert(goostr::find_not_byteset(h, n) == first_not);
-    assert(goostr::rfind_not_byteset(h, n) == last_not);
+    assert(bstr::find_byteset(h, n) == first);
+    assert(bstr::rfind_byteset(h, n) == last);
+    assert(bstr::find_not_byteset(h, n) == first_not);
+    assert(bstr::rfind_not_byteset(h, n) == last_not);
 }
 
 // Independent, deliberately naive oracle. Also check reusable finders with
 // different haystacks so preprocessing and its borrowing contract are exercised.
 fn check(h: const u8[:], n: const u8[:]) {
     check_set(h, n);
-    let f = goostr::finder(n);
-    let r = goostr::finder_reverse(n);
-    assert(goostr::find(h, n) == ::find(h, n));
-    assert(goostr::rfind(h, n) == ::rfind(h, n));
-    assert(goostr::find(f, h) == ::find(h, n));
-    assert(goostr::rfind(r, h) == ::rfind(h, n));
-    assert(goostr::find(f, h[..h.len / 2]) == ::find(h[..h.len / 2], n));
-    assert(goostr::rfind(r, h[h.len / 2..]) == ::rfind(h[h.len / 2..], n));
+    let f = bstr::finder(n);
+    let r = bstr::finder_reverse(n);
+    assert(bstr::find(h, n) == ::find(h, n));
+    assert(bstr::rfind(h, n) == ::rfind(h, n));
+    assert(bstr::find(f, h) == ::find(h, n));
+    assert(bstr::rfind(r, h) == ::rfind(h, n));
+    assert(f.find(h) == ::find(h, n));
+    assert(r.rfind(h) == ::rfind(h, n));
+    assert(bstr::find(f, h[..h.len / 2]) == ::find(h[..h.len / 2], n));
+    assert(bstr::rfind(r, h[h.len / 2..]) == ::rfind(h[h.len / 2..], n));
     var start = 0;
-    goostr::find_iter(h, n) { at =>
+    bstr::find_iter(h, n) { at =>
         assert(start <= h.len);
         let expected = ::find(h[start..], n);
         assert(expected >= 0 && at == start + expected);
@@ -45,7 +47,7 @@ fn check(h: const u8[:], n: const u8[:]) {
     }
     assert(start > h.len || ::find(h[start..], n) == -1);
     var end = h.len;
-    goostr::rfind_iter(h, n) { at =>
+    bstr::rfind_iter(h, n) { at =>
         assert(end >= 0);
         assert(at == ::rfind(h[..end], n));
         end = at - (if n.len == 0 { 1 } else { 0 });
@@ -221,23 +223,23 @@ fn main() {
                 h[259 + lane] = 0;
                 h[512] = 128;
                 for i in n.len { h[at + i] = n[i]; }
-                assert(goostr::find(h, n) == at);
+                assert(bstr::find(h, n) == at);
                 check(h, n);
                 h[at + 255] = 'a';
-                assert(goostr::find(h, n) == -1);
+                assert(bstr::find(h, n) == -1);
                 check(h, n);
                 count += 2;
                 // Mirror the same hits, misses, and lane boundaries for
                 // reverse search, with the false candidate encountered first.
                 h[at + 255] = 128;
-                goostr::reverse_bytes(h);
-                goostr::reverse_bytes(n);
-                assert(goostr::rfind(h, n) == h.len - at - n.len);
+                bstr::reverse_bytes(h);
+                bstr::reverse_bytes(n);
+                assert(bstr::rfind(h, n) == h.len - at - n.len);
                 check(h, n);
                 h[h.len - at - 256] = 'a';
-                assert(goostr::rfind(h, n) == -1);
+                assert(bstr::rfind(h, n) == -1);
                 check(h, n);
-                goostr::reverse_bytes(n);
+                bstr::reverse_bytes(n);
                 count += 2;
             }
         }
@@ -251,11 +253,11 @@ fn main() {
         for i in n.len { h[768 + i] = n[i]; }
         for i in n.len { h[1024 + i] = n[i]; }
         h[768 + 127] = 0;
-        assert(goostr::find(h, n) == 1024);
+        assert(bstr::find(h, n) == 1024);
         check(h, n);
-        goostr::reverse_bytes(h);
-        goostr::reverse_bytes(n);
-        assert(goostr::rfind(h, n) == 0);
+        bstr::reverse_bytes(h);
+        bstr::reverse_bytes(n);
+        assert(bstr::rfind(h, n) == 0);
         check(h, n);
         count += 2;
     }
@@ -290,8 +292,8 @@ fn main() {
             set_cases += 1;
             for at in [0, 15, 16, 31, 32, len - 33, len - 32, len - 17, len - 16, len - 1] {
                 h[at] = n[0];
-                assert(goostr::find_byte(h, n[0]) == at);
-                assert(goostr::rfind_byte(h, n[0]) == at);
+                assert(bstr::find_byte(h, n[0]) == at);
+                assert(bstr::rfind_byte(h, n[0]) == at);
                 check_set(h, n);
                 check_set(h, "\x07");
                 h[at] = 7;

@@ -1,8 +1,8 @@
 // Search algorithms ported from memchr 2.8.3 (the engine used by bstr).
 // Copyright (c) 2015 Andrew Gallant. MIT; see LICENSE.
-namespace goostr;
+namespace bstr;
 import std;
-import goosimd from "github.com/sstadick/goosimd@main";
+import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
 
 extern fn runtime_simd() -> bool = "goostr_runtime_simd";
 // Amortize dispatch on longer scans; keep smaller inputs fully inlineable.
@@ -13,21 +13,21 @@ const DISPATCH_MIN: i64 = 1024;
 inline fn equal_short(s: const u8[:], needle: const u8[:]) -> bool {
     let n = needle.len;
     if n >= 16 {
-        return ((goosimd::load_u64(s) ^ goosimd::load_u64(needle)) |
-            (goosimd::load_u64(s[8..]) ^ goosimd::load_u64(needle[8..])) |
-            (goosimd::load_u64(s[n - 16..]) ^ goosimd::load_u64(needle[n - 16..])) |
-            (goosimd::load_u64(s[n - 8..]) ^ goosimd::load_u64(needle[n - 8..]))) == 0;
+        return ((simd_bytes::load_u64(s) ^ simd_bytes::load_u64(needle)) |
+            (simd_bytes::load_u64(s[8..]) ^ simd_bytes::load_u64(needle[8..])) |
+            (simd_bytes::load_u64(s[n - 16..]) ^ simd_bytes::load_u64(needle[n - 16..])) |
+            (simd_bytes::load_u64(s[n - 8..]) ^ simd_bytes::load_u64(needle[n - 8..]))) == 0;
     }
     if n >= 8 {
-        return ((goosimd::load_u64(s) ^ goosimd::load_u64(needle)) |
-            (goosimd::load_u64(s[n - 8..]) ^ goosimd::load_u64(needle[n - 8..]))) == 0;
+        return ((simd_bytes::load_u64(s) ^ simd_bytes::load_u64(needle)) |
+            (simd_bytes::load_u64(s[n - 8..]) ^ simd_bytes::load_u64(needle[n - 8..]))) == 0;
     }
     if n >= 4 {
-        return ((goosimd::load_u32(s) ^ goosimd::load_u32(needle)) |
-            (goosimd::load_u32(s[n - 4..]) ^ goosimd::load_u32(needle[n - 4..]))) == 0;
+        return ((simd_bytes::load_u32(s) ^ simd_bytes::load_u32(needle)) |
+            (simd_bytes::load_u32(s[n - 4..]) ^ simd_bytes::load_u32(needle[n - 4..]))) == 0;
     }
-    return ((goosimd::load_u16(s) ^ goosimd::load_u16(needle)) |
-        (goosimd::load_u16(s[n - 2..]) ^ goosimd::load_u16(needle[n - 2..]))) == 0;
+    return ((simd_bytes::load_u16(s) ^ simd_bytes::load_u16(needle)) |
+        (simd_bytes::load_u16(s[n - 2..]) ^ simd_bytes::load_u16(needle[n - 2..]))) == 0;
 }
 
 // Resolve early hits without runtime dispatch. The rest of a long scan gets
@@ -39,8 +39,8 @@ fn packed(s: const u8[:], needle: const u8[:], a: i64, b: i64, prefilter: bool) 
     if count < DISPATCH_MIN { return packed_scan(s, needle, a, b, prefilter); }
     let x = needle[a];
     let y = needle[b];
-    let vx = goosimd::load<goosimd::U8x32>(s[a..]).eq(x);
-    let vy = goosimd::load<goosimd::U8x32>(s[b..]).eq(y);
+    let vx = simd_bytes::load<simd_bytes::U8x32>(s[a..]).eq(x);
+    let vy = simd_bytes::load<simd_bytes::U8x32>(s[b..]).eq(y);
     var hits = vx.bit_and(vy).to_bits();
     while hits != 0 {
         let at = ctz(hits);
@@ -59,12 +59,12 @@ inline fn prepared_equal(a: const u8[:], b: const u8[:]) -> bool {
     var left = a;
     var right = b;
     while left.len >= 4 {
-        if goosimd::load_u32(left) != goosimd::load_u32(right) { return false; }
+        if simd_bytes::load_u32(left) != simd_bytes::load_u32(right) { return false; }
         left = left[4..];
         right = right[4..];
     }
     if left.len >= 2 {
-        if goosimd::load_u16(left) != goosimd::load_u16(right) { return false; }
+        if simd_bytes::load_u16(left) != simd_bytes::load_u16(right) { return false; }
         left = left[2..];
         right = right[2..];
     }
@@ -90,8 +90,8 @@ simd fn prepared_packed(f: const Finder&, s: const u8[:]) -> i64 {
     let v2 = f.v2;
     let needle = f.needle;
     while xs.len >= 32 {
-        let x = goosimd::load<goosimd::U8x32>(xs).eq(v1);
-        let y = goosimd::load<goosimd::U8x32>(ys).eq(v2);
+        let x = simd_bytes::load<simd_bytes::U8x32>(xs).eq(v1);
+        let y = simd_bytes::load<simd_bytes::U8x32>(ys).eq(v2);
         let hits = x.bit_and(y).to_bits();
         if hits != 0 {
             let pos = count - xs.len;
@@ -110,8 +110,8 @@ simd fn prepared_packed(f: const Finder&, s: const u8[:]) -> i64 {
     if xs.len > 0 {
         // Overlap the final load, masking positions already checked.
         let last = count - 32;
-        let x = goosimd::load<goosimd::U8x32>(s[f.a + last..]).eq(v1);
-        let y = goosimd::load<goosimd::U8x32>(s[f.b + last..]).eq(v2);
+        let x = simd_bytes::load<simd_bytes::U8x32>(s[f.a + last..]).eq(v1);
+        let y = simd_bytes::load<simd_bytes::U8x32>(s[f.b + last..]).eq(v2);
         let mask = (0xFFFFFFFF as u32) << (32 - xs.len);
         return prepared_candidates(s, needle, last, x.bit_and(y).to_bits() & mask);
     }
@@ -139,18 +139,18 @@ inline fn packed_scan(s: const u8[:], needle: const u8[:], a: i64, b: i64, prefi
     }
     // Each lane represents a start position with room for the whole needle.
     while xs.len >= 32 {
-        let vx = goosimd::load<goosimd::U8x32>(xs).eq(x);
-        let vy = goosimd::load<goosimd::U8x32>(ys).eq(y);
+        let vx = simd_bytes::load<simd_bytes::U8x32>(xs).eq(x);
+        let vy = simd_bytes::load<simd_bytes::U8x32>(ys).eq(y);
         var hits = vx.bit_and(vy).to_bits();
         if hits == 0 {
             xs = xs[32..];
             ys = ys[32..];
             // Scan misses two blocks at a time, without delaying early hits.
             while xs.len >= 64 {
-                let x0 = goosimd::load<goosimd::U8x32>(xs).eq(x);
-                let y0 = goosimd::load<goosimd::U8x32>(ys).eq(y);
-                let x1 = goosimd::load<goosimd::U8x32>(xs[32..]).eq(x);
-                let y1 = goosimd::load<goosimd::U8x32>(ys[32..]).eq(y);
+                let x0 = simd_bytes::load<simd_bytes::U8x32>(xs).eq(x);
+                let y0 = simd_bytes::load<simd_bytes::U8x32>(ys).eq(y);
+                let x1 = simd_bytes::load<simd_bytes::U8x32>(xs[32..]).eq(x);
+                let y1 = simd_bytes::load<simd_bytes::U8x32>(ys[32..]).eq(y);
                 if x0.bit_and(y0).bit_or(x1.bit_and(y1)).to_bits() != 0 { break; }
                 xs = xs[64..];
                 ys = ys[64..];
@@ -159,7 +159,7 @@ inline fn packed_scan(s: const u8[:], needle: const u8[:], a: i64, b: i64, prefi
         }
         if c != a && (hits & (hits - 1)) != 0 {
             let start = count - xs.len;
-            hits &= goosimd::load<goosimd::U8x32>(s[start + c..]).eq(needle[c]).to_bits();
+            hits &= simd_bytes::load<simd_bytes::U8x32>(s[start + c..]).eq(needle[c]).to_bits();
         }
         while hits != 0 {
             let at = count - xs.len + ctz(hits);
@@ -173,8 +173,8 @@ inline fn packed_scan(s: const u8[:], needle: const u8[:], a: i64, b: i64, prefi
         // Keep the final load in bounds. Overlapping positions already failed
         // verification (or would have returned immediately in prefilter mode).
         let start = count - 32;
-        let vx = goosimd::load<goosimd::U8x32>(s[a + start..]).eq(x);
-        let vy = goosimd::load<goosimd::U8x32>(s[b + start..]).eq(y);
+        let vx = simd_bytes::load<simd_bytes::U8x32>(s[a + start..]).eq(x);
+        let vy = simd_bytes::load<simd_bytes::U8x32>(s[b + start..]).eq(y);
         var hits = vx.bit_and(vy).to_bits();
         while hits != 0 {
             let at = start + ctz(hits);
@@ -233,12 +233,12 @@ inline fn packed_reverse_scan(s: const u8[:], needle: const u8[:], a: i64, b: i6
     }
     while xs.len >= 32 {
         let start = xs.len - 32;
-        let vx = goosimd::load<goosimd::U8x32>(xs[start..]).eq(x);
-        let vy = goosimd::load<goosimd::U8x32>(ys[start..]).eq(y);
+        let vx = simd_bytes::load<simd_bytes::U8x32>(xs[start..]).eq(x);
+        let vy = simd_bytes::load<simd_bytes::U8x32>(ys[start..]).eq(y);
         var hits = vx.bit_and(vy).to_bits();
         if (triple || (duplicates && c != a)) && (hits & (hits - 1)) != 0 {
             // Reject dense pair matches together before verifying each lane.
-            hits &= goosimd::load<goosimd::U8x32>(s[start + c..]).eq(needle[c]).to_bits();
+            hits &= simd_bytes::load<simd_bytes::U8x32>(s[start + c..]).eq(needle[c]).to_bits();
             if triple && hits != 0 { return start + 63 - clz(hits); }
         }
         while hits != 0 {
@@ -253,10 +253,10 @@ inline fn packed_reverse_scan(s: const u8[:], needle: const u8[:], a: i64, b: i6
         // the outer loop resolves candidates from the last block first.
         while xs.len >= 64 {
             let next = xs.len - 64;
-            let x0 = goosimd::load<goosimd::U8x32>(xs[next..]).eq(x);
-            let y0 = goosimd::load<goosimd::U8x32>(ys[next..]).eq(y);
-            let x1 = goosimd::load<goosimd::U8x32>(xs[next + 32..]).eq(x);
-            let y1 = goosimd::load<goosimd::U8x32>(ys[next + 32..]).eq(y);
+            let x0 = simd_bytes::load<simd_bytes::U8x32>(xs[next..]).eq(x);
+            let y0 = simd_bytes::load<simd_bytes::U8x32>(ys[next..]).eq(y);
+            let x1 = simd_bytes::load<simd_bytes::U8x32>(xs[next + 32..]).eq(x);
+            let y1 = simd_bytes::load<simd_bytes::U8x32>(ys[next + 32..]).eq(y);
             if x0.bit_and(y0).bit_or(x1.bit_and(y1)).to_bits() != 0 { break; }
             xs = xs[..next];
             ys = ys[..next];
@@ -277,10 +277,10 @@ inline fn packed_small(s: const u8[:], needle: const u8[:], a: i64, b: i64, reve
     let y = needle[b];
     let xs = s[a..];
     let ys = s[b..];
-    let first_x = goosimd::load<goosimd::U8x16>(xs).eq(x);
-    let first_y = goosimd::load<goosimd::U8x16>(ys).eq(y);
-    let last_x = goosimd::load<goosimd::U8x16>(xs[last..]).eq(x);
-    let last_y = goosimd::load<goosimd::U8x16>(ys[last..]).eq(y);
+    let first_x = simd_bytes::load<simd_bytes::U8x16>(xs).eq(x);
+    let first_y = simd_bytes::load<simd_bytes::U8x16>(ys).eq(y);
+    let last_x = simd_bytes::load<simd_bytes::U8x16>(xs[last..]).eq(x);
+    let last_y = simd_bytes::load<simd_bytes::U8x16>(ys[last..]).eq(y);
     var hits = first_x.bit_and(first_y).to_bits() |
         (last_x.bit_and(last_y).to_bits() << last);
     while hits != 0 {
@@ -292,8 +292,8 @@ inline fn packed_small(s: const u8[:], needle: const u8[:], a: i64, b: i64, reve
     return -1;
 }
 
-inline fn small_test<L>(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert: bool) -> goosimd::Mask<L> {
-    let v = goosimd::load<goosimd::Vec<L>>(s);
+inline fn small_test<L>(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert: bool) -> simd_bytes::Mask<L> {
+    let v = simd_bytes::load<simd_bytes::Vec<L>>(s);
     var hits = v.eq(a);
     if count >= 2 { hits = hits.bit_or(v.eq(b)); }
     if count == 3 { hits = hits.bit_or(v.eq(c)); }
@@ -302,7 +302,7 @@ inline fn small_test<L>(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert:
 }
 
 inline fn small_mask16(s: const u8[:], a: u8, b: u8, c: u8, count: i64, invert: bool) -> u32 {
-    let v = goosimd::load<goosimd::U8x16>(s);
+    let v = simd_bytes::load<simd_bytes::U8x16>(s);
     var hits = v.eq(a);
     if count >= 2 { hits = hits.bit_or(v.eq(b)); }
     if count == 3 { hits = hits.bit_or(v.eq(c)); }
@@ -500,19 +500,19 @@ struct TwoWay { critical: i64, period: i64, memory: i64, bytes: u64 }
 // Borrows its needle; keep the bytes alive and unchanged while using it.
 //
 // ```goose
-// let f: goostr::Finder = goostr::finder("aba");
-// assert(goostr::find(f, "ababa") == 0);
+// let f: bstr::Finder = bstr::finder("aba");
+// assert(bstr::find(f, "ababa") == 0);
 // ```
 struct Finder {
     needle: const u8[:], a: i64, b: i64, two: TwoWay, wide: bool,
-    v1: goosimd::U8x32, v2: goosimd::U8x32, min_len: i64,
+    v1: simd_bytes::U8x32, v2: simd_bytes::U8x32, min_len: i64,
 }
 // A prepared reverse search. Construct with finder_reverse, not by setting
 // fields. Borrows its needle; keep the bytes alive and unchanged while in use.
 //
 // ```goose
-// let f: goostr::FinderReverse = goostr::finder_reverse("aba");
-// assert(goostr::rfind(f, "ababa") == 2);
+// let f: bstr::FinderReverse = bstr::finder_reverse("aba");
+// assert(bstr::rfind(f, "ababa") == 2);
 // ```
 struct FinderReverse { needle: const u8[:], two: TwoWay, a: i64, b: i64 }
 
@@ -584,11 +584,11 @@ inline fn reverse_equal_run(s: const u8[:], best: i64, start: i64, period: i64) 
     var candidate = start;
     var offset = 0;
     while candidate - offset >= 8 {
-        let different = goosimd::load_u64(s[best - offset - 8..]) ^
-            goosimd::load_u64(s[candidate - offset - 8..]);
+        let different = simd_bytes::load_u64(s[best - offset - 8..]) ^
+            simd_bytes::load_u64(s[candidate - offset - 8..]);
         if different != 0 {
             // Count the equal bytes from the end of a native-endian word.
-            let bits = if goosimd::load_u16("\x01\x00") == 1 { clz(different) } else { ctz(different) };
+            let bits = if simd_bytes::load_u16("\x01\x00") == 1 { clz(different) } else { ctz(different) };
             offset += bits / 8;
             if offset >= period {
                 let whole = offset / period * period;
@@ -644,19 +644,19 @@ inline fn rare_pair(needle: const u8[:]) -> i64, i64 {
 // The returned finder borrows needle; do not mutate it while in use.
 //
 // ```goose
-// let f = goostr::finder("needle");
-// assert(goostr::find(f, "a needle") == 2);
-// assert(goostr::find(f, "haystack") == -1);
+// let f = bstr::finder("needle");
+// assert(bstr::find(f, "a needle") == 2);
+// assert(bstr::find(f, "haystack") == -1);
 // ```
 fn finder(needle: const u8[:]) -> Finder {
     let a, b = rare_pair(needle);
     // Repeated-byte pairs keep the initial probe for dense early matches.
     let wide = needle.len >= 2 && needle.len <= 32 && needle[a] != needle[b];
     var f = Finder { needle: needle, a: a, b: b, two: default<TwoWay>(), wide: wide,
-        v1: default<goosimd::U8x32>(), v2: default<goosimd::U8x32>(), min_len: 0 };
+        v1: default<simd_bytes::U8x32>(), v2: default<simd_bytes::U8x32>(), min_len: 0 };
     if wide {
-        f.v1 = goosimd::splat<goosimd::U8x32>(needle[a]);
-        f.v2 = goosimd::splat<goosimd::U8x32>(needle[b]);
+        f.v1 = simd_bytes::splat<simd_bytes::U8x32>(needle[a]);
+        f.v2 = simd_bytes::splat<simd_bytes::U8x32>(needle[b]);
         f.min_len = max(needle.len, max(a, b) + 32);
     }
     if needle.len > 32 { f.two = two_way(needle, false); }
@@ -667,9 +667,9 @@ fn finder(needle: const u8[:]) -> Finder {
 // The returned finder borrows needle; do not mutate it while in use.
 //
 // ```goose
-// let f = goostr::finder_reverse("/");
-// assert(goostr::rfind(f, "a/b/c") == 3);
-// assert(goostr::rfind(f, "name") == -1);
+// let f = bstr::finder_reverse("/");
+// assert(bstr::rfind(f, "a/b/c") == 3);
+// assert(bstr::rfind(f, "name") == -1);
 // ```
 fn finder_reverse(needle: const u8[:]) -> FinderReverse {
     var f = FinderReverse { needle: needle, two: default<TwoWay>(), a: 0, b: 0 };
@@ -718,9 +718,9 @@ inline fn find_small(s: const u8[:], needle: const u8[:], reverse: bool) -> i64 
 // or -1 if absent. An empty needle returns 0, including for empty input.
 //
 // ```goose
-// let f = goostr::finder("aba");
-// assert(goostr::find(f, "xabababa") == 1);
-// assert(goostr::find(f, "ab") == -1);
+// let f = bstr::finder("aba");
+// assert(bstr::find(f, "xabababa") == 1);
+// assert(bstr::find(f, "ab") == -1);
 // ```
 inline fn find(f: const Finder&, s: const u8[:]) -> i64 {
     let needle = f.needle;
@@ -787,7 +787,7 @@ inline fn find_two_way_scan(f: const Finder&, s: const u8[:], periodic: bool) ->
             if probe[0] != byte {
                 if probe[1] == byte { pos += 1; }
                 else {
-                    let hits = goosimd::load<goosimd::U8x32>(probe).eq(byte).to_bits();
+                    let hits = simd_bytes::load<simd_bytes::U8x32>(probe).eq(byte).to_bits();
                     if hits == 0 { pos += 32; continue; }
                     pos += ctz(hits);
                 }
@@ -811,8 +811,8 @@ inline fn find_two_way_scan(f: const Finder&, s: const u8[:], periodic: bool) ->
             let right = window[..j];
             // Left-half failures all shift by the period; their exact
             // mismatch position is unnecessary, so compare words first.
-            while j - stop >= 8 && goosimd::load_u64(left[j - 8..j]) ==
-                goosimd::load_u64(right[j - 8..j]) { j -= 8; }
+            while j - stop >= 8 && simd_bytes::load_u64(left[j - 8..j]) ==
+                simd_bytes::load_u64(right[j - 8..j]) { j -= 8; }
             if j - stop < 8 {
                 while j > stop && left[j - 1] == right[j - 1] { j -= 1; }
             }
@@ -828,9 +828,9 @@ inline fn find_two_way_scan(f: const Finder&, s: const u8[:], periodic: bool) ->
 // in s, or -1 if absent. An empty needle returns s.len.
 //
 // ```goose
-// let f = goostr::finder_reverse("aba");
-// assert(goostr::rfind(f, "xabababa") == 5);
-// assert(goostr::rfind(f, "ab") == -1);
+// let f = bstr::finder_reverse("aba");
+// assert(bstr::rfind(f, "xabababa") == 5);
+// assert(bstr::rfind(f, "ab") == -1);
 // ```
 fn rfind(f: const FinderReverse&, s: const u8[:]) -> i64 {
     let needle = f.needle;
@@ -866,7 +866,7 @@ fn rfind_two_way(f: const FinderReverse&, s: const u8[:]) -> i64 {
             let base = probes.len - 1;
             if two.bytes & ((1 as u64) << (rest[base] & 63)) == 0 { break; }
             if probes[base] == byte { break; }
-            let hits = goosimd::load<goosimd::U8x16>(probes[probes.len - 16..]).eq(byte).to_bits();
+            let hits = simd_bytes::load<simd_bytes::U8x16>(probes[probes.len - 16..]).eq(byte).to_bits();
             if hits != 0 {
                 probes = probes[..probes.len - (15 - (63 - clz(hits)))];
                 break;
@@ -910,18 +910,18 @@ inline fn rfind_two_way_scan(f: const FinderReverse&, rest: const u8[:], periodi
                 i -= 1;
             }
             while i >= 16 {
-                let a = goosimd::load_u64(left[i - 8..i]) ^ goosimd::load_u64(right[i - 8..i]);
-                let b = goosimd::load_u64(left[i - 16..i - 8]) ^ goosimd::load_u64(right[i - 16..i - 8]);
+                let a = simd_bytes::load_u64(left[i - 8..i]) ^ simd_bytes::load_u64(right[i - 8..i]);
+                let b = simd_bytes::load_u64(left[i - 16..i - 8]) ^ simd_bytes::load_u64(right[i - 16..i - 8]);
                 if (a | b) != 0 { break; }
                 i -= 16;
             }
             while i >= 8 {
-                if goosimd::load_u64(left[i - 8..i]) != goosimd::load_u64(right[i - 8..i]) { break; }
+                if simd_bytes::load_u64(left[i - 8..i]) != simd_bytes::load_u64(right[i - 8..i]) { break; }
                 i -= 8;
             }
             // Cover a short prefix with an overlapping, in-bounds load.
             if i > 0 && i < 8 && left.len >= 8 &&
-                goosimd::load_u64(left) == goosimd::load_u64(right) { i = 0; }
+                simd_bytes::load_u64(left) == simd_bytes::load_u64(right) { i = 0; }
             while i > 0 && left[i - 1] == right[i - 1] { i -= 1; }
         }
         if i > 0 {
@@ -943,9 +943,9 @@ inline fn rfind_two_way_scan(f: const FinderReverse&, rest: const u8[:], periodi
 // needle returns 0. Arbitrary bytes are accepted; UTF-8 is not required.
 //
 // ```goose
-// assert(goostr::find("é\0abc", "\0a") == 2); // Byte offset, not character index.
-// assert(goostr::find("abc", "") == 0);
-// assert(goostr::find("abc", "x") == -1);
+// assert(bstr::find("é\0abc", "\0a") == 2); // Byte offset, not character index.
+// assert(bstr::find("abc", "") == 0);
+// assert(bstr::find("abc", "x") == -1);
 // ```
 fn find(s: const u8[:], needle: const u8[:]) -> i64 {
     if s.len < 64 { return find_small(s, needle, false); }
@@ -965,9 +965,9 @@ fn find(s: const u8[:], needle: const u8[:]) -> i64 {
 // needle returns s.len. Arbitrary bytes are accepted; UTF-8 is not required.
 //
 // ```goose
-// assert(goostr::rfind("ababa", "aba") == 2);
-// assert(goostr::rfind("abc", "") == 3);
-// assert(goostr::rfind("abc", "x") == -1);
+// assert(bstr::rfind("ababa", "aba") == 2);
+// assert(bstr::rfind("abc", "") == 3);
+// assert(bstr::rfind("abc", "x") == -1);
 // ```
 inline fn rfind(s: const u8[:], needle: const u8[:]) -> i64 {
     // Keep repeated suffix hits in the caller instead of paying for the
@@ -1002,8 +1002,8 @@ fn rfind_tail(s: const u8[:], needle: const u8[:]) -> i64 {
     var at = s.len - needle.len;
     if at >= 15 {
         let base = at - 15;
-        let first = goosimd::load<goosimd::U8x16>(s[base..]).eq(needle[0]);
-        let last = goosimd::load<goosimd::U8x16>(s[s.len - 16..]).eq(needle[needle.len - 1]);
+        let first = simd_bytes::load<simd_bytes::U8x16>(s[base..]).eq(needle[0]);
+        let last = simd_bytes::load<simd_bytes::U8x16>(s[s.len - 16..]).eq(needle[needle.len - 1]);
         let hits = first.bit_and(last).to_bits();
         at = if hits == 0 { -1 } else { base + 63 - clz(hits) };
     }

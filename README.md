@@ -1,11 +1,11 @@
-# goostr
+# goose-bstr
 
 Search, split, and transform byte strings in [Goose](https://github.com/aardappel/goose).
 Use it for text or arbitrary bytes, including NUL and malformed UTF-8.
-goostr follows the core byte-string behavior of Rust's
+goose-bstr follows the core byte-string behavior of Rust's
 [bstr](https://github.com/BurntSushi/bstr).
 
-**[API reference and examples](API.md)** · [Releases](https://github.com/sstadick/goostr/releases)
+**[API reference and examples](API.md)** · [Releases](https://github.com/sstadick/goose-bstr/releases)
 
 ## Get started
 
@@ -13,16 +13,16 @@ Save this as `main.goose`. Goose downloads the packages; no local library
 checkout is needed. Declare both imports in your program's root file:
 
 ```goose
-import goostr from "github.com/sstadick/goostr@main";
-import goosimd from "github.com/sstadick/goosimd@main";
+import bstr from "github.com/sstadick/goose-bstr@main";
+import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
 
 fn main() {
     let bytes = "name=goose\xFF\r\ncount=42\n";
-    goostr::lines(bytes) { line =>
-        let key, value, found = goostr::split_once_str(line, "=");
-        if found { print(key, ": ", goostr::to_str_lossy(value)); }
+    bstr::lines(bytes) { line =>
+        let key, value, found = bstr::split_once_str(line, "=");
+        if found { print(key, ": ", bstr::to_str_lossy(value)); }
     }
-    print(goostr::replace("a\0b\0c", "\0", " / "));
+    print(bstr::replace("a\0b\0c", "\0", " / "));
 }
 ```
 
@@ -38,7 +38,7 @@ goose build main.goose -O2 -o demo
 Use a Goose compiler with package `c_headers` support. TinyCC works without
 an external C compiler; native builds use GCC, Clang, or MSVC. CI covers Linux
 x86-64 and ARM64, macOS ARM64, and Windows x86-64. The examples follow `main`; pin
-imports to commits for reproducible builds. The goosimd dependency is experimental.
+imports to commits for reproducible builds. The goose-simd dependency is experimental.
 
 ## Find bytes and patterns
 
@@ -46,16 +46,16 @@ Search returns a **byte offset**, or **-1** when nothing matches. These
 examples go inside `main()` with the imports above:
 
 ```goose
-assert(goostr::find("café menu", "menu") == 6);
-assert(goostr::rfind("ababa", "aba") == 2);
-assert(goostr::find_byteset("name=value;", "=;") == 4);
-assert(goostr::find("goose", "duck") == -1);
-assert(goostr::find_char("café", 0xE9) == 3); // Unicode scalar, byte offset.
+assert(bstr::find("café menu", "menu") == 6);
+assert(bstr::rfind("ababa", "aba") == 2);
+assert(bstr::find_byteset("name=value;", "=;") == 4);
+assert(bstr::find("goose", "duck") == -1);
+assert(bstr::find_char("café", 0xE9) == 3); // Unicode scalar, byte offset.
 
 // Reuse a finder when searching for the same pattern in several inputs.
-let f = goostr::finder("error");
-assert(goostr::find(f, "an error occurred") == 3);
-assert(goostr::find(f, "all clear") == -1);
+let f = bstr::finder("error");
+assert(bstr::find(f, "an error occurred") == 3);
+assert(bstr::find(f, "all clear") == -1);
 ```
 
 Finders borrow their pattern. Keep its bytes alive and unchanged while using
@@ -68,16 +68,16 @@ return borrowed views: keep the input alive while using them.
 
 ```goose
 var parts: const u8[:][>..] = [];
-goostr::split_str("red,green,blue", ",") { part => parts.push(part); }
+bstr::split_str("red,green,blue", ",") { part => parts.push(part); }
 assert(parts.len == 3 && parts[1] == "green");
 
-assert(goostr::trim(" \tgoose\r\n") == "goose");
-assert(goostr::replace("one-two-three", "-", "/") == "one/two/three");
+assert(bstr::trim(" \tgoose\r\n") == "goose");
+assert(bstr::replace("one-two-three", "-", "/") == "one/two/three");
 
 // Functions ending in _into append to your builder; they do not clear it.
 var out: u8[>..] = [];
 out.append("result: ");
-goostr::replace_into("a-b", "-", "/", out);
+bstr::replace_into("a-b", "-", "/", out);
 assert(out == "result: a/b");
 ```
 
@@ -91,10 +91,10 @@ Byte operations do not require UTF-8. When you need readable text, use lossy
 conversion to replace malformed sequences with `�`, or validate first:
 
 ```goose
-assert(!goostr::is_utf8("hello\xFF"));
-assert(goostr::to_str_lossy("hello\xFF") == "hello�");
+assert(!bstr::is_utf8("hello\xFF"));
+assert(bstr::to_str_lossy("hello\xFF") == "hello�");
 
-let end, error = goostr::validate_utf8("ok\xE2\x82");
+let end, error = bstr::validate_utf8("ok\xE2\x82");
 assert(end == 2 && error == -1); // Incomplete UTF-8 after "ok".
 ```
 
@@ -103,10 +103,10 @@ For a printable representation that preserves arbitrary bytes, use
 
 ```goose
 let bytes = "line\n\xFF";
-let escaped = goostr::escape_bytes(bytes);
+let escaped = bstr::escape_bytes(bytes);
 assert(escaped == "line\\n\\xFF");
-assert(goostr::unescape_bytes(escaped) == bytes);
-assert(goostr::unescape_bytes("\\q") == "\\q"); // Unknown escapes stay literal.
+assert(bstr::unescape_bytes(escaped) == bytes);
+assert(bstr::unescape_bytes("\\q") == "\\q"); // Unknown escapes stay literal.
 ```
 
 `unescape_bytes` recognizes `\0`, `\n`, `\r`, `\t`, `\\`, and `\xHH`.
@@ -261,8 +261,8 @@ taskset -c 4 python3 bench/compare.py \
 ### API documentation
 
 API documentation comes from source comments. With
-[goosdoc v0.2.0](https://github.com/sstadick/goosdoc/releases/tag/v0.2.0)
-checked out at `../goosdoc`, run:
+[goose-doc](https://github.com/sstadick/goose-doc/commit/f7292c9ee395596fa39eb709f90dc71ef124a0eb)
+checked out at `../goose-doc`, run:
 
 ```sh
 scripts/docs.sh
@@ -272,12 +272,32 @@ scripts/doctest.sh --cc gcc
 scripts/doctest.sh --cc clang
 ```
 
-Set `GOOSDOC=/path/to/goosdoc/main.goose` for another location. Edit source
+Set `GOOSE_DOC=/path/to/goose-doc/main.goose` for another location. Edit source
 comments, not `API.md`. Every API declaration needs an executable example;
-see the [example conventions](https://github.com/sstadick/goosdoc#executable-examples).
+see the [example conventions](https://github.com/sstadick/goose-doc#executable-examples).
 CI checks the reference and runs examples and tests before publishing releases.
+
+## Migration from goostr
+
+The repository is now [sstadick/goose-bstr](https://github.com/sstadick/goose-bstr).
+Replace `import goostr from "github.com/sstadick/goostr@<ref>";` with
+`import bstr from "github.com/sstadick/goose-bstr@<migration-or-later-ref>";`
+and change `goostr::` to `bstr::`. The entry file is `bstr.goose`.
+Function and type names are unchanged; owned-struct UFCS remains supported.
+Old release tags retain the old entry file and namespace, so do not use the
+new import identifier with a pre-migration revision. No compatibility wrapper
+is provided.
+
+Dependencies below are exact coordinated migration commits. Until they are
+merged/published, remote builds require those commits to be made available
+(or local package source overrides). Existing release tags do not contain
+the new namespaces. The documentation scripts use `GOOSE_DOC`, defaulting
+to `../goose-doc/main.goose`.
+
+- `goose-doc`: `f7292c9ee395596fa39eb709f90dc71ef124a0eb`
+- `goose-simd`: `e11e34447d9b0f23f2fd0f63bc25f4aee838f175`
 
 ## License
 
-MIT; see [LICENSE](LICENSE). goostr adapts bstr and memchr code by Andrew
+MIT; see [LICENSE](LICENSE). goose-bstr adapts bstr and memchr code by Andrew
 Gallant and contributors; their copyright notices are retained.

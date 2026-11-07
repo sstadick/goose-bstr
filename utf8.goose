@@ -1,4 +1,4 @@
-namespace goostr;
+namespace bstr;
 
 import std;
 
@@ -7,7 +7,7 @@ import std;
 // yields (U+FFFD, 0, false). No valid result is a surrogate or above U+10FFFF.
 //
 // ```goose
-// let cp, size, valid = goostr::decode_utf8("é!");
+// let cp, size, valid = bstr::decode_utf8("é!");
 // assert(cp == 0xE9 && size == 2 && valid);
 // ```
 fn decode_utf8(s: const u8[:]) -> i64, i64, bool {
@@ -35,7 +35,7 @@ fn decode_utf8(s: const u8[:]) -> i64, i64, bool {
 // empty input yields (U+FFFD, 0, false).
 //
 // ```goose
-// let cp, size, valid = goostr::decode_last_utf8("!é");
+// let cp, size, valid = bstr::decode_last_utf8("!é");
 // assert(cp == 0xE9 && size == 2 && valid);
 // ```
 fn decode_last_utf8(s: const u8[:]) -> i64, i64, bool {
@@ -52,7 +52,7 @@ fn decode_last_utf8(s: const u8[:]) -> i64, i64, bool {
 // maximal subpart with U+FFFD. Empty input returns (U+FFFD, 0).
 //
 // ```goose
-// let cp, size = goostr::decode_utf8_lossy("\xE2\x82!");
+// let cp, size = bstr::decode_utf8_lossy("\xE2\x82!");
 // assert(cp == 0xFFFD && size == 2);
 // ```
 fn decode_utf8_lossy(s: const u8[:]) -> i64, i64 {
@@ -64,7 +64,7 @@ fn decode_utf8_lossy(s: const u8[:]) -> i64, i64 {
 // malformed subpart with U+FFFD. Empty input returns (U+FFFD, 0).
 //
 // ```goose
-// let cp, size = goostr::decode_last_utf8_lossy("!\xE2\x82");
+// let cp, size = bstr::decode_last_utf8_lossy("!\xE2\x82");
 // assert(cp == 0xFFFD && size == 2);
 // ```
 fn decode_last_utf8_lossy(s: const u8[:]) -> i64, i64 {
@@ -78,7 +78,7 @@ fn decode_last_utf8_lossy(s: const u8[:]) -> i64, i64 {
 //
 // ```goose
 // var starts: i64[>..] = [];
-// goostr::char_indices("aé\xFF") { start, end, cp =>
+// bstr::char_indices("aé\xFF") { start, end, cp =>
 //     starts.push(start);
 //     if cp == 0xE9 { assert(start == 1 && end == 3); }
 // }
@@ -98,7 +98,7 @@ fn char_indices<F>(s: const u8[:]) {
 //
 // ```goose
 // var points: i64[>..] = [];
-// goostr::chars("é\xFF") { cp => points.push(cp); }
+// bstr::chars("é\xFF") { cp => points.push(cp); }
 // assert(points.len == 2 && points[0] == 0xE9 && points[1] == 0xFFFD);
 // ```
 fn chars<F>(s: const u8[:]) {
@@ -109,9 +109,9 @@ fn chars<F>(s: const u8[:]) {
 // incomplete trailing sequence, or 1..3 for a malformed subpart.
 //
 // ```goose
-// let end, error = goostr::validate_utf8("ok\xE2\x82");
+// let end, error = bstr::validate_utf8("ok\xE2\x82");
 // assert(end == 2 && error == -1);
-// let valid_end, no_error = goostr::validate_utf8("é");
+// let valid_end, no_error = bstr::validate_utf8("é");
 // assert(valid_end == 2 && no_error == 0);
 // ```
 fn validate_utf8(s: const u8[:]) -> i64, i64 {
@@ -130,8 +130,8 @@ fn validate_utf8(s: const u8[:]) -> i64, i64 {
 // Return whether all bytes form valid UTF-8. Empty input is valid.
 //
 // ```goose
-// assert(goostr::is_utf8("café"));
-// assert(!goostr::is_utf8("caf\xFF"));
+// assert(bstr::is_utf8("café"));
+// assert(!bstr::is_utf8("caf\xFF"));
 // ```
 fn is_utf8(s: const u8[:]) -> bool {
     let end, error = validate_utf8(s);
@@ -144,7 +144,7 @@ fn is_utf8(s: const u8[:]) -> bool {
 // ```goose
 // var valid_parts: const u8[:][>..] = [];
 // var invalid_parts: const u8[:][>..] = [];
-// goostr::utf8_chunks("ok\xFFé") { valid, invalid =>
+// bstr::utf8_chunks("ok\xFFé") { valid, invalid =>
 //     valid_parts.push(valid);
 //     invalid_parts.push(invalid);
 // }
@@ -168,7 +168,7 @@ fn utf8_chunks<F>(s: const u8[:]) {
 // ```goose
 // var out: u8[>..] = [];
 // out.append("name: ");
-// goostr::to_str_lossy_into("goose\xFF", out);
+// bstr::to_str_lossy_into("goose\xFF", out);
 // assert(out == "name: goose�");
 // ```
 fn to_str_lossy_into(s: const u8[:], out: u8[>..]&) {
@@ -182,7 +182,7 @@ fn to_str_lossy_into(s: const u8[:], out: u8[>..]&) {
 // U+FFFD. Valid input is copied unchanged.
 //
 // ```goose
-// assert(goostr::to_str_lossy("a\xE2\x82!é") == "a�!é");
+// assert(bstr::to_str_lossy("a\xE2\x82!é") == "a�!é");
 // ```
 fn to_str_lossy(s: const u8[:]) -> u8[>..] {
     var out: u8[>..] = [];
@@ -193,8 +193,8 @@ fn to_str_lossy(s: const u8[:]) -> u8[>..] {
 // Unicode White_Space, not ASCII-only whitespace or grapheme segmentation.
 //
 // ```goose
-// assert(goostr::is_whitespace(0xA0)); // Non-breaking space.
-// assert(!goostr::is_whitespace(0x200B)); // Zero-width space is not White_Space.
+// assert(bstr::is_whitespace(0xA0)); // Non-breaking space.
+// assert(!bstr::is_whitespace(0x200B)); // Zero-width space is not White_Space.
 // ```
 fn is_whitespace(cp: i64) -> bool {
     return (cp >= 0x09 && cp <= 0x0D) || cp == 0x20 || cp == 0x85 || cp == 0xA0
@@ -206,7 +206,7 @@ fn is_whitespace(cp: i64) -> bool {
 // removed. Predicates see U+FFFD for malformed maximal subparts.
 //
 // ```goose
-// let name = goostr::trim_start_with("--name--") { cp => cp == '-' };
+// let name = bstr::trim_start_with("--name--") { cp => cp == '-' };
 // assert(name == "name--");
 // ```
 fn trim_start_with<P>(s: const u8[:]) -> const u8[:] {
@@ -223,7 +223,7 @@ fn trim_start_with<P>(s: const u8[:]) -> const u8[:] {
 // removed. Predicates see U+FFFD for malformed maximal subparts.
 //
 // ```goose
-// let name = goostr::trim_end_with("--name--") { cp => cp == '-' };
+// let name = bstr::trim_end_with("--name--") { cp => cp == '-' };
 // assert(name == "--name");
 // ```
 fn trim_end_with<P>(s: const u8[:]) -> const u8[:] {
@@ -240,7 +240,7 @@ fn trim_end_with<P>(s: const u8[:]) -> const u8[:] {
 // both ends. Predicates see U+FFFD for malformed maximal subparts.
 //
 // ```goose
-// let name = goostr::trim_with("--first-last--") { cp => cp == '-' };
+// let name = bstr::trim_with("--first-last--") { cp => cp == '-' };
 // assert(name == "first-last");
 // ```
 fn trim_with<P>(s: const u8[:]) -> const u8[:] {
@@ -250,19 +250,19 @@ fn trim_with<P>(s: const u8[:]) -> const u8[:] {
 // Return a view borrowing s without leading Unicode White_Space.
 //
 // ```goose
-// assert(goostr::trim_start("\xC2\xA0name \t") == "name \t"); // Leading NBSP.
+// assert(bstr::trim_start("\xC2\xA0name \t") == "name \t"); // Leading NBSP.
 // ```
 fn trim_start(s: const u8[:]) -> const u8[:] { trim_start_with(s, is_whitespace) }
 // Return a view borrowing s without trailing Unicode White_Space.
 //
 // ```goose
-// assert(goostr::trim_end("\t name\xC2\xA0") == "\t name"); // Trailing NBSP.
+// assert(bstr::trim_end("\t name\xC2\xA0") == "\t name"); // Trailing NBSP.
 // ```
 fn trim_end(s: const u8[:]) -> const u8[:] { trim_end_with(s, is_whitespace) }
 // Return a view borrowing s without Unicode White_Space at either end.
 //
 // ```goose
-// assert(goostr::trim("\xC2\xA0 first last \t") == "first last");
+// assert(bstr::trim("\xC2\xA0 first last \t") == "first last");
 // ```
 fn trim(s: const u8[:]) -> const u8[:] { trim_with(s, is_whitespace) }
 
@@ -273,7 +273,7 @@ fn trim(s: const u8[:]) -> const u8[:] { trim_with(s, is_whitespace) }
 // ```goose
 // fn comma(cp: i64) -> bool { cp == ',' }
 // var parts: const u8[:][>..] = [];
-// goostr::fields_with(",one,,two,", comma) { part => parts.push(part); }
+// bstr::fields_with(",one,,two,", comma) { part => parts.push(part); }
 // assert(parts.len == 2 && parts[0] == "one" && parts[1] == "two");
 // ```
 fn fields_with<P, F>(s: const u8[:]) {
@@ -292,7 +292,7 @@ fn fields_with<P, F>(s: const u8[:]) {
 //
 // ```goose
 // var words: const u8[:][>..] = [];
-// goostr::fields(" one\xC2\xA0two\t ") { word => words.push(word); }
+// bstr::fields(" one\xC2\xA0two\t ") { word => words.push(word); }
 // assert(words.len == 2 && words[0] == "one" && words[1] == "two");
 // ```
 fn fields<F>(s: const u8[:]) { fields_with(s, is_whitespace, F); }
