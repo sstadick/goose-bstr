@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build pinned runners and compare goostr with memchr on Linux x86-64."""
+"""Build pinned runners and compare goose-bstr with memchr on Linux x86-64."""
 import argparse
 from datetime import datetime, timezone
 import hashlib
@@ -15,7 +15,7 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[2]
 PINS = {
     "goose": ("aardappel/goose", "eadca409f68210893f366e60d0c2f0dc29a339be"),
-    "goosimd": ("sstadick/goosimd", "983f3bb2bfee95affd09f4f5530be249d7d6040b"),
+    "goose-simd": ("sstadick/goose-simd", "e11e34447d9b0f23f2fd0f63bc25f4aee838f175"),
     "memchr": ("BurntSushi/memchr", "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d"),
     "rebar": ("BurntSushi/rebar", "463d00f31887e84c38467805b9e3122c314b9521"),
 }
@@ -64,7 +64,7 @@ def register(memchr):
         text += f'''
 [[engine]]
 name = "goose/goostr/{name}"
-cwd = "./engines/goostr"
+cwd = "./engines/goose-bstr"
 [engine.version]
 bin = "cat"
 args = ["version.txt"]
@@ -131,14 +131,14 @@ def main():
     rebar = repos["rebar"] / "target/release/rebar"
     run("cargo", "build", "--locked", "--release", cwd=repos["rebar"])
     home = work / "home"
-    dependency = home / "pkg/github.com/sstadick/goosimd/main"
+    dependency = home / "pkg/github.com/sstadick/goose-simd" / PINS["goose-simd"][1][:12]
     dependency.parent.mkdir(parents=True, exist_ok=True)
     if not dependency.exists():
-        dependency.symlink_to(repos["goosimd"], target_is_directory=True)
-    if dependency.resolve() != repos["goosimd"]:
+        dependency.symlink_to(repos["goose-simd"], target_is_directory=True)
+    if dependency.resolve() != repos["goose-simd"]:
         raise ValueError(f"unexpected package cache: {dependency}")
     env = {**os.environ, "GOOSE_HOME": str(home)}
-    engine = repos["memchr"] / "benchmarks/engines/goostr"
+    engine = repos["memchr"] / "benchmarks/engines/goose-bstr"
     engine.mkdir(exist_ok=True)
     run(goose, "--standalone", "-O2", "-o", engine / "main.c", ROOT / "bench/rebar/main.goose", env=env)
     run("clang", "-O3", engine / "main.c", "-o", engine / "main", "-lm", "-pthread", "-ldl")
@@ -151,7 +151,7 @@ def main():
     timing = ["--max-time", "100ms", "--max-warmup-time", "50ms", "--max-iters", "20000", "--timeout", "30s"]
     measure = ["taskset", "-c", str(args.cpu), common[0], "measure", *common[1:], *filters, *timing]
     run(*measure, "--verify")
-    sources = [ROOT / p for p in ("search.goose", "goostr.goose", "utf8.goose", "src/dispatch.h",
+    sources = [ROOT / p for p in ("search.goose", "bstr.goose", "utf8.goose", "src/dispatch.h",
                                 "bench/rebar/main.goose", "bench/rebar/run.py", "bench/rebar/report.py")]
     metadata = dict(timestamp_utc=datetime.now(timezone.utc).isoformat(), platform=platform.platform(),
                     cpu=next(line.split(":", 1)[1].strip() for line in Path("/proc/cpuinfo").read_text().splitlines() if line.startswith("model name")),
@@ -161,7 +161,7 @@ def main():
                     versions={"goose": output(goose, "--version"), "clang": output("clang", "--version"), "rustc": output("rustc", "--version")},
                     goose_flags=["--standalone", "-O2"], c_flags=["-O3"], rust_profile="upstream release (opt-level 3, one codegen unit, fat LTO)",
                     command=list(map(str, measure)), source_hashes={str(p.relative_to(ROOT)): sha(p) for p in sources},
-                    dependency_hashes={p: sha(repos["goosimd"] / p) for p in ("goosimd.goose", "include/goosimd.h")},
+                    dependency_hashes={p: sha(repos["goose-simd"] / p) for p in ("simd_bytes.goose", "include/goosimd.h")},
                     cargo_lock_hashes={str(p.relative_to(repos["memchr"])): sha(p) for p in sorted((repos["memchr"] / "benchmarks/engines").rglob("Cargo.lock"))},
                     fixture_hashes={str(p.relative_to(repos["memchr"])): sha(p) for folder in ("definitions", "haystacks") for p in sorted((repos["memchr"] / "benchmarks" / folder).rglob("*")) if p.is_file()},
                     runner_sha256=sha(engine / "main"), rust_runner_sha256=sha(repos["memchr"] / "benchmarks/engines/rust-memchr/target/release/main"))

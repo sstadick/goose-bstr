@@ -55,9 +55,9 @@ def main():
         cases.append(f"{data.hex()}|{needles[i % len(needles)].hex()}|{i % 5}")
     inputs = ("\n".join(cases) + "\n").encode()
     suffix = ".exe" if os.name == "nt" else ""
-    oracle = subprocess.run([str(ROOT / "tests/oracle/target/debug" / ("goostr-oracle" + suffix))],
+    oracle = subprocess.run([str(ROOT / "tests/oracle/target/debug" / ("goose-bstr-oracle" + suffix))],
                             input=inputs, stdout=subprocess.PIPE, check=True).stdout.splitlines()
-    with tempfile.TemporaryDirectory(prefix="goostr-test-") as temp:
+    with tempfile.TemporaryDirectory(prefix="goose-bstr-test-") as temp:
         exe = str(Path(temp) / ("snapshot" + suffix))
         subprocess.run(["goose", "build", str(ROOT / "tests/snapshot.goose"),
                         "--debug", "-O2", "-o", exe], check=True)

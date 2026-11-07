@@ -1,6 +1,6 @@
 # Run the memchr benchmark suite
 
-Compare this goostr checkout with memchr using memchr's fixtures and the
+Compare this goose-bstr checkout with memchr using memchr's fixtures and the
 [rebar](https://github.com/BurntSushi/rebar) harness. The default run covers
 **189 matched engine/case pairs across 96 fixtures**: forward substring search,
 prepared finders, forward/reverse byte searches, and two-/three-byte sets.
@@ -10,11 +10,11 @@ prepared finders, forward/reverse byte searches, and two-/three-byte sets.
 Linux x86-64, Python 3.11+, Git, CMake, a C++ compiler, Clang, Cargo/Rust, and
 `taskset` from util-linux. Network access is needed for the first build. The
 recorded results use Clang 18.1.3 and Rust 1.97.1; versions are recorded on every
-run. Goose, goosimd, memchr and rebar revisions are pinned in `run.py`.
+run. Goose, goose-simd, memchr and rebar revisions are pinned in `run.py`.
 
 ## Run
 
-From the goostr repository root:
+From the goose-bstr repository root:
 
 ```sh
 python3 bench/rebar/run.py --cpu 4 --output bench/results/my-run
@@ -26,12 +26,12 @@ must not exist. Builds finish before verification and serial timing begin.
 
 The script clones and builds its dependencies in `.amp/in/rebar-bench`, adds
 that scratch directory to Git's local exclude file, and uses a separate Goose
-package cache pinned to the selected goosimd commit. It does not use or update
+package cache pinned to the selected goose-simd commit. It does not use or update
 your normal package cache. `--work-dir /another/scratch/path` changes the cache
 location. These checkouts belong to the runner; do not edit them. Reuse the work
 directory for subsequent runs; use a fresh one when changing dependency pins.
 
-By default, two rounds compare the eight goostr modes with their corresponding
+By default, two rounds compare the eight goose-bstr modes with their corresponding
 memchr modes. `--rounds 5` collects more rounds. `--all-native` also builds and
 runs the other native engines configured upstream; these can require additional
 build dependencies. The report puts workloads in rows and engines in columns,
@@ -42,10 +42,10 @@ WebAssembly is excluded.
 The output contains:
 
 - `README.md`: per-workload times for every measured engine, including all 189
-  goostr/memchr comparisons, plus methodology and limitations.
+  goose-bstr/memchr comparisons, plus methodology and limitations.
 - `round-*.csv`: all reported measurements, including any failures.
 - `environment.json`: tool versions, pinned revisions, CPU, commands, source,
-  fixture and binary hashes, and the goostr worktree status.
+  fixture and binary hashes, and the goose-bstr worktree status.
 
 Regenerate a report without rerunning benchmarks:
 
@@ -56,6 +56,11 @@ python3 bench/rebar/report.py bench/results/my-run/round-*.csv \
 
 The report reads `environment.json` beside the first CSV for the machine and
 compiler details. Regeneration does not rebuild runners or rerun measurements.
+
+CSV engine IDs (`goose/goostr/...`) and `goostr_revision`/`goostr_status`
+metadata keys remain unchanged so this runner and reporter can still compare
+with archived results. Archived result files retain their original names and
+contents; new builds import `bstr` and `simd_bytes` from the migrated packages.
 
 Report generation fails on measurement errors, missing pairs, duplicate rows,
 or rounds containing different case sets. It never drops failing cases to
@@ -77,13 +82,13 @@ not every engine supports every workload.
   call. Parsing and output formatting are outside timing. Prepared-finder
   construction is outside timing except for Rust std: its upstream `prebuilt`
   mode still constructs the searcher inside each timed sample. One-shot search
-  construction is inside timing. The goostr and memchr runners use the
+  construction is inside timing. The goose-bstr and memchr runners use the
   same protocol and timing limits, without an extra FFI or black-box barrier.
 - sliceslice only reports whether a match exists, not its offset. Its count
   workloads require zero or one expected match. Its timings are not an
   interchangeable comparison with offset-producing search APIs.
 - Forward single-byte counting repeatedly calls one-shot search in both runners.
-  Goostr's reverse byte and byte-set counts also repeatedly call public searches;
+  goose-bstr's reverse byte and byte-set counts also repeatedly call public searches;
   memchr uses reusable iterators for those workloads. These comparisons include
   their different setup and iteration costs. Count-only engines in the broader
   suite do not produce individual match offsets.
@@ -97,8 +102,8 @@ not every engine supports every workload.
   and this corpus cannot establish universal performance or cross-platform
   parity. These fixtures have been used during optimization, not held out.
 
-## Other goostr benchmarks
+## Other goose-bstr benchmarks
 
-`../compare.py` compares goostr directly with bstr, including reverse substring
+`../compare.py` compares goose-bstr directly with bstr, including reverse substring
 search, inverted byte sets, and boundary cases not covered by this memchr run.
 Use `python3 bench/compare.py --help` from the repository root for those suites.

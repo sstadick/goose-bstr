@@ -145,7 +145,7 @@ def run(exe, haystack, needle, mode, iterations, expected):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--goose-exe", type=Path, help="use an already built baseline")
-    parser.add_argument("--baseline-exe", type=Path, help="also time the former goostr implementation")
+    parser.add_argument("--baseline-exe", type=Path, help="also time the former goose-bstr implementation")
     parser.add_argument("--save-exe", type=Path, help="retain the Goose executable")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--samples", type=int, help="measured batches (default 5, or 3 for quick)")
@@ -218,7 +218,7 @@ def main():
     if options.barrier == "external":
         flags.append("-DGOOSTR_BENCH_EXTERNAL")
         rust_flags += ["--cfg", "bench_external_barrier"]
-    with tempfile.TemporaryDirectory(prefix="goostr-bench-") as tmp:
+    with tempfile.TemporaryDirectory(prefix="goose-bstr-bench-") as tmp:
         tmp = Path(tmp)
         barrier = tmp / "opaque.o"
         subprocess.run(["clang", "-O3", "-c", str(ROOT / "bench/opaque.c"), "-o", str(barrier)], check=True)
@@ -305,7 +305,7 @@ def main():
                         scheduling=(f"CPU affinity {sorted(os.sched_getaffinity(0))}"
                                     if hasattr(os, "sched_getaffinity") else "user-initiated QoS on macOS"),
                         checkout_sources={path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest()
-                                 for path in ("goostr.goose", "search.goose", "goostr.build", "src/dispatch.h", "bench/search.goose",
+                                 for path in ("bstr.goose", "search.goose", "bstr.build", "src/dispatch.h", "bench/search.goose",
                                               "bench/search.build", "bench/opaque.c", "bench/opaque.h", "bench/compare.py",
                                               "tests/oracle/src/bin/search-bench.rs")})
         if options.baseline_exe:
