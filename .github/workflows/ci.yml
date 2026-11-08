@@ -52,8 +52,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: aardappel/goose
-          # Compiler revision used for package c_headers and SIMD tests.
-          ref: b46099024b9af8a9f54cd76e24953a89c21ccb3a
+          # Frozen nightly compiler revision; see README.md for provenance.
+          ref: a12523f23e545a6af350562804a0c8b201864946
           path: .ci/goose
           persist-credentials: false
       - name: Check out goose-doc
