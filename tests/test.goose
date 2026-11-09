@@ -1,5 +1,5 @@
 import bstr from "..";
-import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
+import simd_bytes from "github.com/sstadick/goose-simd@v0.2.0";
 
 // Slice elements compare by identity in this Goose release. Check bytes.
 fn expect_parts(actual: const u8[:][:], expected: const u8[:][:]) {

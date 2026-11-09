@@ -15,7 +15,7 @@ import tomllib
 ROOT = Path(__file__).resolve().parents[2]
 PINS = {
     "goose": ("aardappel/goose", "eadca409f68210893f366e60d0c2f0dc29a339be"),
-    "goose-simd": ("sstadick/goose-simd", "e11e34447d9b0f23f2fd0f63bc25f4aee838f175"),
+    "goose-simd": ("sstadick/goose-simd", "v0.2.0"),
     "memchr": ("BurntSushi/memchr", "5fdb40c054e1fff359a2f7bdf7f87a13b34b465d"),
     "rebar": ("BurntSushi/rebar", "463d00f31887e84c38467805b9e3122c314b9521"),
 }
@@ -46,7 +46,7 @@ def checkout(work, name):
     if not path.exists():
         run("git", "clone", f"https://github.com/{repo}.git", path)
         run("git", "-C", path, "checkout", "--detach", revision)
-    if output("git", "-C", path, "rev-parse", "HEAD") != revision:
+    if output("git", "-C", path, "rev-parse", "HEAD") != output("git", "-C", path, "rev-parse", f"{revision}^{{commit}}"):
         raise ValueError(f"{path}: expected {revision}; use a fresh work directory")
     if name != "memchr" and output("git", "-C", path, "status", "--porcelain"):
         raise ValueError(f"{path}: expected a clean checkout")

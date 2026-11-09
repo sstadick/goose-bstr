@@ -14,7 +14,7 @@ checkout is needed. Declare both imports in your program's root file:
 
 ```goose
 import bstr from "github.com/sstadick/goose-bstr@main";
-import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
+import simd_bytes from "github.com/sstadick/goose-simd@v0.2.0";
 
 fn main() {
     let bytes = "name=goose\xFF\r\ncount=42\n";
@@ -288,14 +288,14 @@ Old release tags retain the old entry file and namespace, so do not use the
 new import identifier with a pre-migration revision. No compatibility wrapper
 is provided.
 
-Dependencies below are exact coordinated migration commits. Until they are
-merged/published, remote builds require those commits to be made available
-(or local package source overrides). Existing release tags do not contain
-the new namespaces. The documentation scripts use `GOOSE_DOC`, defaulting
-to `../goose-doc/main.goose`.
+Runtime dependencies use published release tags; published tags must not be
+moved. Declare the same tag in root programs to avoid dependency-ref warnings.
+`goose-bstr` releases before v0.3.0 retain the old namespace. Compiler and
+documentation-tool CI pins remain exact commits. The documentation scripts use
+`GOOSE_DOC`, defaulting to `../goose-doc/main.goose`.
 
 - `goose-doc`: `f7292c9ee395596fa39eb709f90dc71ef124a0eb`
-- `goose-simd`: `e11e34447d9b0f23f2fd0f63bc25f4aee838f175`
+- `goose-simd`: `v0.2.0`
 
 ## License
 
