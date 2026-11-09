@@ -2,7 +2,7 @@
 // Copyright (c) 2015 Andrew Gallant. MIT; see LICENSE.
 namespace bstr;
 import std;
-import simd_bytes from "github.com/sstadick/goose-simd@e11e34447d9b0f23f2fd0f63bc25f4aee838f175";
+import simd_bytes from "github.com/sstadick/goose-simd@v0.2.0";
 
 extern fn runtime_simd() -> bool = "goostr_runtime_simd";
 // Amortize dispatch on longer scans; keep smaller inputs fully inlineable.
