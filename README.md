@@ -170,8 +170,8 @@ Search tests cover native vector builds and forced-scalar builds; Linux x86-64
 also tests explicit AVX2 when the runner supports it.
 
 The nightly CI compiler is pinned to Goose
-[`f4637bfb342fb70d42bea0474eab9e62a3c99d68`](https://github.com/aardappel/goose/commit/f4637bfb342fb70d42bea0474eab9e62a3c99d68)
-(`goose v2026.4-17-gf4637bfb`), built in Debug mode with
+[`d5ae5bbda990923fa4129f969c7f853c20d4d1e6`](https://github.com/aardappel/goose/commit/d5ae5bbda990923fa4129f969c7f853c20d4d1e6)
+(`goose v2026.4-20-gd5ae5bbd`), built in Debug mode with
 `-DGOOSE_BUILTIN_LIBS=`. Use that revision to reproduce CI; the historical
 benchmark runner retains its own compiler pin for reproducibility.
 
