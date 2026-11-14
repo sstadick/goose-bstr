@@ -170,10 +170,17 @@ Search tests cover native vector builds and forced-scalar builds; Linux x86-64
 also tests explicit AVX2 when the runner supports it.
 
 The CI compiler is pinned to Goose
-[`855f1037a5ceee837ef270382ac8d26df47a7139`](https://github.com/aardappel/goose/commit/855f1037a5ceee837ef270382ac8d26df47a7139)
-(`goose v2026.4-24-g855f1037`), built in Debug mode with
+[`4602c98660676b2cb94bc9b06fec8c65b37fce92`](https://github.com/aardappel/goose/commit/4602c98660676b2cb94bc9b06fec8c65b37fce92)
+(`goose v2026.4-26-g4602c986`, runtime `d521138194f1`), built in Debug mode with
 `-DGOOSE_BUILTIN_LIBS=`. Use that revision to reproduce CI; the historical
 benchmark runner retains its own compiler pin for reproducibility.
+
+This revision verifies the code executed by `checkfree` callers transitively;
+callees do not need their own annotations. goose-bstr does not promise that
+every operation can be called from a `checkfree` function: retained bounds or
+slice checks still cause errors, and proof success can depend on optimization
+level. `--no-bce` disables this verification and warns; it does not establish
+the guarantee.
 
 Run the library tests from this checkout with your installed C compilers:
 
